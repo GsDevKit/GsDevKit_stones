@@ -5,7 +5,7 @@ RwProjectSpecificationV2 {
 	#packagesPath : 'src',
 	#projectsPath : 'rowan/projects',
 	#specsPath : 'rowan/specs',
-	#packageFormat : 'tonel',
+	#packageFormat : 'topaz',
 	#packageConvention : 'RowanHybrid',
 	#comment : ''
 }
