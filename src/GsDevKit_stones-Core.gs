@@ -43,10 +43,28 @@ removeallclassmethods GDKStoneRegistry
 
 category: 'instance creation'
 classmethod: GDKStoneDirectorySpec
+new
+	^ super new initialize
+%
+
+category: 'instance creation'
+classmethod: GDKStoneDirectorySpec
 root: aFileReferenceOrPath
+	"if aFileReferenceOrPath exists, it will be deleted and recreated ... empty"
+
 	^ self new
 		root: aFileReferenceOrPath asFileReference;
 		yourself
+%
+
+category: 'dev'
+classmethod: GDKStoneDirectorySpec
+_createdefaultSpec
+	"self _createdefaultSpec"
+
+	((Rowan projectNamed: 'GsDevKit_stones') repositoryRoot / 'templates'
+		/ 'defaultDirectorySpec.ston') asFileReference
+		writeStreamDo: [ :stream | stream nextPutAll: (STON toStringPretty: GDKStoneDirectorySpec new) ]
 %
 
 !		Instance methods for 'GDKStoneDirectorySpec'
@@ -54,10 +72,7 @@ root: aFileReferenceOrPath
 category: 'accessing'
 method: GDKStoneDirectorySpec
 backups
-	| dir |
-	dir := backups ifNil: [ self root / 'backups' ].
-	dir ensureCreateDirectory.
-	^ dir
+	^backups
 %
 
 category: 'accessing'
@@ -66,13 +81,19 @@ backups: object
 	backups := object
 %
 
+category: 'directories'
+method: GDKStoneDirectorySpec
+backupsDir
+	| dir |
+	dir := self root / backups.
+	dir ensureCreateDirectory.
+	^ dir
+%
+
 category: 'accessing'
 method: GDKStoneDirectorySpec
 bin
-	| dir |
-	dir := bin ifNil: [ self root / 'bin' ].
-	dir ensureCreateDirectory.
-	^ dir
+	^bin
 %
 
 category: 'accessing'
@@ -81,13 +102,19 @@ bin: object
 	bin := object
 %
 
+category: 'directories'
+method: GDKStoneDirectorySpec
+binDir
+	| dir |
+	dir := self root / self bin.
+	dir ensureCreateDirectory.
+	^ dir
+%
+
 category: 'accessing'
 method: GDKStoneDirectorySpec
 extents
-	| dir |
-	dir := extents ifNil: [ self root / 'extents' ].
-	dir ensureCreateDirectory.
-	^ dir
+	^extents
 %
 
 category: 'accessing'
@@ -96,13 +123,32 @@ extents: object
 	extents := object
 %
 
+category: 'directories'
+method: GDKStoneDirectorySpec
+extentsDir
+	| dir |
+	dir := self root / self extents.
+	dir ensureCreateDirectory.
+	^ dir
+%
+
+category: 'initialization'
+method: GDKStoneDirectorySpec
+initialize
+	super initialize.
+	backups := 'backups'.
+	bin := 'bin'.
+	extents := 'extents'.
+	logs := 'logs'.
+	snapshots := 'snapshots'.
+	stats := 'stats'.
+	tranlogs := 'tranlogs'
+%
+
 category: 'accessing'
 method: GDKStoneDirectorySpec
 logs
-	| dir |
-	dir := logs ifNil: [ self root / 'logs' ].
-	dir ensureCreateDirectory.
-	^ dir
+	^logs
 %
 
 category: 'accessing'
@@ -111,26 +157,37 @@ logs: object
 	logs := object
 %
 
+category: 'directories'
+method: GDKStoneDirectorySpec
+logsDir
+	| dir |
+	dir := self root / self logs.
+	dir ensureCreateDirectory.
+	^ dir
+%
+
 category: 'accessing'
 method: GDKStoneDirectorySpec
 root
-	^root
+	^ root
 %
 
 category: 'initialization'
 method: GDKStoneDirectorySpec
 root: aFileReference
+	root := aFileReference asFileReference.
+	root ensureDeleteAll.
 	aFileReference ensureCreateDirectory.
-	root := aFileReference
+	self class instVarNames
+		do: [ :iv | 
+			iv ~~ #'root'
+				ifTrue: [ self perform: (iv , 'Dir') asSymbol ] ]
 %
 
 category: 'accessing'
 method: GDKStoneDirectorySpec
 snapshots
-	| dir |
-	dir := snapshots ifNil: [ self root / 'snapshots' ].
-	dir ensureCreateDirectory.
-	^ dir
+	^snapshots
 %
 
 category: 'accessing'
@@ -139,13 +196,19 @@ snapshots: object
 	snapshots := object
 %
 
+category: 'directories'
+method: GDKStoneDirectorySpec
+snapshotsDir
+	| dir |
+	dir := self root / self snapshots.
+	dir ensureCreateDirectory.
+	^ dir
+%
+
 category: 'accessing'
 method: GDKStoneDirectorySpec
 stats
-	| dir |
-	dir := stats ifNil: [ self root / 'stats' ].
-	dir ensureCreateDirectory.
-	^ dir
+	^stats
 %
 
 category: 'accessing'
@@ -154,18 +217,33 @@ stats: object
 	stats := object
 %
 
-category: 'accessing'
+category: 'directories'
 method: GDKStoneDirectorySpec
-tranlogs
+statsDir
 	| dir |
-	dir := tranlogs ifNil: [ self root / 'tranlogs' ].
+	dir := self root / self stats.
 	dir ensureCreateDirectory.
 	^ dir
 %
 
 category: 'accessing'
 method: GDKStoneDirectorySpec
+tranlogs
+	^tranlogs
+%
+
+category: 'accessing'
+method: GDKStoneDirectorySpec
 tranlogs: object
 	tranlogs := object
+%
+
+category: 'directories'
+method: GDKStoneDirectorySpec
+tranlogsDir
+	| dir |
+	dir := self root / self tranlogs.
+	dir ensureCreateDirectory.
+	^ dir
 %
 

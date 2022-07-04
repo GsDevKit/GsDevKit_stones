@@ -1,0 +1,9 @@
+GDKStoneDirectorySpec {
+	#backups : 'backups',
+	#bin : 'bin',
+	#extents : 'extents',
+	#logs : 'logs',
+	#stats : 'stats',
+	#tranlogs : 'tranlogs',
+	#snapshots : 'snapshots'
+}
