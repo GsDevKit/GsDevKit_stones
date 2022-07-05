@@ -67,16 +67,6 @@ new
 
 category: 'instance creation'
 classmethod: GDKStoneDirectorySpec
-root: aFileReferenceOrPath
-	"if aFileReferenceOrPath exists, it will be deleted and recreated ... empty"
-
-	^ self new
-		root: aFileReferenceOrPath asFileReference;
-		yourself
-%
-
-category: 'instance creation'
-classmethod: GDKStoneDirectorySpec
 root: aFileReferenceOrPath projectsHome: aProjectsHome gemstone: gemstonePath
 	"if aFileReferenceOrPath exists, it will be deleted and recreated ... empty"
 
@@ -364,25 +354,14 @@ classmethod: GDK_homeStoneDirectorySpec
 root: aFileReferenceOrPath gemstone: gemstonePath
 	"if aFileReferenceOrPath exists, it will be deleted and recreated ... empty"
 
-	^ self new
+	^ self
 		root: aFileReferenceOrPath asFileReference
-		gemstone: gemstonePath;
-		yourself
-%
-
-!		Instance methods for 'GDK_homeStoneDirectorySpec'
-
-category: 'initialization'
-method: GDK_homeStoneDirectorySpec
-root: aFileReference gemstone: gemstonePath
-	self
-		root: aFileReference
 		projectsHome: self _defaultProjectsHome
 		gemstone: gemstonePath
 %
 
-category: 'private'
-method: GDK_homeStoneDirectorySpec
+category: 'instance creation'
+classmethod: GDK_homeStoneDirectorySpec
 _defaultProjectsHome
 	^ '$GS_HOME/shared/repos'
 %
