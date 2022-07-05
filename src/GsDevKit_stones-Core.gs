@@ -141,6 +141,12 @@ binDir
 	^ dir
 %
 
+category: 'exporting'
+method: GDKStoneDirectorySpec
+exportToStream: fileStream
+	STON put: self copy initializeForExport onStreamPretty: fileStream
+%
+
 category: 'accessing'
 method: GDKStoneDirectorySpec
 extents
@@ -186,6 +192,18 @@ initialize
 	snapshots := 'snapshots'.
 	stats := 'stats'.
 	tranlogs := 'tranlogs'
+%
+
+category: 'initialization'
+method: GDKStoneDirectorySpec
+initializeForExport
+	root ifNotNil: [ root := root pathString ]
+%
+
+category: 'initialization'
+method: GDKStoneDirectorySpec
+initializeForImport
+	root ifNotNil: [ root := root asFileReference ]
 %
 
 category: 'accessing'
@@ -269,7 +287,9 @@ root: aFileReference projectsHome: aProjectsHome gemstone: gemstonePath
 	self class instVarNames
 		do: [ :iv | 
 			(#(#'root' #'projectHome' #'gemstone') includes: iv)
-				ifFalse: [ self perform: (iv , 'Dir') asSymbol ] ]
+				ifFalse: [ self perform: (iv , 'Dir') asSymbol ] ].
+	aFileReference / 'directorySpec.ston'
+		writeStreamDo: [ :stream | self exportToStream: stream ]
 %
 
 category: 'accessing'
@@ -337,15 +357,28 @@ tranlogsDir
 
 ! Class implementation for 'GDK_homeStoneDirectorySpec'
 
+!		Class methods for 'GDK_homeStoneDirectorySpec'
+
+category: 'instance creation'
+classmethod: GDK_homeStoneDirectorySpec
+root: aFileReferenceOrPath gemstone: gemstonePath
+	"if aFileReferenceOrPath exists, it will be deleted and recreated ... empty"
+
+	^ self new
+		root: aFileReferenceOrPath asFileReference
+		gemstone: gemstonePath;
+		yourself
+%
+
 !		Instance methods for 'GDK_homeStoneDirectorySpec'
 
 category: 'initialization'
 method: GDK_homeStoneDirectorySpec
-root: aFileReference product: productPath
+root: aFileReference gemstone: gemstonePath
 	self
 		root: aFileReference
 		projectsHome: self _defaultProjectsHome
-		product: productPath
+		gemstone: gemstonePath
 %
 
 category: 'private'
