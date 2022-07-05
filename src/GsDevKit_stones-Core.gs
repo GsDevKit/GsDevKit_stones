@@ -4,7 +4,7 @@ SET PACKAGE: GsDevKit_stones-Core
 doit
 (Object
 	subclass: 'GDKStoneDirectorySpec'
-	instVarNames: #( root backups bin extents logs stats tranlogs snapshots )
+	instVarNames: #( root backups bin extents logs stats tranlogs snapshots projectsHome product gemstone )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -20,9 +20,27 @@ removeallmethods GDKStoneDirectorySpec
 removeallclassmethods GDKStoneDirectorySpec
 
 doit
+(GDKStoneDirectorySpec
+	subclass: 'GDK_homeStoneDirectorySpec'
+	instVarNames: #(  )
+	classVars: #(  )
+	classInstVars: #(  )
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #()
+)
+		category: 'GsDevKit_stones-Core';
+		immediateInvariant.
+true.
+%
+
+removeallmethods GDK_homeStoneDirectorySpec
+removeallclassmethods GDK_homeStoneDirectorySpec
+
+doit
 (Object
 	subclass: 'GDKStoneRegistry'
-	instVarNames: #(  )
+	instVarNames: #( stoneName stoneDirectorySpec )
 	classVars: #(  )
 	classInstVars: #(  )
 	poolDictionaries: #()
@@ -54,6 +72,18 @@ root: aFileReferenceOrPath
 
 	^ self new
 		root: aFileReferenceOrPath asFileReference;
+		yourself
+%
+
+category: 'instance creation'
+classmethod: GDKStoneDirectorySpec
+root: aFileReferenceOrPath projectsHome: aProjectsHome gemstone: gemstonePath
+	"if aFileReferenceOrPath exists, it will be deleted and recreated ... empty"
+
+	^ self new
+		root: aFileReferenceOrPath asFileReference
+			projectsHome: aProjectsHome
+			gemstone: gemstonePath;
 		yourself
 %
 
@@ -132,6 +162,18 @@ extentsDir
 	^ dir
 %
 
+category: 'accessing'
+method: GDKStoneDirectorySpec
+gemstone
+	^gemstone
+%
+
+category: 'accessing'
+method: GDKStoneDirectorySpec
+gemstone: object
+	gemstone := object
+%
+
 category: 'initialization'
 method: GDKStoneDirectorySpec
 initialize
@@ -140,6 +182,7 @@ initialize
 	bin := 'bin'.
 	extents := 'extents'.
 	logs := 'logs'.
+	product := 'product'.
 	snapshots := 'snapshots'.
 	stats := 'stats'.
 	tranlogs := 'tranlogs'
@@ -168,20 +211,65 @@ logsDir
 
 category: 'accessing'
 method: GDKStoneDirectorySpec
+product
+	^product
+%
+
+category: 'accessing'
+method: GDKStoneDirectorySpec
+product: object
+	product := object
+%
+
+category: 'directories'
+method: GDKStoneDirectorySpec
+productDir
+	| dir res |
+	dir := self root / self product.
+	dir exists
+		ifFalse: [ 
+			res := System
+				performOnServer:
+					'ln -s ' , self gemstone asFileReference pathString , ' ' , dir pathString ].
+	^ dir
+%
+
+category: 'accessing'
+method: GDKStoneDirectorySpec
+projectsHome
+	^projectsHome
+%
+
+category: 'accessing'
+method: GDKStoneDirectorySpec
+projectsHome: object
+	projectsHome := object
+%
+
+category: 'directories'
+method: GDKStoneDirectorySpec
+projectsHomeDir
+	^ self root / self projectsHome
+%
+
+category: 'accessing'
+method: GDKStoneDirectorySpec
 root
 	^ root
 %
 
 category: 'initialization'
 method: GDKStoneDirectorySpec
-root: aFileReference
+root: aFileReference projectsHome: aProjectsHome gemstone: gemstonePath
 	root := aFileReference asFileReference.
 	root ensureDeleteAll.
 	aFileReference ensureCreateDirectory.
+	self projectsHome: aProjectsHome.
+	self gemstone: gemstonePath.
 	self class instVarNames
 		do: [ :iv | 
-			iv ~~ #'root'
-				ifTrue: [ self perform: (iv , 'Dir') asSymbol ] ]
+			(#(#'root' #'projectHome' #'gemstone') includes: iv)
+				ifFalse: [ self perform: (iv , 'Dir') asSymbol ] ]
 %
 
 category: 'accessing'
@@ -245,5 +333,77 @@ tranlogsDir
 	dir := self root / self tranlogs.
 	dir ensureCreateDirectory.
 	^ dir
+%
+
+! Class implementation for 'GDK_homeStoneDirectorySpec'
+
+!		Instance methods for 'GDK_homeStoneDirectorySpec'
+
+category: 'initialization'
+method: GDK_homeStoneDirectorySpec
+root: aFileReference product: productPath
+	self
+		root: aFileReference
+		projectsHome: self _defaultProjectsHome
+		product: productPath
+%
+
+category: 'private'
+method: GDK_homeStoneDirectorySpec
+_defaultProjectsHome
+	^ '$GS_HOME/shared/repos'
+%
+
+! Class implementation for 'GDKStoneRegistry'
+
+!		Class methods for 'GDKStoneRegistry'
+
+category: 'accessing'
+classmethod: GDKStoneRegistry
+registryHome
+	| dir |
+	dir := (self _configHome asFileReference / 'gsdevkit_stones' / 'registry')
+		asFileReference.
+	dir ensureCreateDirectory.
+	^ dir
+%
+
+category: 'private'
+classmethod: GDKStoneRegistry
+_configHome
+	^ (System gemEnvironmentVariable: 'System XDG_CONFIG_HOME')
+		ifNil: [ 
+			| defaultConfigHome |
+			defaultConfigHome := '$HOME/.config'.
+			System
+				gemEnvironmentVariable: 'System XDG_CONFIG_HOME'
+				put: defaultConfigHome.
+			defaultConfigHome ]
+%
+
+!		Instance methods for 'GDKStoneRegistry'
+
+category: 'accessing'
+method: GDKStoneRegistry
+stoneDirectorySpec
+	^stoneDirectorySpec
+%
+
+category: 'accessing'
+method: GDKStoneRegistry
+stoneDirectorySpec: object
+	stoneDirectorySpec := object
+%
+
+category: 'accessing'
+method: GDKStoneRegistry
+stoneName
+	^stoneName
+%
+
+category: 'accessing'
+method: GDKStoneRegistry
+stoneName: object
+	stoneName := object
 %
 
