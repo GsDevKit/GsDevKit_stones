@@ -1,5 +1,5 @@
 
-SET PACKAGE: GsDevKit_stones-Core
+# SET PACKAGE: GsDevKit_stones-Core
 ! Class Declarations
 doit
 (Object

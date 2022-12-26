@@ -41,6 +41,9 @@ EXAMPLES
   $basename  
 -----
 %
+input
+/home/daleh/Desktop/_home/shared/repos/GsDevKit_stones/src/GsDevKit_stones-Core.gs
+%
 doit
 	"write your code here"
 	"return value will be written in STON format to stdout. 
