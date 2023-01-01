@@ -1,0 +1,17 @@
+{
+	"category" : "GsDevKit_stones-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"name",
+		"stones",
+		"sessions",
+		"templates" ],
+	"name" : "GDKStonesRegistry",
+	"pools" : [
+		 ],
+	"super" : "GDK_XDGBase",
+	"type" : "normal" }

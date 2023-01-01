@@ -1,4 +1,4 @@
 { 
-	#format : 'topaz',
+	#format : 'filetree',
 	#convention : 'RowanHybrid'
 }
