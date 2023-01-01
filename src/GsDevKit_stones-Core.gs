@@ -1,12 +1,11 @@
-
-# SET PACKAGE: GsDevKit_stones-Core
-! Class Declarations
+SET PACKAGE: GsDevKit_stones-Core
+! ------------------- Class definition for GDK_XDGBase
+expectvalue /Class
 doit
-(Object
-	subclass: 'GDKStoneDirectorySpec'
-	instVarNames: #( root backups bin extents logs stats tranlogs snapshots projectsHome product gemstone )
-	classVars: #(  )
-	classInstVars: #(  )
+(Object subclass: 'GDK_XDGBase'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -15,16 +14,15 @@ doit
 		immediateInvariant.
 true.
 %
-
-removeallmethods GDKStoneDirectorySpec
-removeallclassmethods GDKStoneDirectorySpec
-
+expectvalue /Class
+! ------------------- Class definition for GDKStonesRegistry
+expectvalue /Class
 doit
-(GDKStoneDirectorySpec
-	subclass: 'GDK_homeStoneDirectorySpec'
-	instVarNames: #(  )
-	classVars: #(  )
-	classInstVars: #(  )
+(GDK_XDGBase subclass: 'GDKStonesRegistry'
+	instVarNames: #( name stones sessions
+	                  templates)
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -32,17 +30,83 @@ doit
 		category: 'GsDevKit_stones-Core';
 		immediateInvariant.
 true.
+
 %
+! ------------------- Remove existing behavior from GDK_XDGBase
+removeAllMethods GDK_XDGBase
+removeAllClassMethods GDK_XDGBase
+! ------------------- Class methods for GDK_XDGBase
+category: 'private'
+classmethod: GDK_XDGBase
+_applicationName
+  ^ 'gsdevkit_stones'
+%
+category: 'private'
+classmethod: GDK_XDGBase
+_envName: envName defaultDir: defaultDir
+  ((System gemEnvironmentVariable: 'XDG_' , envName , '_HOME')
+    ifNotNil: [ :path | 
+      | config_home |
+      config_home := path asFileReference.
+      config_home isRelativePath
+        ifTrue: [ 
+          "invalid specification"
+          nil ]
+        ifFalse: [ ^ config_home / self _applicationName ] ])
+    ifNil: [ ^ defaultDir asFileReference / self _applicationName ]
+%
+category: 'accessing'
+classmethod: GDK_XDGBase
+cache_home
+  ^ (self _envName: 'CACHE' defaultDir: '$HOME/.cache')
+    ifNotNil: [ :dir | 
+      dir ensureCreateDirectory.
+      dir ]
+%
+category: 'accessing'
+classmethod: GDK_XDGBase
+config_home
+  ^ (self _envName: 'CONFIG' defaultDir: '$HOME/.config')
+    ifNotNil: [ :dir | 
+      dir ensureCreateDirectory.
+      dir ]
+%
+category: 'accessing'
+classmethod: GDK_XDGBase
+data_home
+  ^ (self _envName: 'DATA' defaultDir: '$HOME/.local/share')
+    ifNotNil: [ :dir | 
+      dir ensureCreateDirectory.
+      dir ]
+%
+category: 'instance creation'
+classmethod: GDK_XDGBase
+new
 
-removeallmethods GDK_homeStoneDirectorySpec
-removeallclassmethods GDK_homeStoneDirectorySpec
-
+	^(super new) initialize
+%
+category: 'accessing'
+classmethod: GDK_XDGBase
+state_home
+  ^ (self _envName: 'STATE' defaultDir: '$HOME/.local/state')
+    ifNotNil: [ :dir | 
+      dir ensureCreateDirectory.
+      dir ]
+%
+! ------------------- Instance methods for GDK_XDGBase
+category: 'initialization'
+method: GDK_XDGBase
+initialize
+  
+%
+set compile_env: 0
+! ------------------- Class definition for GDKRegistry
+expectvalue /Class
 doit
-(Object
-	subclass: 'GDKStoneRegistry'
-	instVarNames: #( stoneName stoneDirectorySpec )
-	classVars: #(  )
-	classInstVars: #(  )
+(Dictionary subclass: 'GDKRegistry'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
 	poolDictionaries: #()
 	inDictionary: Globals
 	options: #()
@@ -50,21 +114,77 @@ doit
 		category: 'GsDevKit_stones-Core';
 		immediateInvariant.
 true.
+
 %
+! ------------------- Remove existing behavior from GDKRegistry
+removeAllMethods GDKRegistry
+removeAllClassMethods GDKRegistry
+! ------------------- Class methods for GDKRegistry
+category: 'accessing'
+classmethod: GDKRegistry
+config_home
+  ^ GDK_XDGBase config_home
+%
+category: 'accessing'
+classmethod: GDKRegistry
+data_home
+  | dir |
+  dir := GDK_XDGBase data_home / 'registry'.
+  dir ensureCreateDirectory.
+  ^ dir
+%
+category: 'instance creation'
+classmethod: GDKRegistry
+newNamed: registryName
+  | config_home configFile registryFile registry stoneRegistry |
+  config_home := self config_home / 'config'.
+	config_home ensureCreateDirectory.
+  configFile := config_home / 'registry.ston'.
+  registry := configFile exists
+    ifTrue: [ configFile readStreamDo: [ :fileStream | STON fromStream: fileStream ] ]
+    ifFalse: [ self new ].
+  stoneRegistry := GDKStonesRegistry newNamed: registryName.
+  registryFile := stoneRegistry registryFile.
+  registryFile exists
+    ifTrue: [ 
+      self
+        error:
+          'The registry named ' , registryName printString , ' already exists.' ].
+  registry at: registryName put: registryFile pathString.
+  configFile
+    writeStreamDo: [ :fileStream | STON put: registry onStreamPretty: fileStream ].
+  stoneRegistry registryFile
+    writeStreamDo: [ :fileStream | STON put: stoneRegistry onStreamPretty: fileStream ]
+%
+! ------------------- Instance methods for GDKRegistry
+set compile_env: 0
+! ------------------- Class definition for GDKStoneDirectorySpec
+expectvalue /Class
+doit
+(GDK_XDGBase subclass: 'GDKStoneDirectorySpec'
+	instVarNames: #( root backups bin
+	                  extents logs stats tranlogs
+	                  snapshots projectsHome product gemstone)
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #()
+)
+		category: 'GsDevKit_stones-Core';
+		immediateInvariant.
+true.
 
-removeallmethods GDKStoneRegistry
-removeallclassmethods GDKStoneRegistry
-
-! Class implementation for 'GDKStoneDirectorySpec'
-
-!		Class methods for 'GDKStoneDirectorySpec'
-
+%
+! ------------------- Remove existing behavior from GDKStoneDirectorySpec
+removeAllMethods GDKStoneDirectorySpec
+removeAllClassMethods GDKStoneDirectorySpec
+! ------------------- Class methods for GDKStoneDirectorySpec
 category: 'instance creation'
 classmethod: GDKStoneDirectorySpec
 new
 	^ super new initialize
 %
-
 category: 'instance creation'
 classmethod: GDKStoneDirectorySpec
 root: aFileReferenceOrPath projectsHome: aProjectsHome gemstone: gemstonePath
@@ -76,31 +196,17 @@ root: aFileReferenceOrPath projectsHome: aProjectsHome gemstone: gemstonePath
 			gemstone: gemstonePath;
 		yourself
 %
-
-category: 'dev'
-classmethod: GDKStoneDirectorySpec
-_createdefaultSpec
-	"self _createdefaultSpec"
-
-	((Rowan projectNamed: 'GsDevKit_stones') repositoryRoot / 'templates'
-		/ 'defaultDirectorySpec.ston') asFileReference
-		writeStreamDo: [ :stream | stream nextPutAll: (STON toStringPretty: GDKStoneDirectorySpec new) ]
-%
-
-!		Instance methods for 'GDKStoneDirectorySpec'
-
+! ------------------- Instance methods for GDKStoneDirectorySpec
 category: 'accessing'
 method: GDKStoneDirectorySpec
 backups
 	^backups
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 backups: object
 	backups := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 backupsDir
@@ -109,19 +215,16 @@ backupsDir
 	dir ensureCreateDirectory.
 	^ dir
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 bin
 	^bin
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 bin: object
 	bin := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 binDir
@@ -130,25 +233,21 @@ binDir
 	dir ensureCreateDirectory.
 	^ dir
 %
-
 category: 'exporting'
 method: GDKStoneDirectorySpec
 exportToStream: fileStream
 	STON put: self copy initializeForExport onStreamPretty: fileStream
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 extents
 	^extents
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 extents: object
 	extents := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 extentsDir
@@ -157,19 +256,16 @@ extentsDir
 	dir ensureCreateDirectory.
 	^ dir
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 gemstone
 	^gemstone
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 gemstone: object
 	gemstone := object
 %
-
 category: 'initialization'
 method: GDKStoneDirectorySpec
 initialize
@@ -183,31 +279,26 @@ initialize
 	stats := 'stats'.
 	tranlogs := 'tranlogs'
 %
-
 category: 'initialization'
 method: GDKStoneDirectorySpec
 initializeForExport
 	root ifNotNil: [ root := root pathString ]
 %
-
 category: 'initialization'
 method: GDKStoneDirectorySpec
 initializeForImport
 	root ifNotNil: [ root := root asFileReference ]
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 logs
 	^logs
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 logs: object
 	logs := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 logsDir
@@ -216,19 +307,16 @@ logsDir
 	dir ensureCreateDirectory.
 	^ dir
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 product
 	^product
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 product: object
 	product := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 productDir
@@ -241,31 +329,26 @@ productDir
 					'ln -s ' , self gemstone asFileReference pathString , ' ' , dir pathString ].
 	^ dir
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 projectsHome
 	^projectsHome
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 projectsHome: object
 	projectsHome := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 projectsHomeDir
 	^ self root / self projectsHome
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 root
 	^ root
 %
-
 category: 'initialization'
 method: GDKStoneDirectorySpec
 root: aFileReference projectsHome: aProjectsHome gemstone: gemstonePath
@@ -281,19 +364,16 @@ root: aFileReference projectsHome: aProjectsHome gemstone: gemstonePath
 	aFileReference / 'directorySpec.ston'
 		writeStreamDo: [ :stream | self exportToStream: stream ]
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 snapshots
 	^snapshots
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 snapshots: object
 	snapshots := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 snapshotsDir
@@ -302,19 +382,16 @@ snapshotsDir
 	dir ensureCreateDirectory.
 	^ dir
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 stats
 	^stats
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 stats: object
 	stats := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 statsDir
@@ -323,19 +400,16 @@ statsDir
 	dir ensureCreateDirectory.
 	^ dir
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 tranlogs
 	^tranlogs
 %
-
 category: 'accessing'
 method: GDKStoneDirectorySpec
 tranlogs: object
 	tranlogs := object
 %
-
 category: 'directories'
 method: GDKStoneDirectorySpec
 tranlogsDir
@@ -344,11 +418,32 @@ tranlogsDir
 	dir ensureCreateDirectory.
 	^ dir
 %
+set compile_env: 0
+! ------------------- Class definition for GDK_homeStoneDirectorySpec
+expectvalue /Class
+doit
+(GDKStoneDirectorySpec subclass: 'GDK_homeStoneDirectorySpec'
+	instVarNames: #()
+	classVars: #()
+	classInstVars: #()
+	poolDictionaries: #()
+	inDictionary: Globals
+	options: #()
+)
+		category: 'GsDevKit_stones-Core';
+		immediateInvariant.
+true.
 
-! Class implementation for 'GDK_homeStoneDirectorySpec'
-
-!		Class methods for 'GDK_homeStoneDirectorySpec'
-
+%
+! ------------------- Remove existing behavior from GDK_homeStoneDirectorySpec
+removeAllMethods GDK_homeStoneDirectorySpec
+removeAllClassMethods GDK_homeStoneDirectorySpec
+! ------------------- Class methods for GDK_homeStoneDirectorySpec
+category: 'instance creation'
+classmethod: GDK_homeStoneDirectorySpec
+_defaultProjectsHome
+	^ '$GS_HOME/shared/repos'
+%
 category: 'instance creation'
 classmethod: GDK_homeStoneDirectorySpec
 root: aFileReferenceOrPath gemstone: gemstonePath
@@ -359,63 +454,62 @@ root: aFileReferenceOrPath gemstone: gemstonePath
 		projectsHome: self _defaultProjectsHome
 		gemstone: gemstonePath
 %
-
+! ------------------- Remove existing behavior from GDKStonesRegistry
+removeAllMethods GDKStonesRegistry
+removeAllClassMethods GDKStonesRegistry
+! ------------------- Class methods for GDKStonesRegistry
 category: 'instance creation'
-classmethod: GDK_homeStoneDirectorySpec
-_defaultProjectsHome
-	^ '$GS_HOME/shared/repos'
+classmethod: GDKStonesRegistry
+newNamed: registryName
+  ^ self new
+    name: registryName;
+    yourself
 %
-
-! Class implementation for 'GDKStoneRegistry'
-
-!		Class methods for 'GDKStoneRegistry'
-
 category: 'accessing'
-classmethod: GDKStoneRegistry
-registryHome
-	| dir |
-	dir := (self _configHome asFileReference / 'gsdevkit_stones' / 'registry')
-		asFileReference.
-	dir ensureCreateDirectory.
-	^ dir
+classmethod: GDKStonesRegistry
+registry_home
+  | dir |
+  dir := (self data_home asFileReference / 'registry')
+    asFileReference.
+  dir ensureCreateDirectory.
+  ^ dir
 %
-
-category: 'private'
-classmethod: GDKStoneRegistry
-_configHome
-	^ (System gemEnvironmentVariable: 'System XDG_CONFIG_HOME')
-		ifNil: [ 
-			| defaultConfigHome |
-			defaultConfigHome := '$HOME/.config'.
-			System
-				gemEnvironmentVariable: 'System XDG_CONFIG_HOME'
-				put: defaultConfigHome.
-			defaultConfigHome ]
+! ------------------- Instance methods for GDKStonesRegistry
+category: 'initialization'
+method: GDKStonesRegistry
+initialize
+  super initialize.
+  sessions := Dictionary new.
+  templates := Dictionary new.
+  stones := Dictionary new
 %
-
-!		Instance methods for 'GDKStoneRegistry'
-
 category: 'accessing'
-method: GDKStoneRegistry
-stoneDirectorySpec
-	^stoneDirectorySpec
+method: GDKStonesRegistry
+name
+  ^ name
 %
-
 category: 'accessing'
-method: GDKStoneRegistry
-stoneDirectorySpec: object
-	stoneDirectorySpec := object
+method: GDKStonesRegistry
+name: aString
+  name := aString
 %
-
 category: 'accessing'
-method: GDKStoneRegistry
-stoneName
-	^stoneName
+method: GDKStonesRegistry
+sessions
+  ^ sessions
 %
-
 category: 'accessing'
-method: GDKStoneRegistry
-stoneName: object
-	stoneName := object
+method: GDKStonesRegistry
+stones
+  ^ stones
 %
-
+category: 'accessing'
+method: GDKStonesRegistry
+templates
+  ^ templates
+%
+category: 'accessing'
+method: GDKStonesRegistry
+registryFile
+	^ self class registry_home / self name , 'ston'
+%
