@@ -1,3 +1,3 @@
 as yet unspecified
 name: aString
-  name := aString
+	name := aString

@@ -1,3 +1,3 @@
 as yet unspecified
 stones
-  ^ stones
+	^ stones

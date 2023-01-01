@@ -1,3 +1,3 @@
 as yet unspecified
 templates
-  ^ templates
+	^ templates
