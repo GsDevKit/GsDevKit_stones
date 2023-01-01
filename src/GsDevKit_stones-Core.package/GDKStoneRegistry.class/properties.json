@@ -1,0 +1,15 @@
+{
+	"category" : "GsDevKit_stones-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"stoneName",
+		"stoneDirectorySpec" ],
+	"name" : "GDKStoneRegistry",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

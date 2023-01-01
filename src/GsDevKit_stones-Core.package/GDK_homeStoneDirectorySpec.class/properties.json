@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GDK_homeStoneDirectorySpec",
+	"pools" : [
+		 ],
+	"super" : "GDKStoneDirectorySpec",
+	"type" : "normal" }
