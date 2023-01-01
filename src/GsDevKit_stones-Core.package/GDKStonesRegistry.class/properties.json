@@ -6,10 +6,12 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"stoneName",
-		"stoneDirectorySpec" ],
-	"name" : "GDKStoneRegistry",
+		"name",
+		"stones",
+		"sessions",
+		"templates" ],
+	"name" : "GDKStonesRegistry",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "GDK_XDGBase",
 	"type" : "normal" }

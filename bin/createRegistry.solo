@@ -26,28 +26,33 @@
 #
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]
+USAGE $basename [--help | -h] [--debug | -D] [ <registry-name> }
 
 DESCRIPTION
-  <put your description here>
+  Create name GsDevKit_stones registry with using default values. If no 
+  <registry-name> is specified, DEFAULT is used. The registry is created in 
+  $XDG_DATA_HOME/gsdevkit_stones/registry, where the default value of 
+  $XDG_DATA_HOME is $HOME/.config.
 
 OPTIONS
-  -h, --help                 display usage message
-  -D, --debug                bring up topaz debugger in the event of a script error
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
 
 EXAMPLES
   $basename --help
   $basename -D
-  $basename  
+  $basename 
+  $basename TEST
 -----
 %
 input
-/home/daleh/Desktop/_home/shared/repos/GsDevKit_stones/src/GsDevKit_stones-Core.gs
+/home/daleh/Desktop/_home/shared/repos/GsDevKit_stones/src/GdkClasses.gs
 %
 doit
-	"write your code here"
-	"return value will be written in STON format to stdout. 
-		Return `self noResult` to suppress writing STON 
-		to stdout"
-	^ self noResult
+	| registryName |
+	registryName := self positionalArgs size = 0
+		ifTrue: [ 'DEFAULT' ]
+	  ifFalse: [ self positionalArgs at: 1 ].
+	GDKRegistry newNamed: registryName.
+	true
 %

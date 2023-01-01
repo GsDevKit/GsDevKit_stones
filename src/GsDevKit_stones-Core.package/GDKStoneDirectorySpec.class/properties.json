@@ -20,5 +20,5 @@
 	"name" : "GDKStoneDirectorySpec",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "GDK_XDGBase",
 	"type" : "normal" }
