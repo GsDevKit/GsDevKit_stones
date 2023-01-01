@@ -1,6 +1,9 @@
-as yet unspecified
+xdgb accessing
 config_home
-  ^ (self _envName: 'CONFIG' defaultDir: '$HOME/.config')
-    ifNotNil: [ :dir | 
-      dir ensureCreateDirectory.
-      dir ]
+	| fileRef tmps |
+	tmps := SessionTemps current.
+	(tmps at: #'GDK_XDGBase_config_home' otherwise: nil)
+		ifNotNil: [ :cachedRef | ^ cachedRef ].
+	fileRef := self _envName: 'CONFIG' defaultDir: '$HOME/.config'.
+	fileRef ensureCreateDirectory.
+	^ tmps at: #'GDK_XDGBase_config_home' put: fileRef

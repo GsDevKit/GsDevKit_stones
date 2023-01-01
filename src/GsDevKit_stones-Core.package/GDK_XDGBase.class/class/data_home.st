@@ -1,6 +1,9 @@
-as yet unspecified
+xdgb accessing
 data_home
-  ^ (self _envName: 'DATA' defaultDir: '$HOME/.local/share')
-    ifNotNil: [ :dir | 
-      dir ensureCreateDirectory.
-      dir ]
+	| fileRef tmps |
+	tmps := SessionTemps current.
+	(tmps at: #'GDK_XDGBase_data_home' otherwise: nil)
+		ifNotNil: [ :cachedRef | ^ cachedRef ].
+	fileRef := self _envName: 'DATA' defaultDir: '$HOME/.local/share'.
+	fileRef ensureCreateDirectory.
+	^ tmps at: #'GDK_XDGBase_data_home' put: fileRef

@@ -1,4 +1,4 @@
-as yet unspecified
+instance creation
 new
 
 	^(super new) initialize

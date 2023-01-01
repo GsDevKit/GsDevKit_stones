@@ -1,12 +1,12 @@
-as yet unspecified
+private
 _envName: envName defaultDir: defaultDir
-  ((System gemEnvironmentVariable: 'XDG_' , envName , '_HOME')
-    ifNotNil: [ :path | 
-      | config_home |
-      config_home := path asFileReference.
-      config_home isRelativePath
-        ifTrue: [ 
-          "invalid specification"
-          nil ]
-        ifFalse: [ ^ config_home / self _applicationName ] ])
-    ifNil: [ ^ defaultDir asFileReference / self _applicationName ]
+	((System gemEnvironmentVariable: 'XDG_' , envName , '_HOME')
+		ifNotNil: [ :path | 
+			| dir |
+			dir := path asFileReference.
+			dir isRelativePath
+				ifTrue: [ 
+					"invalid specification use default"
+					nil ]
+				ifFalse: [ ^ dir / self _applicationName ] ])
+		ifNil: [ ^ defaultDir asFileReference / self _applicationName ]
