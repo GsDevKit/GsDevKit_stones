@@ -6,9 +6,9 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"name" ],
+		 ],
 	"name" : "GDKProjectSet",
 	"pools" : [
 		 ],
-	"super" : "GDKGsDevKit_stonesBase",
+	"super" : "GDKAbstractRegistryStore",
 	"type" : "normal" }

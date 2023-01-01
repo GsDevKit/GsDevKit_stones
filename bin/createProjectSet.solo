@@ -54,6 +54,7 @@ doit
 	registry := configClass registryNamed: self registry.
 	name := self positionalArgs at: 1.
 	projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name.
-	registry projectSets at: name put: projectSet.
+	projectSet export.
+	registry projectSets at: name put: projectSet registryPath.
 	registry export.
 %

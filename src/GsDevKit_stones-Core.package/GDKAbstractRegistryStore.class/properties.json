@@ -6,12 +6,9 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"stones",
-		"sessions",
-		"projectSets",
-		"templates" ],
-	"name" : "GDKStonesRegistry",
+		"name" ],
+	"name" : "GDKAbstractRegistryStore",
 	"pools" : [
 		 ],
-	"super" : "GDKAbstractRegistryStore",
+	"super" : "GDKGsDevKit_stonesBase",
 	"type" : "normal" }
