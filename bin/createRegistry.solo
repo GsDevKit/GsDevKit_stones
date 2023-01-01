@@ -1,14 +1,4 @@
 #!/usr/bin/env superdoit_solo
-# Standard options are always present unless customoptions section is used
-#
-#options
-#{
-#  SuperDoitOptionalOptionWithNoArg long: 'help' short: 'h'.
-#  SuperDoitOptionalOptionWithNoArg long: 'debug' short: 'D'.
-#}
-#%
-# Example options section
-#
 #options
 #{
 #	SuperDoitOptionalOptionWithNoArg long: 'noarg'.
@@ -23,20 +13,31 @@
 #	SuperDoitRequiredOptionWithRequiredArg long: 'required' short: 'r'.
 #}
 #%
-#
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] [ <a-host-name> }
+USAGE $basename [--help | -h] [--debug | -D] [ <registry-name> }
 
 DESCRIPTION
-  Create name GsDevKit_stones registry with using default values. If no 
-  <a-host-name> is specified, DEFAULT is used. The registry is created in 
-  $XDG_DATA_HOME/gsdevkit_stones/registry, where the default value of 
-  $XDG_DATA_HOME is $HOME/.config.
+  Create GsDevKit_stones registry for the given . If no <registry-name> is specified, /usr/bin/hostname is used. A registry is created in $XDG_DATA_HOME/gsdevkit_stones/registry, where the default value of $XDG_DATA_HOME is $HOME/.config. 
+
+  GDKRegistry {
+    'lathe' : '/home/dhenrich/.local/share/gsdevkit_stones/registry/lathe.ston',
+    'bosch' : '/home/dhenrich/.local/share/gsdevkit_stones/registry/bosch.ston'
+  }
+
+The registry.ston file maps the name of the registry to a <registry-name>.ston file that contains the _stones meta data for the name registry:
+
+  GDKStonesRegistry {
+    #name : 'bosch',
+    #stones : { },
+    #sessions : { },
+    #templates : { }
+  }
 
 OPTIONS
   -h, --help        display usage message
   -D, --debug       bring up topaz debugger in the event of a script error
+  <registry-name>   name of the registry. Default is /usr/bin/hostname
 
 EXAMPLES
   $basename --help
@@ -51,7 +52,8 @@ RwLoadSpecificationV2 {
 	#projectName : 'GsDevKit_stones',
 	#projectSpecFile : 'rowan/project.ston',
 	#componentNames : [
-		'Core'
+		'Core',
+		'Solo'
 	],
 	#platformProperties : {
 		'gemstone' : {

@@ -1,0 +1,10 @@
+RwSimpleProjectLoadComponentV2 {
+	#name : 'Solo',
+	#condition : 'common',
+	#projectNames : [ ],
+	#componentNames : [ ],
+	#packageNames : [
+		'GsDevKit_stones-Solo'
+	],
+	#comment : 'GsDevKit_stones code that is dependent upon Rowan and should only be used in .solo scripts'
+}

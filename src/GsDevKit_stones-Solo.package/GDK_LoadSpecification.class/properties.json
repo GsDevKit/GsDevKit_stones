@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-Solo",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GDK_LoadSpecification",
+	"pools" : [
+		 ],
+	"super" : "RwLoadSpecificationV2",
+	"type" : "normal" }

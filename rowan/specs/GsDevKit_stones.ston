@@ -2,7 +2,8 @@ RwLoadSpecificationV2 {
 	#projectName : 'GsDevKit_stones',
 	#projectSpecFile : 'rowan/project.ston',
 	#componentNames : [
-		'Core'
+		'Core',
+		'Solo'
 	],
 	#platformProperties : {
 		'gemstone' : {
