@@ -26,11 +26,11 @@
 #
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] [ <registry-name> }
+USAGE $basename [--help | -h] [--debug | -D] [ <a-host-name> }
 
 DESCRIPTION
   Create name GsDevKit_stones registry with using default values. If no 
-  <registry-name> is specified, DEFAULT is used. The registry is created in 
+  <a-host-name> is specified, DEFAULT is used. The registry is created in 
   $XDG_DATA_HOME/gsdevkit_stones/registry, where the default value of 
   $XDG_DATA_HOME is $HOME/.config.
 
@@ -42,17 +42,36 @@ EXAMPLES
   $basename --help
   $basename -D
   $basename 
-  $basename TEST
+  $basename bosch
 -----
 %
-input
-/home/daleh/Desktop/_home/shared/repos/GsDevKit_stones/src/GdkClasses.gs
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
 %
 doit
-	| registryName |
+	| registryName registryClass |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+	registryClass := (self globalNamed: 'GDKRegistry').	
 	registryName := self positionalArgs size = 0
-		ifTrue: [ 'DEFAULT' ]
+		ifTrue: [ registryClass hostName ]
 	  ifFalse: [ self positionalArgs at: 1 ].
-	GDKRegistry newNamed: registryName.
+	registryClass newNamed: registryName.
 	true
 %
