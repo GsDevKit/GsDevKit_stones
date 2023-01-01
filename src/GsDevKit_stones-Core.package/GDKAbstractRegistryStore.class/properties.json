@@ -6,7 +6,9 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"name" ],
+		"name",
+		"parentRegistryName",
+		"parentRegistryPath" ],
 	"name" : "GDKAbstractRegistryStore",
 	"pools" : [
 		 ],

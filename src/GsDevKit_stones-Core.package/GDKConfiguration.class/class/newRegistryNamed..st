@@ -12,7 +12,11 @@ newRegistryNamed: registryName
 					stream := ZnBufferedReadStream on: fileStream.	"wrap with buffered stream to bypass https://github.com/GemTalk/FileSystemGs/issues/9"
 					STON fromStream: stream ] ]
 		ifFalse: [ self new ].
-	stoneRegistry := GDKStonesRegistry newNamed: registryName.
+	stoneRegistry := (GDKStonesRegistry newNamed: registryName)
+		parentRegistryName: registryName;
+		parentRegistryPath:
+				'$XDG_CONFIG_HOME/' , (configFile relativeTo: GDK_XDGBase config_home) pathString;
+		yourself.
 	registryFile := stoneRegistry registryFile.
 	registryFile exists
 		ifTrue: [ 

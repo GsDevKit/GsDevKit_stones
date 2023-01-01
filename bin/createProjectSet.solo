@@ -53,7 +53,11 @@ doit
 	configClass := (self globalNamed: 'GDKConfiguration').	
 	registry := configClass registryNamed: self registry.
 	name := self positionalArgs at: 1.
-	projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name.
+	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
+		parentRegistryName: self registry;
+		parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+		yourself.
+
 	projectSet export.
 	registry projectSets at: name put: projectSet registryPath.
 	registry export.
