@@ -1,9 +1,9 @@
-xdgb accessing
-newNamed: registryName
+instance creation
+newRegistryNamed: registryName
 	| config_home configFile registryFile registry stoneRegistry |
-	config_home := self config_home / 'config'.
+	config_home := self config_home.
 	config_home ensureCreateDirectory.
-	configFile := config_home / 'registry.ston'.
+	configFile := config_home / 'configuration.ston'.
 	registry := configFile exists
 		ifTrue: [ 
 			configFile
@@ -22,4 +22,5 @@ newNamed: registryName
 	configFile
 		writeStreamDo: [ :fileStream | STON put: registry onStreamPretty: fileStream ].
 	stoneRegistry registryFile
-		writeStreamDo: [ :fileStream | STON put: stoneRegistry onStreamPretty: fileStream ]
+		writeStreamDo: [ :fileStream | STON put: stoneRegistry onStreamPretty: fileStream ].
+	^ stoneRegistry

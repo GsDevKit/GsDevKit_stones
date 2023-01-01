@@ -1,6 +1,8 @@
 private
 _envName: envName defaultDir: defaultDir
-	((System gemEnvironmentVariable: 'XDG_' , envName , '_HOME')
+	| envVarName |
+	envVarName := 'XDG_' , envName , '_HOME'.
+	((System gemEnvironmentVariable: envVarName)
 		ifNotNil: [ :path | 
 			| dir |
 			dir := path asFileReference.
@@ -8,4 +10,7 @@ _envName: envName defaultDir: defaultDir
 				ifTrue: [ 
 					"invalid specification use default"
 					nil ]
-				ifFalse: [ ^ dir ] ]) ifNil: [ ^ defaultDir asFileReference ]
+				ifFalse: [ ^ dir ] ])
+		ifNil: [ 
+			System gemEnvironmentVariable: envVarName put: defaultDir.
+			^ defaultDir asFileReference ]

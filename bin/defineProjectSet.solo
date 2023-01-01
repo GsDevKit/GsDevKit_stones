@@ -1,0 +1,52 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name>
+
+DESCRIPTION
+
+OPTIONS
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
+  --registry=<registry-name>   
+                    name of the registry. Default is /usr/bin/hostname
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename 
+  $basename --registry=bosch
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| configClass registry |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+	configClass := (self globalNamed: 'GDKConfiguration').	
+	^ configClass registryNamed: self registry
+%

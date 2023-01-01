@@ -15,7 +15,7 @@
 #%
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] [ <registry-name> }
+USAGE $basename [--help | -h] [--debug | -D] [ <registry-name> ]
 
 DESCRIPTION
   Create GsDevKit_stones registry for the given . If no <registry-name> is specified, /usr/bin/hostname is used. A registry is created in $XDG_DATA_HOME/gsdevkit_stones/registry, where the default value of $XDG_DATA_HOME is $HOME/.config. 
@@ -67,13 +67,13 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryName registryClass |
+	| registryName configClass |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: '/home/dhenrich/_git'].
-	registryClass := (self globalNamed: 'GDKRegistry').	
+	configClass := (self globalNamed: 'GDKConfiguration').	
 	registryName := self positionalArgs size = 0
-		ifTrue: [ registryClass hostName ]
+		ifTrue: [ configClass hostName ]
 	  ifFalse: [ self positionalArgs at: 1 ].
-	registryClass newNamed: registryName.
+	configClass newRegistryNamed: registryName.
 	true
 %
