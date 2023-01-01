@@ -3,5 +3,5 @@ initialize
 	super initialize.
 	sessions := Dictionary new.
 	templates := Dictionary new.
-	projects := Dictionary new.
+	projectSets := Dictionary new.
 	stones := Dictionary new

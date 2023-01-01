@@ -9,7 +9,7 @@
 		"name",
 		"stones",
 		"sessions",
-		"projects",
+		"projectSets",
 		"templates" ],
 	"name" : "GDKStonesRegistry",
 	"pools" : [
