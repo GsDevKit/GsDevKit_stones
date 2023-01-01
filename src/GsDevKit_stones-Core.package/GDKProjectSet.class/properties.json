@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"name" ],
+	"name" : "GDKProjectSet",
+	"pools" : [
+		 ],
+	"super" : "GDKGsDevKit_stonesBase",
+	"type" : "normal" }

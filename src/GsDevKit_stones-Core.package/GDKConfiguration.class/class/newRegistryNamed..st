@@ -21,6 +21,5 @@ newRegistryNamed: registryName
 	registry at: registryName put: stoneRegistry registryPath.
 	configFile
 		writeStreamDo: [ :fileStream | STON put: registry onStreamPretty: fileStream ].
-	stoneRegistry registryFile
-		writeStreamDo: [ :fileStream | STON put: stoneRegistry onStreamPretty: fileStream ].
+	stoneRegistry export.
 	^ stoneRegistry

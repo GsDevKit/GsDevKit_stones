@@ -6,15 +6,18 @@ SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name>
+USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> <projectSet-name>
 
 DESCRIPTION
+  A project set is a list of load specs  that specify a group of git repositories that are managed together. 
 
 OPTIONS
   -h, --help        display usage message
   -D, --debug       bring up topaz debugger in the event of a script error
   --registry=<registry-name>   
                     name of the registry. Default is /usr/bin/hostname
+  <projectSet-name>
+                    Name of the project set.
 
 EXAMPLES
   $basename --help
@@ -44,9 +47,13 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| configClass registry |
+	| configClass registry name projectSet |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: '/home/dhenrich/_git'].
 	configClass := (self globalNamed: 'GDKConfiguration').	
-	^ configClass registryNamed: self registry
+	registry := configClass registryNamed: self registry.
+	name := self positionalArgs at: 1.
+	projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name.
+	registry projectSets at: name put: projectSet.
+	registry export.
 %

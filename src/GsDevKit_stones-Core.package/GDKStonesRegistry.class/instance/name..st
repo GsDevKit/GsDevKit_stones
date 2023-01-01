@@ -1,3 +1,3 @@
-as yet unspecified
+accessing
 name: aString
 	name := aString

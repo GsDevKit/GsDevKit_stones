@@ -1,4 +1,4 @@
-as yet unspecified
+initialization
 initialize
 	super initialize.
 	sessions := Dictionary new.
