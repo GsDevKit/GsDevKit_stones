@@ -1,3 +1,3 @@
-as yet unspecified
+xdgb accessing
 config_home
-  ^ GDK_XDGBase config_home
+  ^ GDKGsDevKit_stonesBase config_home

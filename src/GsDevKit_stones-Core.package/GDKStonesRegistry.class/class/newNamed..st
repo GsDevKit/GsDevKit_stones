@@ -1,4 +1,4 @@
-as yet unspecified
+instance creation
 newNamed: registryName
   ^ self new
     name: registryName;

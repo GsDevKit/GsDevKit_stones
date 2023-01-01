@@ -7,8 +7,8 @@
 	"commentStamp" : "",
 	"instvars" : [
 		 ],
-	"name" : "GDK_XDGBase",
+	"name" : "GDKGsDevKit_stonesBase",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "GDK_XDGBase",
 	"type" : "normal" }

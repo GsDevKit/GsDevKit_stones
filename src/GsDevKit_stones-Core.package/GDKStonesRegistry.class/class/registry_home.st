@@ -1,4 +1,4 @@
-as yet unspecified
+xdgb accessing
 registry_home
   | dir |
   dir := (self data_home asFileReference / 'registry')

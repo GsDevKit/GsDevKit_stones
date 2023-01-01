@@ -8,5 +8,4 @@ _envName: envName defaultDir: defaultDir
 				ifTrue: [ 
 					"invalid specification use default"
 					nil ]
-				ifFalse: [ ^ dir / self _applicationName ] ])
-		ifNil: [ ^ defaultDir asFileReference / self _applicationName ]
+				ifFalse: [ ^ dir ] ]) ifNil: [ ^ defaultDir asFileReference ]

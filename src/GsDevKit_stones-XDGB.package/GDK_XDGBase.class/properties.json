@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-XDGB",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GDK_XDGBase",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

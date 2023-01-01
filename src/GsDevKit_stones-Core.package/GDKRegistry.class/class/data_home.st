@@ -1,6 +1,6 @@
-as yet unspecified
+xdgb accessing
 data_home
   | dir |
-  dir := GDK_XDGBase data_home / 'registry'.
+  dir := GDKGsDevKit_stonesBase data_home / 'registry'.
   dir ensureCreateDirectory.
   ^ dir

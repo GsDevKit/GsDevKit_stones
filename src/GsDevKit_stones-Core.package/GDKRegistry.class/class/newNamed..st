@@ -1,4 +1,4 @@
-as yet unspecified
+xdgb accessing
 newNamed: registryName
 	| config_home configFile registryFile registry stoneRegistry |
 	config_home := self config_home / 'config'.

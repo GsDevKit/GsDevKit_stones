@@ -1,4 +1,4 @@
-as yet unspecified
+instance creation
 root: aFileReferenceOrPath gemstone: gemstonePath
 	"if aFileReferenceOrPath exists, it will be deleted and recreated ... empty"
 

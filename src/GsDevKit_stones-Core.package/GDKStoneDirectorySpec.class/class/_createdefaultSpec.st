@@ -1,4 +1,4 @@
-as yet unspecified
+private
 _createdefaultSpec
 	"self _createdefaultSpec"
 
