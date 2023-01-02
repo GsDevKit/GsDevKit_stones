@@ -2,7 +2,6 @@ accessing
 registryNamed: registryName ifAbsent: absentBlock
 	| config_home configFile configuration |
 	config_home := self config_home.
-	config_home ensureCreateDirectory.
 	configFile := config_home / 'configuration.ston'.
 	configuration := configFile exists
 		ifTrue: [ 

@@ -2,11 +2,12 @@
 options
 {
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 }
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> <projectSet-name>
+USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> --projectSet=<projectSet-name> <loadSpecUrl>...
 
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 
@@ -16,14 +17,19 @@ OPTIONS
   -D, --debug       bring up topaz debugger in the event of a script error
   --registry=<registry-name>   
                     name of the registry. Default is /usr/bin/hostname
-  <projectSet-name>
+  --projectSet=<projectSet-name>
                     Name of the project set.
+   <loadSpecUrl>...
+                    List of specUrls for projects that are in the project set
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename 
-  $basename --registry=bosch
+  $basename --registry=bosch --projectSet=dev \
+            Rowan https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston \
+            SuperDoit https://raw.githubusercontent.com/dalehenrich/superDoit/v3.1/rowan/specs/SuperDoit_solo.ston \
+            GsDevKit_stones https://raw.githubusercontent.com/GsDevKit/GsDevKit_stones/v1.1/rowan/specs/GsDevKit_stones.ston
 -----
 %
 specs
@@ -47,18 +53,29 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| configClass registry name projectSet |
+	| configClass registry name projectSet args projectSetPath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: '/home/dhenrich/_git'].
 	configClass := (self globalNamed: 'GDKConfiguration').	
 	registry := configClass registryNamed: self registry.
-	name := self positionalArgs at: 1.
-	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
-		parentRegistryName: self registry;
-		parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
-		yourself.
-	projectSet registryDir exists
-		ifTrue: [ self error: 'project set ', name, ' already exists'].
+	name := self projectSet.
+	projectSetPath := registry projectSets 
+		at: name 
+		ifAbsentPut: [ projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name) ].
+	projectSet := projectSetPath
+		ifNotNil: [ 
+			(self globalNamed: 'GDKProjectSet') 
+				fromPath: projectSetPath 
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ]]
+		ifNil: [
+			((self globalNamed: 'GDKProjectSet') newNamed: name)
+				parentRegistryName: self registry;
+				parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+				yourself ].
+	args := self positionalArgs.
+	1 to: args size by: 2 
+		do: [:idx |
+			projectSet loadSpecs at: (args at: idx) put: (args at: idx + 1) ].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	registry projectSets at: name put: projectSet registryPath.

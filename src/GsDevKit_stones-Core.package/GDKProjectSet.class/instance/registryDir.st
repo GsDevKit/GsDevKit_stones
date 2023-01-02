@@ -1,3 +1,3 @@
 accessing
 registryDir
-	^ self class registry_home / self parentRegistryName / self name
+	^ self class registry_home / self parentRegistryName
