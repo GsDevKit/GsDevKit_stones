@@ -1,0 +1,80 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
+SuperDoitRequiredOptionWithRequiredArg long: 'projectsHome'.
+SuperDoitOptionalOptionWithNoArg long: 'strict'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> --projectSet=<projectSet-name> [ <project-name>... ]
+
+DESCRIPTION
+  A project set is a list of load specs  that specify a group of git repositories that are managed together. 
+
+OPTIONS
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
+  --registry=<registry-name>   
+                    name of the registry. Default is /usr/bin/hostname
+  --projectSet=<projectSet-name>
+                    Name of the project set to use.
+  <project-name>...
+                    List of project names in project to be cloned. If not specified
+                    all of the projects in the project set will be cloned,
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename 
+  $basename --registry=bosch --projectSet=dev Rowan --projectsHome=/home/dhenrich/bosch1/_exp_git
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| configClass registry name projectSet args projectSetPath projectNames |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+
+	configClass := (self globalNamed: 'GDKConfiguration').	
+	registry := configClass registryNamed: self registry.
+	name := self projectSet.
+	projectSetPath := registry projectSets 
+		at: name 
+		ifAbsent: [ self error: 'Cannot find project set named ', name printString ].
+	projectSet := (self globalNamed: 'GDKProjectSet') 
+				fromPath: projectSetPath 
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ].
+	projectNames := self positionalArgs size = 0
+		ifTrue: [ projectSet loadSpecs names ]
+		ifFalse: [ self positionalArgs ].
+	projectNames do: [:projectName |
+		| loadSpec |
+		loadSpec := (RwSpecification fromUrl: (projectSet loadSpecs at: projectName))
+			projectsHome: self projectsHome;
+			yourself.
+		self strict
+			ifTrue: [ loadSpec repositoryResolutionPolicy: #strict ].
+		loadSpec resolveProject ].
+%
