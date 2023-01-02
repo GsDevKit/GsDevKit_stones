@@ -71,9 +71,12 @@ doit
 		ifFalse: [ self positionalArgs ].
 	projectNames do: [:projectName |
 		| loadSpec |
-		loadSpec := (RwSpecification fromUrl: (projectSet loadSpecs at: projectName))
+		loadSpec := (RwSpecification fromUrl: ((projectSet loadSpecs at: projectName) at: 'url')
 			projectsHome: self projectsHome;
 			yourself.
+		((projectSet loadSpecs at: projectName) at: 'revision') 
+			ifNotNil: [:revision |
+				loadSpec revision: revision ].
 		self strict
 			ifTrue: [ loadSpec repositoryResolutionPolicy: #strict ].
 		loadSpec resolveProject ].

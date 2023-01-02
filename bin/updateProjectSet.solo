@@ -1,0 +1,158 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
+SuperDoitRequiredOptionWithRequiredArg long: 'projectName'.
+
+SuperDoitOptionalOptionWithRequiredArg long: 'specUrl'.
+SuperDoitOptionalOptionWithRequiredArg long: 'revision'.
+SuperDoitOptionalOptionWithRequiredArg long: 'gitUrl'.
+SuperDoitOptionalOptionWithRequiredArg long: 'diskUrl'.
+SuperDoitOptionalOptionWithRequiredArg long: 'readonlyDiskUrl'.
+SuperDoitOptionalOptionWithRequiredArg long: 'componentName'.
+SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> \
+                --projectSet=<projectSet-name> --projectName=<project-name> \
+                --specUrl=<spec-url>
+
+DESCRIPTION
+  A project set is a list of load specs  that specify a group of git repositories that are managed together. 
+
+OPTIONS
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
+  --registry=<registry-name>   
+                    name of the registry. Default is /usr/bin/hostname
+  --projectSet=<projectSet-name>
+                    Name of the project set.
+  --specUrl=<spec-url>
+                    The specUrl must be defined for a project. The first time a 
+                    spec is created the <spec-url> must be defined. The 
+                    <spec-url> may be an https:, file:, or git url. The https: 
+                    and file: url must speccifiy the location of 
+                    a RwSpecificationV2 instance.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename
+  # simplest definition using a https: url to specify spec location
+  $basename --registry=bosch --projectSet=dev \
+            --projectName=Rowan \
+            --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston
+  # simplest definition using a file: url to specify spec location
+  $basename --registry=bosch --projectSet=dev \
+            --projectName=Rowan \
+            --specUrl=file:/home/dhenrich/_homes/rogue/_home/shared/repos/Rowan/rowan/specs/Rowan.ston
+  # simplest definition using a git url to specify spec location
+  $basename --registry=bosch --projectSet=dev \
+            --projectName=superDoit \
+            --specUrl=git@github.com:dalehenrich/superDoit.git
+  # full set of fields
+  $basename --registry=bosch --projectSet=dev \
+            --projectName=Rowan \
+            --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston \
+            --revision=candidateV3.0 \
+            --gitUrl=git@git.gemtalksystems.com:Rowan \
+            --diskUrl=file:/home/dhenrich/_homes/rogue/_home/shared/repos/Rowan \
+            --readonlyDiskUrl=file:$GEMSTONE/upgrade/projects/Rowan \
+            --componentName=Upgrade \
+            --projectsHome=$GS_HOME/shared/repos \
+  # undefine a field
+  $basename --registry=bosch --projectSet=dev \
+            --projectName=Rowan \
+            --revision=nil
+
+-----
+%
+instvars
+specDict
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+createProjectSet: name in: registry
+	| projectSet |
+	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
+		parentRegistryName: registry name;
+		parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+		yourself.
+	projectSet registryFile exists
+		ifTrue: [ self error: 'project set ', projectSet registryfile pathString printString, ' already exists'].
+	projectSet registryDir ensureCreateDirectory.
+	projectSet export.
+	registry projectSets at: name put: projectSet registryPath.
+	registry export.
+	^ projectSet
+%
+method
+updateField: fieldName with: value
+	value = 'nil'
+		ifTrue: [ specDict removeKey: fieldName ifAbsent: [] ]
+		ifFalse: [ specDict at: fieldName put: value ].
+%
+doit
+	| configClass registry name projectSet projectSetPath loadSpecs |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+	configClass := (self globalNamed: 'GDKConfiguration').	
+	registry := configClass registryNamed: self registry.
+	name := self projectSet.
+	projectSetPath := registry projectSets 
+		at: name 
+		ifAbsent: [ ].
+	projectSet := projectSetPath
+		ifNotNil: [ 
+			(self globalNamed: 'GDKProjectSet') 
+				fromPath: projectSetPath 
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ]]
+		ifNil: [
+			self createProjectSet: name ].
+
+	loadSpecs := projectSet loadSpecs.
+	specDict := loadSpecs at: self projectName ifAbsentPut: [ Dictionary new ].
+
+	self specUrl 
+		ifNotNil: [:url | specDict at: 'specUrl' put: url ]
+    ifNil: [ 
+			specDict 
+				at: 'specUrl' 
+				ifAbsent: [ self error: 'required field ''specUrl'' has not been defined.' ] ].
+	
+	self revision
+		ifNotNil: [:value | self updateField: 'revision' with: value ].
+	self gitUrl
+		ifNotNil: [:value | self updateField: 'gitUrl' with: value ].
+	self componentName
+		ifNotNil: [:value | self updateField: 'componentName' with: value ].
+	self projectsHome
+		ifNotNil: [:value | self updateField: 'projectsHome' with: value ].
+
+	projectSet registryDir ensureCreateDirectory.
+	projectSet export.
+	registry projectSets at: name put: projectSet registryPath.
+	registry export.
+%

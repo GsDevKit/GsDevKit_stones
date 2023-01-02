@@ -7,27 +7,24 @@ SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> <projectSet-name>
+USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> --projectSet=<projectSet-name>
 
 DESCRIPTION
-  A project set is a list of load specs  that specify a group of git repositories that are managed together. 
+  A project set is a list of load specs that specify a group of git repositories that are managed together. 
 
 OPTIONS
   -h, --help        display usage message
   -D, --debug       bring up topaz debugger in the event of a script error
   --registry=<registry-name>   
                     name of the registry. Default is /usr/bin/hostname
-  <projectSet-name>
+  --projectSet=<projectSet-name>
                     Name of the project set.
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename 
-  $basename --registry=bosch --projectSet=shared \
-            Rowan https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston \
-            SuperDoit https://raw.githubusercontent.com/dalehenrich/superDoit/v3.1/rowan/specs/SuperDoit_solo.ston \
-            GsDevKit_stones https://raw.githubusercontent.com/GsDevKit/GsDevKit_stones/v1.1/rowan/specs/GsDevKit_stones.ston
+  $basename --registry=bosch --projectSet=shared
 -----
 %
 specs
@@ -51,7 +48,7 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| configClass registry name projectSet args |
+	| configClass registry name projectSet |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: '/home/dhenrich/_git'].
 	configClass := (self globalNamed: 'GDKConfiguration').	
@@ -61,12 +58,8 @@ doit
 		parentRegistryName: self registry;
 		parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
 		yourself.
-	projectSet registryDir exists
-		ifTrue: [ self error: 'project set ', projectSet registryDir pathString printString, ' already exists'].
-	args := self positionalArgs.
-	1 to: args size by: 2 
-		do: [:idx |
-			projectSet loadSpecs at: (args at: idx) put: (args at: idx + 1) ].
+	projectSet registryFile exists
+		ifTrue: [ self error: 'project set ', projectSet registryfile pathString printString, ' already exists'].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	registry projectSets at: name put: projectSet registryPath.
