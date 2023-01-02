@@ -1,5 +1,7 @@
 RwLoadSpecificationV2 {
 	#projectName : 'GsDevKit_stones',
+	#gitUrl : 'git@github.com:GsDevKit/GsDevKit_stones.git',
+	#revision : 'v1.1',
 	#projectSpecFile : 'rowan/project.ston',
 	#componentNames : [
 		'Core',

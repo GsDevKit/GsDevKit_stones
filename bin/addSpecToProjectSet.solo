@@ -1,0 +1,66 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> <projectSet-name>
+
+DESCRIPTION
+  A project set is a list of load specs  that specify a group of git repositories that are managed together. 
+
+OPTIONS
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
+  --registry=<registry-name>   
+                    name of the registry. Default is /usr/bin/hostname
+  <projectSet-name>
+                    Name of the project set.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename 
+  $basename --registry=bosch
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| configClass registry name projectSet |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+	configClass := (self globalNamed: 'GDKConfiguration').	
+	registry := configClass registryNamed: self registry.
+	name := self positionalArgs at: 1.
+	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
+		parentRegistryName: self registry;
+		parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+		yourself.
+	projectSet registryDir exists
+		ifTrue: [ self error: 'project set ', name, ' already exists'].
+	projectSet registryDir ensureCreateDirectory.
+	projectSet export.
+	registry projectSets at: name put: projectSet registryPath.
+	registry export.
+%
