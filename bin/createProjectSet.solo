@@ -57,7 +57,9 @@ doit
 		parentRegistryName: self registry;
 		parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
 		yourself.
-
+	projectSet registryDir exists
+		ifTrue: [ self error: 'project set ', name, ' already exists'].
+	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	registry projectSets at: name put: projectSet registryPath.
 	registry export.
