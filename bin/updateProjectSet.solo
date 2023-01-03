@@ -7,7 +7,6 @@ SuperDoitRequiredOptionWithRequiredArg long: 'projectName'.
 
 SuperDoitOptionalOptionWithRequiredArg long: 'specUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'revision'.
-SuperDoitOptionalOptionWithRequiredArg long: 'gitUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'diskUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'readonlyDiskUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'componentName'.
@@ -49,20 +48,25 @@ EXAMPLES
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
             --specUrl=file:/home/dhenrich/_homes/rogue/_home/shared/repos/Rowan/rowan/specs/Rowan.ston
-  # simplest definition using a git url to specify spec location
+  # simplest definition using a git url to specify where to clone the repo from
   $basename --registry=bosch --projectSet=dev \
             --projectName=superDoit \
             --specUrl=git@github.com:dalehenrich/superDoit.git
-  # full set of fields
+  # simplest definition using a diskUrl to specify where the existing clone can be found
+  $basename --registry=bosch --projectSet=dev \
+            --projectName=superDoit \
+            --diskUrl=file:/home/dhenrich/_homes/rogue/_home/shared/repos/superDoit 
+  # simplest definition using a readonlyDiskUrl to specify where the existing clone can be found
+  $basename --registry=bosch --projectSet=dev \
+            --projectName=superDoit \
+            --readonlyDiskUrl=file:$GEMSTONE/upgrade/projects/Rowan
+  # remaining fields
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
             --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston \
             --revision=candidateV3.0 \
-            --gitUrl=git@git.gemtalksystems.com:Rowan \
-            --diskUrl=file:/home/dhenrich/_homes/rogue/_home/shared/repos/Rowan \
-            --readonlyDiskUrl=file:$GEMSTONE/upgrade/projects/Rowan \
             --componentName=Upgrade \
-            --projectsHome=$GS_HOME/shared/repos \
+            --projectsHome=$GS_HOME/shared/repos
   # undefine a field
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
@@ -115,7 +119,7 @@ updateField: fieldName with: value
 		ifFalse: [ specDict at: fieldName put: value ].
 %
 doit
-	| configClass registry name projectSet projectSetPath loadSpecs |
+	| configClass registry name projectSet projectSetPath loadSpecs urls |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: '/home/dhenrich/_git'].
 	configClass := (self globalNamed: 'GDKConfiguration').	
@@ -135,13 +139,25 @@ doit
 	loadSpecs := projectSet loadSpecs.
 	specDict := loadSpecs at: self projectName ifAbsentPut: [ Dictionary new ].
 
+	urls := Dictionary new.
 	self specUrl 
-		ifNotNil: [:url | specDict at: 'specUrl' put: url ]
-    ifNil: [ 
-			specDict 
-				at: 'specUrl' 
-				ifAbsent: [ self error: 'required field ''specUrl'' has not been defined.' ] ].
-	
+		ifNotNil: [:url | 
+			specDict at: 'specUrl' put: url.
+			self diskUrl 
+				ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ].
+				ifNil: [
+					self readonlyDiskUrl 
+						ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ] ] ]
+		ifNil: [
+			self diskUrl 
+				ifNotNil: [:url | 
+					specDict at: 'specUrl' put: url.
+					self readonlyDiskUrl 
+						ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ] ]
+				ifNil: [
+					self readonlyDiskUrl 
+						ifNotNil: [:url | specDict at: 'specUrl' put: url ]
+						ifNil: [ self error: 'required field ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' has not been defined.' ] ] ].
 	self revision
 		ifNotNil: [:value | self updateField: 'revision' with: value ].
 	self gitUrl
