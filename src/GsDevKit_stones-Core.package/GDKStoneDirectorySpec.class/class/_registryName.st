@@ -1,0 +1,3 @@
+private
+_registryName
+	^'templates'

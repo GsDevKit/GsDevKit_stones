@@ -1,17 +1,14 @@
 #!/usr/bin/env superdoit_solo
-uoptions
+options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
-SuperDoitRequiredOptionWithRequiredArg long: 'root'.
-SuperDoitRequiredOptionWithRequiredArg long: 'stoneName'.
 }
 %
-sage
+usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]
 
 DESCRIPTION
-  <put your description here>
+  Register an existing stone location.
 
 OPTIONS
   -h, --help                 display usage message

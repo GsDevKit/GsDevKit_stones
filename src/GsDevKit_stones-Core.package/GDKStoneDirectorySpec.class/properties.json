@@ -20,5 +20,5 @@
 	"name" : "GDKStoneDirectorySpec",
 	"pools" : [
 		 ],
-	"super" : "GDKGsDevKit_stonesBase",
+	"super" : "GDKAbstractRegistryStore",
 	"type" : "normal" }
