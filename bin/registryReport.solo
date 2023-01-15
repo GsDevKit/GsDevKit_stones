@@ -19,7 +19,7 @@ OPTIONS
   --registry=<registry-name>
                     list the contents of the registry
   --projectSet=<projectSet-name>
-                    list the contents of the projectSet for the given registry
+                    list the contents of the project set for the given registry
 
 EXAMPLES
   $basename --help
@@ -60,7 +60,16 @@ doit
 			self projectSet 
 				ifNil: [ ^ registry ]
 				ifNotNil: [:projectSetName | 
-					^ registry projectSetNamed: projectSetName ] ].
+					| projectSetPath |
+					projectSetPath := registry 
+						projectSetNamed: projectSetName 
+						ifAbsent: [ 
+							self error: ' No project set named: ', 
+									projectSetName, ' found in the registry ', 
+									registryName].
+					^ (self globalNamed: 'GDKProjectSet') 
+							fromPath: projectSetPath
+							ifAbsent: [ self error: 'No file named', projectSetPath , ' found.' ] ] ].
 	self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
 	config keys do: [:each | self stdout nextPutAll: each asString; lf ].
 	^ self noResult
