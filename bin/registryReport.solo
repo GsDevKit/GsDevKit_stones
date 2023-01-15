@@ -1,0 +1,67 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+	SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+	SuperDoitOptionalOptionWithRequiredArg long: 'projectSet'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] \
+  [--registry=<registry-name> [--projectSet=<projectSet-name>] ]
+
+DESCRIPTION
+  With no options, list the names of the existing registries.
+
+OPTIONS
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
+  --registry=<registry-name>
+                    list the contents of the registry
+  --projectSet=<projectSet-name>
+                    list the contents of the projectSet for the given registry
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename 
+  $basename --registry=bosch
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| config |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+	config := (self globalNamed: 'GDKConfiguration') instance.
+	self registry
+		ifNotNil: [:registryName |
+			| registry |
+			registry := config registryNamed: registryName.
+			self projectSet 
+				ifNil: [ ^ registry ]
+				ifNotNil: [:projectSetName | 
+					^ registry projectSetNamed: projectSetName ] ].
+	self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
+	config keys do: [:each | self stdout nextPutAll: each asString; lf ].
+	^ self noResult
+%
