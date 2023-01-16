@@ -6,6 +6,7 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
+		"root",
 		"stoneHost",
 		"stoneName",
 		"gemHost",
@@ -15,7 +16,7 @@
 		"userId",
 		"osUserId",
 		"stoneDirectorySpecName",
-		"gemstoneVersion" ],
+		"gemstoneVersionString" ],
 	"name" : "GDKStoneSpec",
 	"pools" : [
 		 ],

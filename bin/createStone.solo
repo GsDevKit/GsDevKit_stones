@@ -1,16 +1,17 @@
 #!/usr/bin/env superdoit_solo
-uoptions
+options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
-SuperDoitRequiredOptionWithRequiredArg long: 'directoryTemplate' default: 'default'.
+SuperDoitRequiredOptionWithRequiredArg long: 'template'.
 SuperDoitRequiredOptionWithRequiredArg long: 'root'.
 }
 %
-sage
+Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D] \
-                --root=<stone-directory> --registry=<registry-name> <stone-name> <gemstone-version>
+                --root=<stone-directory> --registry=<registry-name> \
+                --template=<template-name> <stone-name> <gemstone-version>
 
 DESCRIPTION
   Create and register a new stone directory to be located at <stone-directory>. If the <stone-directory> already exists, throw an error, unless the --force option is specified, in which case the contents of the directory will be deleted. Populate the <stone-directory> with the directories specified in the derectoryTemplate.
@@ -22,13 +23,52 @@ OPTIONS
 EXAMPLES
   $basename --help
   $basename -D
-  $basename  
+  $basename --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
 -----
 %
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
 doit
-	"write your code here"
-	"return value will be written in STON format to stdout. 
-		Return `self noResult` to suppress writing STON 
-		to stdout"
-	^ self noResult
+	| configClass registry stoneSpec gemstoneVersion stoneName rootDir |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+	configClass := (self globalNamed: 'GDKConfiguration').	
+	registry := configClass registryNamed: self registry.
+	rootDir := self root asFileReference.
+	stoneName := rootDir basename.
+	gemstoneVersion := self positionalArgs at: 1.
+	stoneSpec := (self globalNamed: 'GDKStoneSpec') 
+		newNamed: stoneName 
+		rootDirectory: rootDir
+		directorySpecName: self template 
+		gemstoneVersionString: gemstoneVersion.
+	stoneSpec
+		parentRegistryName: self registry;
+		parentRegistryPath: '$XDG_DATA_HOME/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+		yourself.
+	stoneSpec registryFile exists
+		ifTrue: [ self error: 'stone ', stoneSpec registryfile pathString printString, ' already exists'].
+	stoneSpec registryDir ensureCreateDirectory.
+	stoneSpec export.
+	registry stones at: stoneName put: stoneSpec registryPath.
+	registry export.
+
 %

@@ -3,6 +3,7 @@ options
 {
 	SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'projectSet'.
+	SuperDoitOptionalOptionWithRequiredArg long: 'stone'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'template'.
 }
 %
@@ -10,7 +11,9 @@ usage
 -----
 USAGE $basename [--help | -h] [--debug | -D] \
   [--registry=<registry-name> \
-     [--projectSet=<projectSet-name> | --template=<template-name>] ]
+     [--projectSet=<projectSet-name> | \
+      --template=<template-name> | \
+      --stone=<stone-name> ] ]
 
 DESCRIPTION
   With no options, list the names of the existing registries.
@@ -22,6 +25,8 @@ OPTIONS
                     list the contents of the registry
   --projectSet=<projectSet-name>
                     list the contents of the named project set in the given registry
+  --stone=<stone-name>
+                    list the contents of the named stone in the given registry
   --template=<template-name>
                     list the contents of the named template in the given registry
 
@@ -30,6 +35,9 @@ EXAMPLES
   $basename -D
   $basename 
   $basename --registry=bosch
+  $basename --registry=bosch --projectSet=dev
+  $basename --registry=bosch --templage=minimal
+  $basename --registry=bosch --stone=bosch_370
 -----
 %
 specs
@@ -66,6 +74,19 @@ projectSetReport: projectSetName in: registry
 			ifAbsent: [ self error: 'No file named', projectSetPath , ' found.' ] 
 %
 method
+stoneReport: stoneName in: registry
+	| stonePath |
+	stonePath := registry 
+		stoneNamed: stoneName 
+		ifAbsent: [ 
+			self error: ' No stone named: ', 
+					stoneName, ' found in the registry ', 
+					registry name].
+	^ (self globalNamed: 'GDKAbstractRegistryStore') 
+			fromPath: stonePath
+			ifAbsent: [ self error: 'No file named', stonePath , ' found.' ] 
+%
+method
 templateReport: templateName in: registry
 	| templatePath |
 	templatePath := registry 
@@ -90,9 +111,13 @@ doit
 			self projectSet 
 				ifNil: [ 
 					self template
-						ifNil: [ ^ registry ]
+						ifNil: [ 
+							self stone
+								ifNil: [ ^ registry ]
+								ifNotNil: [:stoneName | ^ self stoneReport: stoneName in: registry ] ]
 						ifNotNil: [:templateName | ^ self templateReport: templateName in: registry ] ]
 				ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: registry ] ].
+	self stone ifNotNil: [ self error: 'a --registry is required to list the stone' ].
 	self template ifNotNil: [ self error: 'a --registry is required to list the template' ].
 	self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
 	config keys do: [:each | self stdout nextPutAll: each asString; lf ].

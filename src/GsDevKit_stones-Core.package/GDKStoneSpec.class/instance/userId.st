@@ -1,3 +1,3 @@
 accessing
 userId
-	^ userId ifNil: [ userId := 'SystemUser' ]
+	^ userId

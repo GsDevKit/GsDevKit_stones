@@ -1,3 +1,4 @@
 accessing
 gemstoneVersion
-	^gemstoneVersion
+	^ gemstoneVersionString
+		ifNotNil: [ gemstoneVersionString asRwGemStoneVersionNumber ]

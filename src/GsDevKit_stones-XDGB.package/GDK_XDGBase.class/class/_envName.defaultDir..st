@@ -6,7 +6,7 @@ _envName: envName defaultDir: defaultDir
 		ifNotNil: [ :path | 
 			| dir |
 			dir := path asFileReference.
-			dir isRelativePath
+			dir isRelative
 				ifTrue: [ 
 					"invalid specification use default"
 					nil ]
