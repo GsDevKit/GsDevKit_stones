@@ -3,12 +3,14 @@ options
 {
 	SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'projectSet'.
+	SuperDoitOptionalOptionWithRequiredArg long: 'template'.
 }
 %
 usage
 -----
 USAGE $basename [--help | -h] [--debug | -D] \
-  [--registry=<registry-name> [--projectSet=<projectSet-name>] ]
+  [--registry=<registry-name> \
+     [--projectSet=<projectSet-name> | --template=<template-name>] ]
 
 DESCRIPTION
   With no options, list the names of the existing registries.
@@ -19,7 +21,9 @@ OPTIONS
   --registry=<registry-name>
                     list the contents of the registry
   --projectSet=<projectSet-name>
-                    list the contents of the project set for the given registry
+                    list the contents of the named project set in the given registry
+  --template=<template-name>
+                    list the contents of the named template in the given registry
 
 EXAMPLES
   $basename --help
@@ -48,6 +52,32 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+projectSetReport: projectSetName in: registry
+	| projectSetPath |
+	projectSetPath := registry 
+		projectSetNamed: projectSetName 
+		ifAbsent: [ 
+			self error: ' No project set named: ', 
+					projectSetName, ' found in the registry ', 
+					registry name].
+	^ (self globalNamed: 'GDKAbstractRegistryStore') 
+			fromPath: projectSetPath
+			ifAbsent: [ self error: 'No file named', projectSetPath , ' found.' ] 
+%
+method
+templateReport: templateName in: registry
+	| templatePath |
+	templatePath := registry 
+		templateNamed: templateName 
+		ifAbsent: [ 
+			self error: ' No template named: ', 
+					templateName, ' found in the registry ', 
+					registry name].
+	^ (self globalNamed: 'GDKAbstractRegistryStore') 
+			fromPath: templatePath
+			ifAbsent: [ self error: 'No file named', templatePath , ' found.' ] 
+%
 doit
 	| config |
 	self preDoitSpecLoad: [:spec |
@@ -58,18 +88,12 @@ doit
 			| registry |
 			registry := config registryNamed: registryName.
 			self projectSet 
-				ifNil: [ ^ registry ]
-				ifNotNil: [:projectSetName | 
-					| projectSetPath |
-					projectSetPath := registry 
-						projectSetNamed: projectSetName 
-						ifAbsent: [ 
-							self error: ' No project set named: ', 
-									projectSetName, ' found in the registry ', 
-									registryName].
-					^ (self globalNamed: 'GDKProjectSet') 
-							fromPath: projectSetPath
-							ifAbsent: [ self error: 'No file named', projectSetPath , ' found.' ] ] ].
+				ifNil: [ 
+					self template
+						ifNil: [ ^ registry ]
+						ifNotNil: [:templateName | ^ self templateReport: templateName in: registry ] ]
+				ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: registry ] ].
+	self template ifNotNil: [ self error: 'a --registry is required to list the template' ].
 	self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
 	config keys do: [:each | self stdout nextPutAll: each asString; lf ].
 	^ self noResult

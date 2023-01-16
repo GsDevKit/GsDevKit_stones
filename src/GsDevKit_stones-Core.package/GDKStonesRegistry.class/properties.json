@@ -8,6 +8,7 @@
 	"instvars" : [
 		"stones",
 		"sessions",
+		"productTrees",
 		"projectSets",
 		"templates" ],
 	"name" : "GDKStonesRegistry",

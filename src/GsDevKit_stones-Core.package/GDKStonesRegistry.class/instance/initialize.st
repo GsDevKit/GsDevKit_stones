@@ -5,8 +5,9 @@ initialize
 	sessions := Dictionary new.
 	templates := Dictionary new.
 	projectSets := Dictionary new.
+	productTrees := Dictionary new.
 	stones := Dictionary new.
-	stoneDirTemplate := GDK_stonesStoneDirectorySpec newNamed: 'default'.
+	stoneDirTemplate := GDKstonesStoneDirectorySpec newNamed: 'default'.
 	stoneDirTemplate registryFile exists
 		ifFalse: [ 
 			stoneDirTemplate export.

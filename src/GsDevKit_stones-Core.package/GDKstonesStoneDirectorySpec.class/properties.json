@@ -7,7 +7,7 @@
 	"commentStamp" : "",
 	"instvars" : [
 		 ],
-	"name" : "GDK_stonesStoneDirectorySpec",
+	"name" : "GDKstonesStoneDirectorySpec",
 	"pools" : [
 		 ],
 	"super" : "GDKStoneDirectorySpec",
