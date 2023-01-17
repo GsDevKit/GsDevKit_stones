@@ -1,0 +1,67 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'productPath'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] \
+                --registry=<registry-name> --productPath=<path-to-product-tree> <gemstone-version>
+
+DESCRIPTION
+  Register a GemStone product tree that is already downloaded/create with <registry-name>.
+
+OPTIONS
+  -h, --help                 display usage message
+  -D, --debug                bring up topaz debugger in the event of a script error
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --registry=bosch --productPath=/export/bosch1/users/dhenrich/_work/c_37x/fast50/gs/product 3.7.0 
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| configClass registry gemstoneVersion gemstonePath |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: '/home/dhenrich/_git'].
+	configClass := (self globalNamed: 'GDKConfiguration').	
+	registry := configClass registryNamed: self registry.
+  gemstonePath := GsFile serverRealPath: self productPath.
+	gemstoneVersion := self positionalArgs at: 1.
+	(registry products at: gemstoneVersion ifAbsent: [])
+		ifNotNil: [:existingPath | 
+			self force 
+				ifFalse: [ 
+					self error: 'There is an existing path (', 
+						existingPath, 
+						') for the GemStone version ', 
+						gemstoneVersion, 
+						'. Use the --force option to override.' ] ].
+	registry products at: gemstoneVersion put: gemstonePath.
+	registry export.
+
+%
