@@ -1,4 +1,4 @@
-as yet unspecified
+accessing
 snapshotsDir
 	| dir |
 	dir := self root / self snapshots.

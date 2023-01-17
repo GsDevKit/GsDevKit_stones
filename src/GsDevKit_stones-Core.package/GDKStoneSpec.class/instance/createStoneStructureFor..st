@@ -2,6 +2,7 @@ creation/destruction
 createStoneStructureFor: stonesRegistry
 	"create stone"
 
+	| productPath |
 	self rootDir ensureCreateDirectory.
-	stonesRegistry productNamed: self gemstoneVersionString.
+	productPath := stonesRegistry productNamed: self gemstoneVersionString	
 "populate the rootDir< etc"

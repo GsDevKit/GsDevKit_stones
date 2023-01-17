@@ -1,4 +1,4 @@
-as yet unspecified
+accessing
 statsDir
 	| dir |
 	dir := self root / self stats.

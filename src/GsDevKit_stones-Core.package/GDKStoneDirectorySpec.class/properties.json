@@ -16,7 +16,8 @@
 		"snapshots",
 		"projectsHome",
 		"product",
-		"gemstone" ],
+		"gemstone",
+		"customenv" ],
 	"name" : "GDKStoneDirectorySpec",
 	"pools" : [
 		 ],

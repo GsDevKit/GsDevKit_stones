@@ -1,4 +1,4 @@
-as yet unspecified
+accessing
 root: aFileReference projectsHome: aProjectsHome gemstone: gemstonePath
 	root := aFileReference asFileReference.
 	root ensureDeleteAll.

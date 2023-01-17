@@ -1,4 +1,4 @@
-as yet unspecified
+accessing
 logsDir
 	| dir |
 	dir := self root / self logs.

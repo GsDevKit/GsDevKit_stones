@@ -1,4 +1,4 @@
-as yet unspecified
+accessing
 tranlogsDir
 	| dir |
 	dir := self root / self tranlogs.

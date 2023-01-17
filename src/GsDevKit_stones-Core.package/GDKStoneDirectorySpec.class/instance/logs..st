@@ -1,3 +1,3 @@
-as yet unspecified
+accessing
 logs: object
 	logs := object

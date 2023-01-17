@@ -5,5 +5,7 @@ productNamed: productName
 	^ self
 		productNamed: productName
 		ifAbsent: [ 
-			self products at: productName put: (self downloadProductNamed: productName).
-			self export ]
+			| productPath |
+			productPath := self products at: productName put: (self downloadProductNamed: productName).
+			self export.
+			productPath ]

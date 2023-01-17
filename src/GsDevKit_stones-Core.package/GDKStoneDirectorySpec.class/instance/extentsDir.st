@@ -1,4 +1,4 @@
-as yet unspecified
+accessing
 extentsDir
 	| dir |
 	dir := self root / self extents.

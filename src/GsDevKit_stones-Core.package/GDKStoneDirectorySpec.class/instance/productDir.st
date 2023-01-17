@@ -1,4 +1,4 @@
-as yet unspecified
+accessing
 productDir
 	| dir res |
 	dir := self root / self product.

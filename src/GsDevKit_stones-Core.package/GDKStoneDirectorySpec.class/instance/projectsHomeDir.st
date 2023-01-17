@@ -1,3 +1,3 @@
-as yet unspecified
+accessing
 projectsHomeDir
 	^ self root / self projectsHome
