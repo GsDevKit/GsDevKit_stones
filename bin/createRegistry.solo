@@ -15,7 +15,7 @@
 #%
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] [ <registry-name> ]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [ <registry-name> ]
 
 DESCRIPTION
   Create GsDevKit_stones registry for the given . If no <registry-name> is specified, /usr/bin/hostname is used. A registry is created in $XDG_DATA_HOME/gsdevkit_stones/registry, where the default value of $XDG_DATA_HOME is $HOME/.config. 
@@ -37,11 +37,15 @@ The registry.ston file maps the name of the registry to a <registry-name>.ston f
 OPTIONS
   -h, --help        display usage message
   -D, --debug       bring up topaz debugger in the event of a script error
+  --debugGem        If terminal is connected to stdout, bring up debugger. If not,
+                    dump stack to stdout and wait for topaz to attach using topaz
+                    DEBUGGEM command.
   <registry-name>   name of the registry. Default is /usr/bin/hostname
 
 EXAMPLES
   $basename --help
   $basename -D
+  $basename --debugGem
   $basename 
   $basename bosch
 -----

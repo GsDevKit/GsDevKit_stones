@@ -9,7 +9,7 @@ SuperDoitRequiredOptionWithRequiredArg long: 'root'.
 %
 Usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] \
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
                 --root=<stone-directory> --registry=<registry-name> \
                 --template=<template-name> <stone-name> <gemstone-version>
 
@@ -17,12 +17,16 @@ DESCRIPTION
   Create and register a new stone directory to be located at <stone-directory>. If the <stone-directory> already exists, throw an error, unless the --force option is specified, in which case the contents of the directory will be deleted. Populate the <stone-directory> with the directories specified in the derectoryTemplate.
 
 OPTIONS
-  -h, --help                 display usage message
-  -D, --debug                bring up topaz debugger in the event of a script error
+  -h, --help      display usage message
+  -D, --debug     bring up topaz debugger in the event of a script error
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
 
 EXAMPLES
   $basename --help
   $basename -D
+  $basename --debugGem
   $basename --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
 -----
 %

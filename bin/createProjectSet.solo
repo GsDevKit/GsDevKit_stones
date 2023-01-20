@@ -7,7 +7,7 @@ SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D] registry=<registry-name> --projectSet=<projectSet-name>
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> --projectSet=<projectSet-name>
 
 DESCRIPTION
   A project set is a list of load specs that specify a group of git repositories that are managed together. 
@@ -15,6 +15,9 @@ DESCRIPTION
 OPTIONS
   -h, --help        display usage message
   -D, --debug       bring up topaz debugger in the event of a script error
+  --debugGem        If terminal is connected to stdout, bring up debugger. If not,
+                    dump stack to stdout and wait for topaz to attach using topaz
+                    DEBUGGEM command.
   --registry=<registry-name>   
                     name of the registry. Default is /usr/bin/hostname
   --projectSet=<projectSet-name>
@@ -23,6 +26,7 @@ OPTIONS
 EXAMPLES
   $basename --help
   $basename -D
+  $basename --debugGem
   $basename 
   $basename --registry=bosch --projectSet=shared
 -----
