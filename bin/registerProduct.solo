@@ -50,7 +50,7 @@ RwLoadSpecificationV2 {
 doit
 	| configClass registry gemstoneVersion gemstonePath |
 	self preDoitSpecLoad: [:spec |
-		spec projectsHome: '/home/dhenrich/_git'].
+		spec projectsHome: self dirname asFileReference parent parent].
 	configClass := (self globalNamed: 'GDKConfiguration').	
 	registry := configClass registryNamed: self registry.
   gemstonePath := GsFile serverRealPath: self productPath.

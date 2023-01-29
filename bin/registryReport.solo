@@ -106,7 +106,7 @@ templateReport: templateName in: registry
 doit
 	| config |
 	self preDoitSpecLoad: [:spec |
-		spec projectsHome: '/home/dhenrich/_git'].
+		spec projectsHome: self dirname asFileReference parent parent].
 	config := (self globalNamed: 'GDKConfiguration') instance.
 	self registry
 		ifNotNil: [:registryName |

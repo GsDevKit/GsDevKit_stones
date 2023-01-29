@@ -125,7 +125,7 @@ updateField: fieldName with: value
 doit
 	| configClass registry name projectSet projectSetPath loadSpecs urls |
 	self preDoitSpecLoad: [:spec |
-		spec projectsHome: '/home/dhenrich/_git'].
+		spec projectsHome: self dirname asFileReference parent parent].
 	configClass := (self globalNamed: 'GDKConfiguration').	
 	registry := configClass registryNamed: self registry.
 	name := self projectSet.

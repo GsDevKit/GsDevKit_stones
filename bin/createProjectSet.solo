@@ -54,7 +54,7 @@ RwLoadSpecificationV2 {
 doit
 	| configClass registry name projectSet |
 	self preDoitSpecLoad: [:spec |
-		spec projectsHome: '/home/dhenrich/_git'].
+		spec projectsHome: self dirname asFileReference parent parent].
 	configClass := (self globalNamed: 'GDKConfiguration').	
 	registry := configClass registryNamed: self registry.
 	name := self projectSet.
