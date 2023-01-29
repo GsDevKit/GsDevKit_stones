@@ -7,70 +7,64 @@ createStoneStructure: stoneSpec
 	useExtentDir := ''.
 	useCustomEnv := false.
 	gemstoneReference := stoneSpec gemstonePath asFileReference.
-	gemstoneReference / 'bin' / 'extent0.dbf' copyTo: stoneRoot / 'extent0.dbf'.	"need to append entries to the file"
-	gemstoneReference / 'data' / 'system.conf' copyTo: stoneRoot / 'system.conf'.	"need to append entries to the file"
+	self class symbolicLink: gemstoneReference linkName: stoneRoot / 'product'.
+	gemstoneReference / 'bin' / 'extent0.dbf' copyTo: stoneRoot / 'extent0.dbf'.
+	self class chmod: (stoneRoot / 'extent0.dbf') pathString fileMode: 'u+w'.
+	gemstoneReference / 'data' / 'system.conf' copyTo: stoneRoot / 'system.conf'.
 	systemConfStream := GsFile
 		open: (stoneRoot / 'system.conf') pathString
 		mode: 'w+'
-		onClient: false.
+		onClient: false.	"need to append entries to the file"
+	exportDir at: 'XDG_DATA_HOME' put: self class data_home pathString.
 	self
 		keysAndValuesDo: [ :key :value | 
-			key = 'customenv'
+			key = #'customenv'
 				ifTrue: [ 
 					useCustomEnv := true.
+					customenv := exportDir.
 					exportDir
 						at: 'stone_dir' put: stoneRoot pathString;
 						at: 'GEMSTONE' put: gemstoneReference pathString;
 						at: 'PATH'
 							put:
-								(stoneRoot pathString / 'bin') pathString , ':' , stoneSpec gemstonePath
-										, '/bin:$PATH' ].
-			key = 'bin'
+								(stoneRoot / 'bin') pathString , ':' , stoneSpec gemstonePath , '/bin:$PATH' ].
+			key = #'bin'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
-			key = 'backups'
+			key = #'backups'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
-			key = 'extents'
+			key = #'extents'
 				ifTrue: [ 
 					useExtentDir := '/' , value.
 					(stoneRoot / value) ensureCreateDirectory ].
-			key = 'logs'
+			key = #'logs'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
-			key = 'stats'
+			key = #'stats'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
-			key = 'tranlogs'
+			key = #'tranlogs'
 				ifTrue: [ 
 					useTranlogDir := '/' , value.
 					(stoneRoot / value) ensureCreateDirectory ].
-			key = 'snapshots'
+			key = #'snapshots'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
-			key = 'projectsHome'
+			key = #'projectsHome'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
-			key = 'product'
+			key = #'product'
 				ifTrue: [ 
 					"???"
 					self halt ].
-			key = 'gemstone'
+			key = #'gemstone'
 				ifTrue: [ 
 					"???"
 					self halt ] ].
 	useCustomEnv
 		ifTrue: [ 
-			(stoneRoot / 'customenv') writeStream
-				do: [ :fileStream | 
+			stoneRoot / 'customenv'
+				writeStreamDo: [ :fileStream | 
 					exportDir
-						keysAndValuesDo:
-								[ :key :value | 
-									fileStream
-										nextPutAll: 'export ' , key , '=' , value;
-										lf ] fileStream
-							nextPutAll: 'export stone_dir=' , stoneRoot pathString;
-						lf;
-						nextPutAll: 'export GEMSTONE=' , stoneSpec gemstonePath;
-						lf;
-						nextPutAll: 'export PATH=$stone_dir/bin:$GEMSTONE/bin:$PATH';
-						lf;
-						nextPutAll: 'export SANDBOX=$stone_dir/sandbox';
-						lf ].
+						keysAndValuesDo: [ :key :value | 
+							fileStream
+								nextPutAll: 'export ' , key , '=' , value;
+								lf ] ].
 			systemConfStream
 				lf;
 				nextPutAll: 'DBF_EXTENT_NAMES = $stone_dir' , useExtentDir , 'extent0.dbf;';

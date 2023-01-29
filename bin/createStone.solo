@@ -73,12 +73,14 @@ doit
 		ifTrue: [ 
 			self force
 				ifFalse: [ self error: 'registry file ', stoneSpec registryFile pathString printString, ' still exists. Use --force to clean up.'].
-			(stoneSpecClass fromPath: stoneSpec registryFile pathString ifAbsent: [])
-				ifNotNil: [:oldStoneSpec | oldStoneSpec destroyStoneStructure ] ].
+			stoneSpec destroyStoneStructure ].
 	stoneSpec createStoneStructureUsing: registry.
 	stoneSpec registryDir ensureCreateDirectory.
 	stoneSpec export.
 	registry stones at: stoneName put: stoneSpec registryPath.
 	registry export.
-
+	stoneSpec class 
+		symbolicLink: stoneSpec registryPath 
+		linkName: stoneSpec rootDir / '.GDKStoneSpec.ston'.
+	^ stoneSpec
 %

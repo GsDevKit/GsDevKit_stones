@@ -16,6 +16,7 @@
 		"userId",
 		"osUserId",
 		"stoneDirectorySpecName",
+		"stoneDirectorySpec",
 		"gemstoneVersionString" ],
 	"name" : "GDKStoneSpec",
 	"pools" : [

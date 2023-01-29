@@ -6,7 +6,7 @@ downloadProductName: productName productFile: downloadFileName to: downloadPath
 	downloadDir := downloadPath asFileReference.
 	[ 
 	cwd := GsFile serverCurrentDirectory.
-	GsFile _directoryPrim: 0 with: downloadPath with: nil.	"change dir"
+	self class chdir: downloadPath.
 	(downloadDir / downloadFileName) exists
 		ifFalse: [ 
 			(downloadDir / downloadFileName , 'zip') exists
@@ -14,9 +14,6 @@ downloadProductName: productName productFile: downloadFileName to: downloadPath
 					self class
 						executeCommandLine:
 							'/usr/bin/curl  -L -O -s -S "https://ftp.gemtalksystems.com/GemStone64/'
-								, productName , '/' , downloadFileName , '.zip' , '"'
-						andInput: nil ].
-			self class
-				executeCommandLine: '/usr/bin/unzip ' , downloadFileName , '.zip'
-				andInput: nil ] ]
-		ensure: [ GsFile _directoryPrim: 0 with: cwd with: nil	"change dir" ]
+								, productName , '/' , downloadFileName , '.zip' , '"' ].
+			self class executeCommandLine: '/usr/bin/unzip ' , downloadFileName , '.zip' ] ]
+		ensure: [ self class chdir: cwd ]

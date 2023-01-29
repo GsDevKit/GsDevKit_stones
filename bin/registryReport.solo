@@ -40,7 +40,7 @@ EXAMPLES
   $basename 
   $basename --registry=bosch
   $basename --registry=bosch --projectSet=dev
-  $basename --registry=bosch --templage=minimal
+  $basename --registry=bosch --template=minimal
   $basename --registry=bosch --stone=bosch_370
 -----
 %
