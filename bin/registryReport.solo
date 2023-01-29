@@ -103,6 +103,13 @@ templateReport: templateName in: registry
 			fromPath: templatePath
 			ifAbsent: [ self error: 'No file named', templatePath , ' found.' ] 
 %
+method
+configReport: config
+	| report |
+	report := GsTonelOrderedDictionary new.
+	(config associationsAsArray sort: [:a :b | a key <= b key]) do: [:assoc | report add: assoc].
+	^ report
+%
 doit
 	| config |
 	self preDoitSpecLoad: [:spec |
@@ -124,6 +131,5 @@ doit
 	self stone ifNotNil: [ self error: 'a --registry is required to list the stone' ].
 	self template ifNotNil: [ self error: 'a --registry is required to list the template' ].
 	self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
-	config keys do: [:each | self stdout nextPutAll: each asString; lf ].
-	^ self noResult
+	^ self configReport: config
 %
