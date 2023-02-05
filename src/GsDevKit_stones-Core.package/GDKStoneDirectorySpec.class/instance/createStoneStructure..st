@@ -7,8 +7,11 @@ createStoneStructure: stoneSpec
 	useExtentDir := ''.
 	useCustomEnv := false.
 	gemstoneReference := stoneSpec gemstonePath asFileReference.
+	System
+		gemEnvironmentVariable: 'GEMSTONE'
+		put: gemstoneReference pathString.
 	self class symbolicLink: gemstoneReference linkName: stoneRoot / 'product'.
-	gemstoneReference / 'bin' / 'extent0.dbf' copyTo: stoneRoot / 'extent0.dbf'.
+	(self dbfSource: stoneSpec) copyTo: stoneRoot / 'extent0.dbf'.
 	self class chmod: (stoneRoot / 'extent0.dbf') pathString fileMode: 'u+w'.
 	gemstoneReference / 'data' / 'system.conf' copyTo: stoneRoot / 'system.conf'.
 	systemConfStream := GsFile
@@ -85,4 +88,12 @@ createStoneStructure: stoneSpec
 		writeStreamDo: [ :fileStream | 
 			fileStream
 				nextPutAll: 'GEM_TEMPOBJ_CACHE_SIZE = 1000000;';
-				lf ]
+				lf ].
+	stoneRoot / '.topazini'
+		writeStreamDo: [ :fileStream | 
+			fileStream
+				nextPutAll: 'set GEMSTONE ' , self name;
+				lf;
+				nextPutAll: 'set u SystemUser p swordfish';
+				lf ].
+	self class chmod: (stoneRoot / '.topazini') pathString fileMode: 'u+w,og-rw'

@@ -1,0 +1,7 @@
+GDKstonesStoneDirectorySpec {
+	#name : 'minimal_rowan',
+	#customenv: 'customenv',
+	#dbfSource : '$GEMSTONE/bin/extent0.rowan.dbf',
+	#bin : 'bin',
+	#logs : 'logs'
+}

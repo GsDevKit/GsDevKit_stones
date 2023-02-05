@@ -7,11 +7,13 @@ executeCommandLine: commandLine andInput: stdinStringOrNil
 	stdoutRedirectPath := FileReference
 		newTempFilePrefix: 'gsd_stones'
 		suffix: '.out'.
-	GsFile
-		gciLogServer:
-			'executing ' , commandLine printString , ' stdout: '
-				, stdoutRedirectPath pathString , ' stderr: '
-				, errorRedirectReference pathString.
+	self verbose
+		ifTrue: [ 
+			GsFile
+				gciLogServer:
+					'executing ' , commandLine printString , ' stdout: '
+						, stdoutRedirectPath pathString , ' stderr: '
+						, errorRedirectReference pathString ].
 	[ 
 	GsHostProcess new
 		commandLine: commandLine;

@@ -1,0 +1,12 @@
+GDKstonesStoneDirectorySpec {
+	#name : 'default_rowan',
+	#backups : 'backups',
+	#bin : 'bin',
+	#dbfSource : '$GEMSTONE/bin/extent0.rowan.dbf',
+	#extents : 'extents',
+	#logs : 'logs',
+	#stats : 'stats',
+	#tranlogs : 'tranlogs',
+	#snapshots : 'snapshots',
+	#product : 'product'
+}

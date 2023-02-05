@@ -41,6 +41,23 @@ doit
 	System stoneVersionReport keysAndValuesDo: [:key :value |
 		self stdout
 			nextPutAll: key asString ; lf; tab; nextPutAll: ' = ', value asString; lf ].
+	(self globalNamed: 'Rowan' ifAbsent: [])
+		ifNotNil: [:rowanClass |
+			(rowanClass respondsTo: #versionString)
+				ifTrue: [
+					self stdout
+						nextPutAll: 'rowanVersion'; lf; tab; nextPutAll: ' = ', rowanClass versionString; lf ]
+				ifFalse: [
+					self stdout
+						nextPutAll:'rowanVersion' ; lf; tab; nextPutAll: ' = v2.x'; lf ].
+			]
+		ifNil: [ 
+			(AllUsers userWithId: 'DataCurator' ifAbsent: [])
+				ifNotNil: [:dataCurator |
+					((dataCurator objectNamed: 'UserGlobals')
+						at: #MCDefinition 
+						ifAbsent: [])
+							ifNotNil: [ self stdout nextPutAll: 'seasideInstalled'; lf; tab; nextPutAll: ' = true'; lf ] ] ].
 	self stdout nextPutAll: '--------------------'; lf.
 
 	^ self noResult

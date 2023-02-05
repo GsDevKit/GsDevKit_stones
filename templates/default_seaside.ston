@@ -1,6 +1,8 @@
-GDKStoneDirectorySpec {
+GDKstonesStoneDirectorySpec {
+	#name : 'default_seaside',
 	#backups : 'backups',
 	#bin : 'bin',
+	#dbfSource : '$GEMSTONE/bin/extent0.seaside.dbf',
 	#extents : 'extents',
 	#logs : 'logs',
 	#stats : 'stats',
