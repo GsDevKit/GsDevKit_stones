@@ -60,14 +60,14 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| configClass registry name projectSet args projectSetPath projectNames |
+	| registryClass stonesRegistry name projectSet args projectSetPath projectNames |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 
-	configClass := (self globalNamed: 'GDKConfiguration').	
-	registry := configClass registryNamed: self registry.
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	name := self projectSet.
-	projectSetPath := registry projectSets 
+	projectSetPath := stonesRegistry projectSets 
 		at: name 
 		ifAbsent: [ self error: 'Cannot find project set named ', name printString ].
 	projectSet := (self globalNamed: 'GDKProjectSet') 

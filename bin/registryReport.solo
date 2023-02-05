@@ -104,32 +104,32 @@ templateReport: templateName in: registry
 			ifAbsent: [ self error: 'No file named', templatePath , ' found.' ] 
 %
 method
-configReport: config
+registryReport: registry
 	| report |
 	report := GsTonelOrderedDictionary new.
-	(config associationsAsArray sort: [:a :b | a key <= b key]) do: [:assoc | report add: assoc].
+	(registry associationsAsArray sort: [:a :b | a key <= b key]) do: [:assoc | report add: assoc].
 	^ report
 %
 doit
-	| config |
+	| registry |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
-	config := (self globalNamed: 'GDKConfiguration') instance.
+	registry := (self globalNamed: 'GDKRegistry') instance.
 	self registry
 		ifNotNil: [:registryName |
-			| registry |
-			registry := config registryNamed: registryName.
+			| stonesRegistry |
+			stonesRegistry := registry stonesRegistryNamed: registryName.
 			self projectSet 
 				ifNil: [ 
 					self template
 						ifNil: [ 
 							self stone
-								ifNil: [ ^ registry ]
-								ifNotNil: [:stoneName | ^ self stoneReport: stoneName in: registry ] ]
-						ifNotNil: [:templateName | ^ self templateReport: templateName in: registry ] ]
-				ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: registry ] ].
+								ifNil: [ ^ stonesRegistry ]
+								ifNotNil: [:stoneName | ^ self stoneReport: stoneName in: stonesRegistry ] ]
+						ifNotNil: [:templateName | ^ self templateReport: templateName in: stonesRegistry ] ]
+				ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: stonesRegistry ] ].
 	self stone ifNotNil: [ self error: 'a --registry is required to list the stone' ].
 	self template ifNotNil: [ self error: 'a --registry is required to list the template' ].
 	self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
-	^ self configReport: config
+	^ self registryReport: registry
 %

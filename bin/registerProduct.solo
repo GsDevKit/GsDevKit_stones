@@ -48,14 +48,14 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| configClass registry gemstoneVersion gemstonePath |
+	| registryClass stonesRegistry gemstoneVersion gemstonePath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
-	configClass := (self globalNamed: 'GDKConfiguration').	
-	registry := configClass registryNamed: self registry.
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
   gemstonePath := GsFile serverRealPath: self productPath.
 	gemstoneVersion := self positionalArgs at: 1.
-	(registry products at: gemstoneVersion ifAbsent: [])
+	(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 		ifNotNil: [:existingPath | 
 			self force 
 				ifFalse: [ 
@@ -64,7 +64,7 @@ doit
 						') for the GemStone version ', 
 						gemstoneVersion, 
 						'. Use the --force option to override.' ] ].
-	registry products at: gemstoneVersion put: gemstonePath.
-	registry export.
+	stonesRegistry products at: gemstoneVersion put: gemstonePath.
+	stonesRegistry export.
 
 %

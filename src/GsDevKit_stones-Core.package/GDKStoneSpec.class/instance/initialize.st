@@ -1,8 +1,8 @@
 initialization
 initialize
 	super initialize.
-	gemHost := GDKConfiguration hostName.
+	gemHost := GDKRegistry hostName.
 	gemTask := 'gemnetobject'.
 	stoneDirectorySpecName := 'default'.
-	stoneHost := GDKConfiguration hostName.
+	stoneHost := GDKRegistry hostName.
 	userId := 'SystemUser'

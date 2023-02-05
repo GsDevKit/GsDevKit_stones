@@ -1,7 +1,7 @@
 accessing
-registryNamed: registryName
+stonesRegistryNamed: registryName
 	^ self
-		registryNamed: registryName
+		stonesRegistryNamed: registryName
 		ifAbsent: [ 
 			self
 				error:

@@ -52,11 +52,11 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| configClass registry name projectSet |
+	| registryClass stonesRegistry name projectSet |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
-	configClass := (self globalNamed: 'GDKConfiguration').	
-	registry := configClass registryNamed: self registry.
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	name := self projectSet.
 	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
 		parentRegistryName: self registry;
@@ -66,6 +66,6 @@ doit
 		ifTrue: [ self error: 'project set ', projectSet registryfile pathString printString, ' already exists'].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
-	registry projectSets at: name put: projectSet registryPath.
-	registry export.
+	stonesRegistry projectSets at: name put: projectSet registryPath.
+	stonesRegistry export.
 %

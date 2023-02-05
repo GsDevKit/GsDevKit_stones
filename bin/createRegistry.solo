@@ -71,13 +71,12 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryName configClass |
+	| registryName registryClass |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
-	configClass := (self globalNamed: 'GDKConfiguration').	
+	registryClass := (self globalNamed: 'GDKRegistry').	
 	registryName := self positionalArgs size = 0
-		ifTrue: [ configClass hostName ]
+		ifTrue: [ registryClass hostName ]
 	  ifFalse: [ self positionalArgs at: 1 ].
-	configClass newRegistryNamed: registryName.
-	true
+	^ registryClass newRegistryNamed: registryName
 %

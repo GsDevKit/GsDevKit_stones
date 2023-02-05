@@ -123,13 +123,13 @@ updateField: fieldName with: value
 		ifFalse: [ specDict at: fieldName put: value ].
 %
 doit
-	| configClass registry name projectSet projectSetPath loadSpecs urls |
+	| registryClass stonesRegistry name projectSet projectSetPath loadSpecs urls |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
-	configClass := (self globalNamed: 'GDKConfiguration').	
-	registry := configClass registryNamed: self registry.
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	name := self projectSet.
-	projectSetPath := registry projectSets 
+	projectSetPath := stonesRegistry projectSets 
 		at: name 
 		ifAbsent: [ ].
 	projectSet := projectSetPath
@@ -173,6 +173,6 @@ doit
 
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
-	registry projectSets at: name put: projectSet registryPath.
-	registry export.
+	stonesRegistry projectSets at: name put: projectSet registryPath.
+	stonesRegistry export.
 %
