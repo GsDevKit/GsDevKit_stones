@@ -7,7 +7,7 @@ initialize
 	projectSets := Dictionary new.
 	products := Dictionary new.
 	stones := Dictionary new.
-	projectRoot := (Rowan projectNamed: 'GsDefKit_stones') repositoryRoot
+	projectRoot := (Rowan projectNamed: 'GsDevKit_stones') repositoryRoot
 		asFileReference / 'templates'.
 	projectRoot allFiles
 		do: [ :file | 
