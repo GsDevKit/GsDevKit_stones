@@ -1,3 +1,3 @@
 accessing
 hostName
-	^ (GsHostProcess execute: '/bin/hostname') trimWhiteSpace
+	^ (GsHostProcess execute: '/usr/bin/hostname') trimWhiteSpace

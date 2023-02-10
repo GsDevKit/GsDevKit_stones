@@ -4,4 +4,4 @@ chmod: path fileMode: symbolicModes
 
 	self
 		executeCommandLine:
-			'/bin/chmod ' , symbolicModes , ' ' , path asFileReference pathString
+			'/usr/bin/chmod ' , symbolicModes , ' ' , path asFileReference pathString

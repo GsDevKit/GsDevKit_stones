@@ -13,7 +13,7 @@ downloadProductName: productName productFile: downloadFileName to: downloadPath
 				ifFalse: [ 
 					self class
 						executeCommandLine:
-							'/bin/curl  -L -O -s -S "https://ftp.gemtalksystems.com/GemStone64/'
+							'/usr/bin/curl  -L -O -s -S "https://ftp.gemtalksystems.com/GemStone64/'
 								, productName , '/' , downloadFileName , '.zip' , '"' ].
-			self class executeCommandLine: '/bin/unzip ' , downloadFileName , '.zip' ] ]
+			self class executeCommandLine: '/usr/bin/unzip ' , downloadFileName , '.zip' ] ]
 		ensure: [ self class chdir: cwd ]
