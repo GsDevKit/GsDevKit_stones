@@ -12,5 +12,6 @@ _envName: envName defaultDir: defaultDir
 					nil ]
 				ifFalse: [ ^ dir ] ])
 		ifNil: [ 
+self halt.
 			System gemEnvironmentVariable: envVarName put: defaultDir.
 			^ defaultDir asFileReference ]

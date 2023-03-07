@@ -18,7 +18,10 @@ usage
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [ <registry-name> ]
 
 DESCRIPTION
-  Create GsDevKit_stones registry for the given . If no <registry-name> is specified, /usr/bin/hostname is used. A registry is created in $XDG_DATA_HOME/gsdevkit_stones/registry, where the default value of $XDG_DATA_HOME is $HOME/.config. 
+  Create GsDevKit_stones registry for the given . If no <registry-name> is 
+  specified, /usr/bin/hostname is used. A registry is created in 
+  $STONES_DATA_HOME/gsdevkit_stones/registry, where the default value of 
+  $STONES_DATA_HOME is $XDG_DATA_HOME, if defined and $HOME/.config, if not. 
 
   GDKRegistry {
     'lathe' : '/home/dhenrich/.local/share/gsdevkit_stones/registry/lathe.ston',

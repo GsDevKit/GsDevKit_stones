@@ -74,7 +74,7 @@ doit
 		gemstoneVersionString: gemstoneVersion.
 	stoneSpec
 		parentRegistryName: self registry;
-		parentRegistryPath: '$XDG_DATA_HOME/' , (stonesRegistry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+		parentRegistryPath: GDKGsDevKit_stonesBase dataHomeEnvVar, '/' , (stonesRegistry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
 		yourself.
 	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
 		ifTrue: [ 
