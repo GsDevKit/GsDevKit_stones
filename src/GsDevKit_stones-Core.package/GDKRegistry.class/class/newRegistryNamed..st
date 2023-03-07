@@ -5,7 +5,7 @@ newRegistryNamed: registryName
 	stoneRegistry := (GDKStonesRegistry newNamed: registryName)
 		parentRegistryName: registryName;
 		parentRegistryPath:
-				'$XDG_DATA_HOME/'
+				GDKGsDevKit_stonesBase dataHomeEnvVar
 						, (self configFile relativeTo: GDK_XDGBase data_home) pathString;
 		yourself.
 	registryFile := stoneRegistry registryFile.

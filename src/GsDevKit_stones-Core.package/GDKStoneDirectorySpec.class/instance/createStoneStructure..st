@@ -7,9 +7,7 @@ createStoneStructure: stoneSpec
 	useExtentDir := ''.
 	useCustomEnv := false.
 	gemstoneReference := stoneSpec gemstonePath asFileReference.
-	System
-		gemEnvironmentVariable: 'GEMSTONE'
-		put: gemstoneReference pathString.
+	System gemEnvironmentVariable: 'GEMSTONE' put: gemstoneReference pathString.
 	self class symbolicLink: gemstoneReference linkName: stoneRoot / 'product'.
 	(self dbfSource: stoneSpec) copyTo: stoneRoot / 'extent0.dbf'.
 	self class chmod: (stoneRoot / 'extent0.dbf') pathString fileMode: 'u+w'.
@@ -18,7 +16,7 @@ createStoneStructure: stoneSpec
 		open: (stoneRoot / 'system.conf') pathString
 		mode: 'w+'
 		onClient: false.	"need to append entries to the file"
-	exportDir at: 'XDG_DATA_HOME' put: self class data_home pathString.
+	exportDir at: GDKGsDevKit_stonesBase dataHomeEnvVar put: self class data_home pathString.
 	self
 		keysAndValuesDo: [ :key :value | 
 			key = #'customenv'
