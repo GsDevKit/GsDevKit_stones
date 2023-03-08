@@ -1,4 +1,4 @@
-start/stop
+runtime
 startStone: superDoitScript
 	| arrayOfOutputs |
 	superDoitScript stdout
@@ -8,6 +8,7 @@ startStone: superDoitScript
 						, DateAndTime now printString;
 		lf;
 		lf.
+	self defineCustomEnvVars.
 	arrayOfOutputs := (Rowan globalNamed: 'GsStartStone')
 		startStone: self stoneName
 		exeConfFile: self sysConfFile pathString
