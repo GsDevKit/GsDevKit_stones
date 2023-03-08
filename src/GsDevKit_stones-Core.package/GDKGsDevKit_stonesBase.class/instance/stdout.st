@@ -1,0 +1,3 @@
+accessing
+stdout
+	^ GsFile stdout
