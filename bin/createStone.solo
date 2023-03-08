@@ -73,7 +73,7 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryClass stonesRegistry gemstoneVersion stoneName rootDir stoneSpecClass |
+	| registryClass stonesRegistry gemstoneVersion stoneName rootDir stoneSpec stoneSpecClass |
 	self preDoitSpecLoad: [:spec | 
 		spec projectName = 'GsCommands'
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
