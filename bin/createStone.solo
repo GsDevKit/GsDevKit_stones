@@ -109,6 +109,6 @@ doit
 		symbolicLink: stoneSpec registryPath 
 		linkName: stoneSpec rootDir / '.GDKStoneSpec.ston'.
 	self start
-		ifTrue: [ stoneSpec startStone ].
+		ifTrue: [ stoneSpec startStone: self ].
 	^ stoneSpec
 %

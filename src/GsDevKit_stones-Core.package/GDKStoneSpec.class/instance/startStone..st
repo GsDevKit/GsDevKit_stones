@@ -1,17 +1,17 @@
 start/stop
-startStone
+startStone: superDoitScript
 	| arrayOfOutputs |
-	self stdout
+	superDoitScript stdout
 		lf;
 		nextPutAll:
-				'======  ' , self scriptPath , ' starting stone at '
+				'======  ' , superDoitScript scriptPath , ' starting stone at '
 						, DateAndTime now printString;
 		lf;
 		lf.
 	arrayOfOutputs := (Rowan globalNamed: 'GsStartStone')
 		startStone: self stoneName
 		exeConfFile: self sysConfFile pathString.
-	self stdout nextPutAll: (arrayOfOutputs at: 1).	"stdout"
-	self stdout
+	superDoitScript stdout nextPutAll: (arrayOfOutputs at: 1).	"stdout"
+	superDoitScript stdout
 		nextPutAll: '****************************************';
 		lf
