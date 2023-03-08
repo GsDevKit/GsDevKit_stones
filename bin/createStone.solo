@@ -2,6 +2,7 @@
 options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
+SuperDoitOptionalOptionWithNoArg long: 'start'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectsHome'.
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'root'.
@@ -52,13 +53,31 @@ RwLoadSpecificationV2 {
 		}
 	},
 	#comment : ''
+},
+RwLoadSpecificationV2 {
+	#projectName : 'GsCommands',
+	#projectSpecFile : 'rowan/project.ston',
+	#diskUrl : '$GEMSTONE/examples/GsCommands/projectsHome/GsCommands',
+	#componentNames : [
+		'Commands'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'UserGlobals'
+			}
+		}
+	},
+	#comment : ''
 }
 ]
 %
 doit
-	| registryClass stonesRegistry stoneSpec gemstoneVersion stoneName rootDir stoneSpecClass |
-	self preDoitSpecLoad: [:spec |
-		spec projectsHome: self dirname asFileReference parent parent].
+	| registryClass stonesRegistry gemstoneVersion stoneName rootDir stoneSpecClass |
+	self preDoitSpecLoad: [:spec | 
+		spec projectName = 'GsCommands'
+			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
+			ifFalse: [ self dirname asFileReference parent parent ] ].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
@@ -89,5 +108,7 @@ doit
 	stoneSpec class 
 		symbolicLink: stoneSpec registryPath 
 		linkName: stoneSpec rootDir / '.GDKStoneSpec.ston'.
+	self start
+		ifTrue: [ stoneSpec startStone ].
 	^ stoneSpec
 %
