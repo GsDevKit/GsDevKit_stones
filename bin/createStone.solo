@@ -77,7 +77,7 @@ doit
 	self preDoitSpecLoad: [:spec | 
 		spec projectName = 'GsCommands'
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
-			ifFalse: [ self dirname asFileReference parent parent ] ].
+			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
