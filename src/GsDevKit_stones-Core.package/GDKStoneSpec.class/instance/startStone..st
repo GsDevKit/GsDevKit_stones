@@ -10,7 +10,8 @@ startStone: superDoitScript
 		lf.
 	arrayOfOutputs := (Rowan globalNamed: 'GsStartStone')
 		startStone: self stoneName
-		exeConfFile: self sysConfFile pathString.
+		exeConfFile: self sysConfFile pathString
+		logFile: self stoneDirectorySpec logsDir / self stoneName , 'log'.
 	superDoitScript stdout nextPutAll: (arrayOfOutputs at: 1).	"stdout"
 	superDoitScript stdout
 		nextPutAll: '****************************************';
