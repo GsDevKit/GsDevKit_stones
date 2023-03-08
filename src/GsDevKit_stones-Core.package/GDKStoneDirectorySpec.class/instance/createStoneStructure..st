@@ -4,7 +4,7 @@ createStoneStructure: stoneSpec
 	exportDir := Dictionary new.
 	stoneRoot := stoneSpec rootDir.
 	useTranlogDir := ''.
-	useExtentDir := ''.
+	useExtentDir := '/'.
 	useCustomEnv := false.
 	gemstoneReference := stoneSpec gemstonePath asFileReference.
 	System gemEnvironmentVariable: 'GEMSTONE' put: gemstoneReference pathString.
@@ -35,7 +35,7 @@ createStoneStructure: stoneSpec
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'extents'
 				ifTrue: [ 
-					useExtentDir := '/' , value.
+					useExtentDir := '/' , value, '/'.
 					(stoneRoot / value) ensureCreateDirectory ].
 			key = #'logs'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
@@ -76,7 +76,7 @@ createStoneStructure: stoneSpec
 			systemConfStream
 				lf;
 				nextPutAll:
-						'DBF_EXTENT_NAMES = ' , stoneRoot pathString , useExtentDir , '/extent0.dbf;';
+						'DBF_EXTENT_NAMES = ' , stoneRoot pathString , useExtentDir , 'extent0.dbf;';
 				lf;
 				nextPutAll:
 						'STN_TRAN_LOG_DIRECTORIES = ' , stoneRoot pathString , useTranlogDir , ';';
