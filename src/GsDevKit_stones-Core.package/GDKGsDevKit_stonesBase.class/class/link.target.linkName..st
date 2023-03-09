@@ -4,5 +4,5 @@ link: options target: targetPath linkName: linkPath
 
 	self
 		executeCommandLine:
-			'/usr/bin/ln ' , options , ' ' , targetPath asFileReference pathString , ' '
+			'/bin/ln ' , options , ' ' , targetPath asFileReference pathString , ' '
 				, linkPath asFileReference pathString
