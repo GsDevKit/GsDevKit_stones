@@ -53,11 +53,7 @@ doit
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
-	gemstonePath := (System gemVersionReport at: 'osName') = 'Darwin'
-		ifTrue: [
-			"serverRealPath: fails on Darwin ... in 3.6.5"
-			self productPath ]
-  	ifFalse: [ GsFile serverRealPath: self productPath ].
+	gemstonePath := GsFile serverRealPath: self productPath.
 	gemstoneVersion := self positionalArgs at: 1.
 	(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 		ifNotNil: [:existingPath | 
