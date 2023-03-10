@@ -1,0 +1,62 @@
+#!/usr/bin/env superdoit_baseimage_solo
+#
+# Standard options are always present unless customoptions section is used
+#{
+#  SuperDoitOptionalOptionWithNoArg long: 'help' short: 'h'.
+#  SuperDoitOptionalOptionWithNoArg long: 'debug' short: 'D'.
+#}
+#
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D] [--debugGem]
+DESCRIPTION
+  Write the Gem Version report for the current solo extent on stdout.
+
+OPTIONS
+  -h, --help      display usage message
+  -D, --debug     bring up topaz debugger in the event of a script error
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+  $basename
+  $basename -- gs_360
+  $basename -- gs_360 -T 100000
+-----
+%
+doit
+	self stdout nextPutAll: '--------------------'; lf.
+	self stdout nextPutAll: 'Gem Version Report for ', self executionStoneName printString; lf.
+	self stdout nextPutAll: '--------------------'; lf.
+	System gemVersionReport keysAndValuesDo: [:key :value |
+		self stdout
+			nextPutAll: key asString ; lf; tab; nextPutAll: ' = ', value asString; lf ].
+	(self globalNamed: 'Rowan' ifAbsent: [])
+		ifNotNil: [:rowanClass |
+			| commitId |
+			(rowanClass respondsTo: #versionString)
+				ifTrue: [
+					self stdout
+						nextPutAll: 'rowanVersion'; lf; tab; nextPutAll: ' = ', rowanClass versionString; lf ]
+				ifFalse: [
+					self stdout
+						nextPutAll: 'rowanVersion' ; lf; tab; nextPutAll: ' = v2.x'; lf ].
+			commitId := (rowanClass projectNamed: 'Rowan') loadedCommitId.
+			commitId isEmpty not
+				ifTrue: [
+					self stdout
+						nextPutAll: 'rowanLoadedCommitId'; lf; tab; nextPutAll: ' = ', commitId; lf ]	].
+	(AllUsers userWithId: 'DataCurator' ifAbsent: [])
+		ifNotNil: [:dataCurator |
+			((dataCurator objectNamed: 'UserGlobals')
+				at: #MCDefinition 
+				ifAbsent: [])
+					ifNotNil: [ self stdout nextPutAll: 'seasideInstalled'; lf; tab; nextPutAll: ' = true'; lf ] ].
+	self stdout nextPutAll: '--------------------'; lf.
+
+	^ self noResult
+%

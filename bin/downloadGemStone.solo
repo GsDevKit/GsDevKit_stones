@@ -1,0 +1,98 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitOptionalOptionWithRequiredArg long: 'directory'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+      [--directory=<products-directory> | --registry=<registry-name>] \
+      <gemstone-version> 
+
+DESCRIPTION
+  Download and unzip the product tree for the given <gemstone-version> to the
+  given <products-directory> or productDirectory defined by the <registry-name>.
+
+OPTIONS
+  -h, --help    display usage message
+  -D, --debug   bring up topaz debugger in the event of a script error
+  --debugGem    If terminal is connected to stdout, bring up debugger. If not,
+                dump stack to stdout and wait for topaz to attach using topaz
+                DEBUGGEM command.
+  -f, --force   Delete the stone directory if it exists.
+  -v, --verbose Verbose logging enabled.
+  --directory=<products-directory>
+                The directory where the product tree will be downloaded to.
+  --registry=<registry-name>
+                The product will be downloaded to the product 
+                directory defined by the <registry-name> and it's location will
+                be registered.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+  $basename --registry=bosch 3.6.4
+  $basename --directory=$GS_HOME/shared/downloads/products 3.6.4
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+downloadToRegistry: registryName version: version 
+	| registryClass stonesRegistry |
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: registryName.
+	stonesRegistry productNamed: version.
+	^	self noResults
+%
+method
+downloadToDirectory: directoryPath version: version
+	| registryClass |
+	registryClass := self globalNamed: 'GDKStonesRegistry'.
+	registryClass
+		downloadProductName: version 
+		productDirectory: (registryClass downloadDirectoryNameFor: version)
+		to: directoryPath.	
+	^	self noResults
+%
+doit
+	| version |
+	self preDoitSpecLoad: [:spec | 
+		spec projectsHome: self dirname asFileReference parent parent ].
+	self positionalArgs size < 1
+		ifTrue: [ self error: 'Missing required positional argument for GemStone version' ]
+		ifFalse: [ 
+			self positionalArgs size = 1
+				ifTrue: [ version := self positionalArgs at: 1 ]
+				ifFalse: [ self error: 'Only a single positional argument is allowed' ] ].
+	^ self registry
+		ifNotNil: [:registryName |
+			self downloadToRegistry: registryName version: version ]
+		ifNil: [
+			self directory
+				ifNil: [ self error: 'either --directoryName or --registryName must be specified' ]
+				ifNotNil: [:directoryPath |
+					self downloadToDirectory: directoryPath version: version ] ].
+
+%

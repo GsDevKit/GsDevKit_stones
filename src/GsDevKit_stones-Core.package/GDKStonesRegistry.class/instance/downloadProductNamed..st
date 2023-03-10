@@ -1,12 +1,10 @@
 product management
 downloadProductNamed: productName
-	| gemVersionReport downloadFileName productDirPath |
-	gemVersionReport := System gemVersionReport.
-	downloadFileName := 'GemStone64Bit' , productName , '-'
-		, (gemVersionReport at: 'cpuKind') , '.' , (gemVersionReport at: 'osName').
+	| downloadDirectoryName productDirPath |
+	downloadDirectoryName := self class downloadDirectoryNameFor: productName.
 	productDirPath := self productDirectory.
 	self
 		downloadProductName: productName
-		productFile: downloadFileName
+		productDirectory: downloadDirectoryName
 		to: productDirPath.
-	^(self productDirectory asFileReference / downloadFileName) pathString
+	^ (self productDirectory asFileReference / downloadDirectoryName) pathString

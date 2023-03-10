@@ -1,0 +1,62 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'productDirectory'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                --registry=<registry-name> --productDirectory=<path-to-product-directory>
+
+DESCRIPTION
+  Register a product directory for the named registry. If the directory does not
+  exist the directory is created. It is a good practice to create a single product
+  directory for a given host or environement and share the products across a number
+  of registries.
+
+OPTIONS
+  -h, --help      display usage message
+  -D, --debug     bring up topaz debugger in the event of a script error
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --registry=bosch --productDirectory=/home/dhenrich/gemstone/products 
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| registryClass stonesRegistry stonesRegistry productDirectory |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: self dirname asFileReference parent parent].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	productDirectory := GsFile serverRealPath: self productDirectory.
+	stonesRegistry productDirectory: productDirectory.
+	stonesRegistry export.
+
+%
