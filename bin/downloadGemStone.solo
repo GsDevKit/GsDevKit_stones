@@ -64,7 +64,7 @@ downloadToRegistry: registryName version: version
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: registryName.
 	stonesRegistry productNamed: version.
-	^	self noResults
+	^	self noResult
 %
 method
 downloadToDirectory: directoryPath version: version
@@ -74,7 +74,7 @@ downloadToDirectory: directoryPath version: version
 		downloadProductName: version 
 		productDirectory: (registryClass downloadDirectoryNameFor: version)
 		to: directoryPath.	
-	^	self noResults
+	^	self noResult
 %
 doit
 	| version |
