@@ -2,12 +2,14 @@ product management
 downloadProductName: productName productDirectory: downloadDirName to: downloadPath
 	"curl  -L -O -s -S 'https://ftp.gemtalksystems.com/GemStone64/3.6.5/GemStone64Bit3.6.5-x86_64.Linux.zip'"
 
-	| osName cwd downloadDir |
+	| osName cwd downloadDir stdout |
+stdout := GsFile stdout.
 	osName := System gemVersionReport at: 'osName'.
 	downloadDir := downloadPath asFileReference.
 	[ 
 	cwd := GsFile serverCurrentDirectory.
 	self chdir: downloadPath.
+stdout nextPutAll: 'Downloading ', downloadDirName, ' to ', downloadDir pathString, ' for ', osName; lf.
 	(downloadDir / downloadDirName) exists
 		ifFalse: [ 
 			| fmt downloadFileName |
