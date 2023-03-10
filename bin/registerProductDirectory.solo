@@ -50,13 +50,15 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryClass stonesRegistry stonesRegistry productDirectory |
+	| registryClass stonesRegistry productDir productDirPath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
-	productDirectory := GsFile serverRealPath: self productDirectory.
-	stonesRegistry productDirectory: productDirectory.
+	productDir := self productDirectory asFileReference.
+	productDir ensureCreateDirectory.
+	productDirPath := GsFile serverRealPath: productDir pathString.
+	stonesRegistry productDirectory: productDirPath.
 	stonesRegistry export.
 
 %
