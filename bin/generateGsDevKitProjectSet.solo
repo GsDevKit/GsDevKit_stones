@@ -1,0 +1,134 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem]
+
+DESCRIPTION
+  Generate GsDevKit project specs for GsDevKit. The resulting dictionary
+  is used to generate the default GsDevKit_home project sets.
+
+OPTIONS
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
+  --debugGem        If terminal is connected to stdout, bring up debugger. If not,
+                    dump stack to stdout and wait for topaz to attach using topaz
+                    DEBUGGEM command.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+
+  $basename > defaultGsDevKitProjectSets.ston
+
+-----
+%
+method
+constructUrl: specAr
+	"
+		'https://github.com/dalehenrich/filetree.git' 
+			'git@github.com:dalehenrich/filetree.git'
+	" 
+	| site organization project revision |
+	site := specAr at: 1.
+	organization := specAr at: 2.
+	project := specAr at: 3.
+	revision := specAr at: 4.
+	self https
+		ifTrue: [ ^ 'https://', site, '/', organization, '/', project, '.git' ]
+		ifFalse: [
+			self ssh
+				ifTrue: [ ^ 'git@', site, ':', organization, '/', project, '.git']
+				ifFalse: [ self error: 'Either --https or --ssh must be specified.'] ].
+%
+method
+server
+	| dict |
+	dict := Dictionary new.
+	{
+		{ 
+			'github.com' . 
+			'dalehenrich' .
+			'filetree' . 
+			'gemstone2.4' .
+		}.
+		{ 
+			'github.com' . 
+			'GsDevKit' .
+			'Grease' . 
+			'master' .
+		}.
+		{ 
+			'github.com' . 
+			'glassdb' .
+			'PharoCompatibility' . 
+			'master' .
+		}.
+		{ 
+			'github.com' . 
+			'glassdb' .
+			'glass' . 
+			'master' .
+		}.
+		{ 
+			'github.com' . 
+			'dalehenrich' .
+			'rb' . 
+			'dev' .
+		}.
+		{ 
+			'github.com' . 
+			'GsDevKit' .
+			'zinc' . 
+			'gs_master' .
+		}.
+		{ 
+			'github.com' . 
+			'GsDevKit' .
+			'zodiac' . 
+			'gs_master' .
+		}.
+	} do: [:specAr |
+		dict at: (specAr at: 3) put: specAr ].
+	^ dict
+%
+method
+clientServer
+	| dict |
+	dict := Dictionary new.
+	{
+		{ 
+			'github.com' . 
+			'dalehenrich' .
+			'metacello-work' . 
+			'master' .
+		}.
+		{ 
+			'github.com' . 
+			'dalehenrich' .
+			'tode' . 
+			'master' .
+		}.
+		{ 
+			'github.com' . 
+			'GsDevKit' .
+			'ston' . 
+			'gemstone' .
+		}.
+	} do: [:specAr |
+		dict at: (specAr at: 3) put: specAr ].
+	^ dict
+%
+doit
+	| dict |
+	dict := Dictionary new.
+	dict 
+		at: 'server' put: self server;
+		at: 'clientServer' put: self clientServer;
+		yourself.
+	^ dict
+%
