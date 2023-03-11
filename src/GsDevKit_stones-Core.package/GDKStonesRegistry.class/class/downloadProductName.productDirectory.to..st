@@ -38,16 +38,34 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 "
 					stdout
 						nextPutAll: 'Current directory: ' , cwd , ' downloadPath: ' , downloadPath;
+						lf;
+						nextPutAll: 'attaching: ' , downloadFileName;
 						lf.
 					volumeList := self
 						executeCommandLine: '/usr/bin/hdiutil attach ' , downloadFileName.
+					stdout
+						nextPutAll: 'volumeList --- ';
+						lf;
+						nextPutAll: volumeList;
+						lf;
+						nextPutAll: '---';
+						lf.
 					stream := volumeList readStream.
 					[ stream atEnd ]
 						whileFalse: [ 
 							| start |
 							line := stream nextLine.
 							(start := line indexOfSubCollection: '/Volumes' startingAt: 1) > 0
-								ifTrue: [ volume := (line copyFrom: start to: line size) asFileReference ] ].
+								ifTrue: [ 
+									stdout
+										nextPutAll: 'matching line: ' , line;
+										lf.
+									volume := (line copyFrom: start to: line size) asFileReference.
+									stdout nextPutAll: 'volume: ' , volume pathString ]
+								ifFalse: [ 
+									stdout
+										nextPutAll: 'MISSING line: ' , line;
+										lf ] ].
 					[ 
 					stdout
 						nextPutAll: 'volume: ' , volume pathString;
