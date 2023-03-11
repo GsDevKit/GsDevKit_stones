@@ -3,13 +3,17 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 	"curl  -L -O -s -S 'https://ftp.gemtalksystems.com/GemStone64/3.6.5/GemStone64Bit3.6.5-x86_64.Linux.zip'"
 
 	| osName cwd downloadDir stdout |
-stdout := GsFile stdout.
+	stdout := GsFile stdout.
 	osName := System gemVersionReport at: 'osName'.
 	downloadDir := downloadPath asFileReference.
 	[ 
 	cwd := GsFile serverCurrentDirectory.
 	self chdir: downloadPath.
-stdout nextPutAll: 'Downloading ', downloadDirName, ' to ', downloadDir pathString, ' for ', osName; lf.
+	stdout
+		nextPutAll:
+				'Downloading ' , downloadDirName , ' to ' , downloadDir pathString , ' for '
+						, osName;
+		lf.
 	(downloadDir / downloadDirName) exists
 		ifFalse: [ 
 			| fmt downloadFileName |
@@ -26,12 +30,23 @@ stdout nextPutAll: 'Downloading ', downloadDirName, ' to ', downloadDir pathStri
 			fmt = 'zip'
 				ifTrue: [ self executeCommandLine: '/usr/bin/unzip ' , downloadFileName ]
 				ifFalse: [ 
-					| volume |
+					| volumeList stream line volume |
 					"
 		VOLUME=`hdiutil attach ${dlname}.dmg | grep Volumes | awk '{print $3}'`
 		cp -rf $VOLUME/${dlname} .
 		hdiutil detach $VOLUME
 "
-					volume = '/usr/bin/hdiutil attach ' , downloadFileName.
-					self halt ] ] ]
+					stdout
+						nextPutAll: 'Current directory: ' , cwd , ' downloadPath: ' , downloadPath;
+						lf.
+					volumeList := self
+						executeCommandLine: '/usr/bin/hdiutil attach ' , downloadFileName.
+					stream := volumeList readStream.
+					[ stream atEnd ]
+						whileFalse: [ 
+							line := stream nextLine asArrayOfSubstrings.
+							(line size = 3 and: [ (line at: 3) beginsWith: '/Volumes' ])
+								ifTrue: [ volume := (line at: 3) asFileReference ] ].
+					volume / downloadFileName copyAllTo: downloadFileName asFileReference.
+					self executeCommandLine: '/usr/bin/hdiutil detach ' , volume pathString ] ] ]
 		ensure: [ self chdir: cwd ]
