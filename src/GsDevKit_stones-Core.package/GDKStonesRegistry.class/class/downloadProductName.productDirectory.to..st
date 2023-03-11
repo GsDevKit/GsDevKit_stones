@@ -44,9 +44,13 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 					stream := volumeList readStream.
 					[ stream atEnd ]
 						whileFalse: [ 
-							line := stream nextLine asArrayOfSubstrings.
-							(line size = 3 and: [ (line at: 3) beginsWith: '/Volumes' ])
-								ifTrue: [ volume := (line at: 3) asFileReference ] ].
+							| start |
+							line := stream nextLine.
+							(start := line indexOfSubCollection: '/Volumes' startingAt: 1) > 0
+								ifTrue: [ volume := (line copyFrom: start to: line size) asFileReference ] ].
+					stdout
+						nextPutAll: 'volume: ' , volume pathString;
+						lf.
 					volume / downloadFileName copyAllTo: downloadFileName asFileReference.
 					self executeCommandLine: '/usr/bin/hdiutil detach ' , volume pathString ] ] ]
 		ensure: [ self chdir: cwd ]
