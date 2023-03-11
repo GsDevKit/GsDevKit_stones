@@ -77,7 +77,12 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 								'copying ' , (volume / downloadDirName) pathString , ' to '
 										, (downloadDir / downloadDirName) pathString;
 						lf.
-					volume / downloadDirName copyAllTo: downloadDir / downloadDirName ]
+					self
+						executeCommandLine:
+							'/bin/cp -R ' , (volume / downloadDirName) pathString , ' '
+								, (downloadDir / downloadDirName) pathString
+						stdout: nil
+						andInput: nil ]
 						ensure: [ 
 							volume
 								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach ' , volume pathString ] ] ] ] ]
