@@ -42,7 +42,7 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 						nextPutAll: 'attaching: ' , downloadDirName;
 						lf.
 					volumeList := self
-						executeCommandLine: '/usr/bin/hdiutil attach ' , downloadDirName
+						executeCommandLine: '/usr/bin/hdiutil attach ' , downloadFileName
 						stdout: nil
 						andInput: nil.
 					stdout
@@ -68,9 +68,13 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 									stdout
 										nextPutAll: 'MISSING line: ' , line;
 										lf ] ].
-					[ 
 					stdout
 						nextPutAll: 'volume: ' , volume pathString;
+						lf.
+					[ 
+					stdout
+						nextPutAll:
+								'copying ' , (volume / downloadDirName) pathString , ' to ' , downloadDirName;
 						lf.
 					volume / downloadDirName copyAllTo: downloadDirName asFileReference ]
 						ensure: [ 
