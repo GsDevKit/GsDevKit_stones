@@ -15,7 +15,7 @@ executeCommandLine: commandLine andInput: stdinStringOrNil
 						, stdoutRedirectPath pathString , ' stderr: '
 						, errorRedirectReference pathString ].
 	[ 
-	GsHostProcess new
+	^ GsHostProcess new
 		commandLine: commandLine;
 		appendToFiles: true;
 		stderrPath: errorRedirectReference pathString;
