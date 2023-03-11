@@ -74,9 +74,10 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 					[ 
 					stdout
 						nextPutAll:
-								'copying ' , (volume / downloadDirName) pathString , ' to ' , downloadDirName;
+								'copying ' , (volume / downloadDirName) pathString , ' to '
+										, (downloadDir / downloadDirName) pathString;
 						lf.
-					volume / downloadDirName copyAllTo: downloadDirName asFileReference ]
+					volume / downloadDirName copyAllTo: downloadDir / downloadDirName ]
 						ensure: [ 
 							volume
 								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach ' , volume pathString ] ] ] ] ]
