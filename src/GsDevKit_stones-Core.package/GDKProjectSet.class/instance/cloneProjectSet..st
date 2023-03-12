@@ -1,7 +1,7 @@
 installation
 cloneProjectSet: gitRootPath
 	| gitTool |
-	gitTool := Rowan gitTool.
+	gitTool := Rowan gitTools.
 	self loadSpecs
 		keysAndValuesDo: [ :projectName :specDict | 
 			| gitUrls |

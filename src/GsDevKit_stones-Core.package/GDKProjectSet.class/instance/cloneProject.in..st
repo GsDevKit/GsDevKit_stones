@@ -1,7 +1,7 @@
 installation
 cloneProject: projectName in: gitRootPath
 	| gitTool specDict gitUrls |
-	gitTool := Rowan gitTool.
+	gitTool := Rowan gitTools.
 	specDict := self loadSpecs at: projectName.
 	gitUrls := specDict at: 'gitUrls'.
 	gitUrls
