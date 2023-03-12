@@ -9,7 +9,7 @@ SuperDoitOptionalOptionWithNoArg long: 'strict'.
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> --projectSet=<projectSet-name> [ <project-name>... ]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> --projectSet=<projectSet-name>
 
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 
@@ -60,7 +60,7 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryClass stonesRegistry name projectSet args projectSetPath projectNames |
+	| registryClass stonesRegistry name projectSet projectSetPath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 
@@ -73,37 +73,10 @@ doit
 	projectSet := (self globalNamed: 'GDKProjectSet') 
 				fromPath: projectSetPath 
 				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ].
-	projectNames := self positionalArgs size = 0
-		ifTrue: [ projectSet loadSpecs keys ]
-		ifFalse: [ self positionalArgs ].
-	projectNames do: [:projectName |
-		| specUrl loadSpec url |
-		specUrl := (projectSet loadSpecs at: projectName) at: 'specUrl'.
-		url := specUrl asRwUrl.
-		({ 'https' . 'file' } includes: url schemeName)
-			ifFalse: [ self halt ].
-		
-		loadSpec := RwSpecification fromUrl: specUrl.
-		((projectSet loadSpecs at: projectName) at: 'revision' ifAbsent: []) 
-			ifNotNil: [:revision |
-				loadSpec revision: revision ].
-		((projectSet loadSpecs at: projectName) at: 'gitUrl' ifAbsent: []) 
-			ifNotNil: [:gitUrl |
-				loadSpec gitUrl: gitUrl ].
-		((projectSet loadSpecs at: projectName) at: 'diskUrl' ifAbsent: []) 
-			ifNotNil: [:diskUrl |
-				loadSpec diskUrl: diskUrl ].
-		((projectSet loadSpecs at: projectName) at: 'readonlyDiskUrl' ifAbsent: []) 
-			ifNotNil: [:readonlyDiskUrl |
-				loadSpec readonlyDiskUrl: readonlyDiskUrl ].
-		((projectSet loadSpecs at: projectName) at: 'componentName' ifAbsent: []) 
-			ifNotNil: [:componentName |
-				loadSpec componentNames: { componentName } ].
-		((projectSet loadSpecs at: projectName) at: 'projectsHome' ifAbsent: []) 
-			ifNil: [ loadSpec projectsHome: self projectsHome ]
-			ifNotNil: [:projectsHome |
-				loadSpec projectsHome: projectsHome ].
-		self strict
-			ifTrue: [ loadSpec repositoryResolutionPolicy: #strict ].
-		loadSpec resolveProject ].
+	self positionalArgs size = 0
+		ifTrue: [ projectSet cloneProjectSet: self projectsHome ]
+		ifFalse: [ 
+			self positionalArgs  do: [:projectName |
+			projectSet cloneProject: projectName in: self projectsHome ].
+	true
 %
