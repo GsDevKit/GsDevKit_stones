@@ -92,7 +92,7 @@ populateProjectSet: projectSet from: dictionaryPath
 		readStreamDo: [:fileStream | 
 			(STON reader on:  (ZnBufferedReadStream on:  fileStream)) next ].
 	loadSpecs := projectSet loadSpecs.
-	(type := specDictonary at: 'type') = 'gitUrlSpec'
+	(type := specDictionary at: 'type') = 'gitUrlSpec'
 		ifTrue: [ 
 			(specDictionary at: self key)
 				do: [:specArray |
