@@ -1,0 +1,216 @@
+#!/usr/bin/env superdoit_stone
+# Standard options are always present unless customoptions section is used
+#
+#options
+#{
+#  SuperDoitOptionalOptionWithNoArg long: 'help' short: 'h'.
+#  SuperDoitOptionalOptionWithNoArg long: 'debug' short: 'D'.
+#}
+#%
+# Example options section
+#
+#options
+#{
+#	SuperDoitOptionalOptionWithNoArg long: 'noarg'.
+#	SuperDoitOptionalOptionWithNoArg long: 'noarg' short: 'n'.
+#
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional'.
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' default: 'default'.
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o'.
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o' default: 'default'.
+#
+#	SuperDoitRequiredOptionWithRequiredArg long: 'required'.
+#	SuperDoitRequiredOptionWithRequiredArg long: 'required' short: 'r'.
+#}
+#%
+#
+usage
+-----
+USAGE 
+  $basename [--help | -h] [--debug | -D] -- ([-r] | -l | -L) -I <path-to-.topazini> \
+            [<topaz-command-line-args>]
+
+DESCRIPTION
+  bootstrap tODE into the stone.
+
+OPTIONS
+  <path-to-.topazini>        path to a .topazini file with a minimum of username, 
+                             password and stone name set
+  <topaz-command-line-args>  topaz options that should be passed to topaz when running
+                             running the script
+  -h, --help                 display usage message
+  -D, --debug                bring up topaz debugger in the event of a script error
+
+EXAMPLES
+  $basename -h                     -- -l -I ./.topazini
+  $basename -D <script-arguments>  -- -l -I ./.topazini
+  $basename <script-arguments>     -- -l -I ./.topazini
+-----
+%
+instvars
+projectsHome
+%
+method
+step_1_upgradeGLASS
+"First step in tODE load process: upgrade GLASS (if necessary).
+ Should not change this script as GsUpgrader upgrades GLASS correctly."
+
+  | gofer repositoryDir newCache |
+
+  Transcript
+    cr;
+    show: '---Step 1 of tODE bootstrap process: execute upgradeGlass.ws'.
+  Transcript
+    cr;
+    show: '-----Install GsUpgrader-Core package '.
+	projectsHome := GsFile _expandEnvVariable: 'STONES_PROJECTS_HOME' isClient: false.
+  gofer := Gofer new
+    package: 'GsUpgrader-Core';
+    yourself.
+
+  repositoryDir := ServerFileDirectory on: projectsHome, '/github-cache'.
+	newCache := MCCacheRepository new directory: repositoryDir.
+  MCCacheRepository setDefault: newCache.
+  Transcript show: ' from http://ss3.gemtalksystems.com/ss/gsUpgrader'.
+  gofer url: 'http://ss3.gemtalksystems.com/ss/gsUpgrader'.
+  gofer load.
+  Transcript
+    cr;
+    show: '-----Upgrade GLASS using GsUpgrader class>>upgradeGLASSForGsDevKit_home'.
+  (Smalltalk at: #'GsUpgrader') upgradeGLASS
+%
+method
+step_2_loadMetacello
+"Second step in tODE load process: lock Metacello if you want to use a non-standard repository.
+ load Metacello from local git clone."
+
+"Important Note --- the values of these env vars are as of the last time that the netldi was started"
+
+Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello.ws'.
+
+GsUpgrader batchErrorHandlingDo: [
+  | metacelloRepo filetreeRepo greaseRepo pharoCompatRepo glass1Repo rbRepo stonRepo zincRepo zodiacRepo |
+  metacelloRepo := 'filetree://', projectsHome, '/metacello-work/repository'.
+  filetreeRepo := 'filetree://', projectsHome, '/filetree/repository'.
+  greaseRepo := 'filetree://', projectsHome, '/Grease/repository'.
+  pharoCompatRepo := 'filetree://', projectsHome, '/PharoCompatibility/repository'.
+  glass1Repo := 'filetree://', projectsHome, '/glass/repository'.
+  rbRepo := 'filetree://', projectsHome, '/rb/repository'.
+  stonRepo := 'filetree://', projectsHome, '/ston/repository'.
+  zincRepo := 'filetree://', projectsHome, '/zinc/repository'.
+  zodiacRepo := 'filetree://', projectsHome, '/zodiac/repository'.
+  Transcript 
+    cr; 
+    show: 'Locking Metacello: ', metacelloRepo printString;
+    cr; 
+    show: 'Locking FileTree: ', filetreeRepo printString;
+    cr; 
+    show: 'Locking GLASS1: ', glass1Repo printString;
+    cr; 
+    show: 'Locking PharoCompatibility: ', pharoCompatRepo printString;
+    cr; 
+    show: 'Locking Ston: ',stonRepo printString;
+    cr; 
+    show: 'Locking RB: ', rbRepo printString;
+    cr; 
+    show: 'Locking ZincHTTPComponents: ', zincRepo printString;
+    cr; 
+    show: 'Locking Zodiac: ', zodiacRepo printString;
+    yourself.
+  Metacello new
+    baseline: 'Metacello';
+    repository: metacelloRepo;
+    lock.
+  Metacello new
+    baseline: 'FileTree';
+    repository: filetreeRepo;
+    lock.
+  Metacello new
+    baseline: 'PharoCompatibility';
+    repository: pharoCompatRepo;
+    lock.
+  Metacello new
+    baseline: 'GLASS1';
+    repository: glass1Repo;
+    lock.
+  Metacello new
+    baseline: 'RB';
+    repository: rbRepo;
+    lock.
+  Metacello new
+    baseline: 'ZincHTTPComponents';
+    repository: zincRepo;
+    lock.
+  Metacello new
+    baseline: 'Zodiac';
+    repository: zodiacRepo;
+    lock.
+  Metacello new
+    baseline: 'Ston';
+    repository: stonRepo;
+    lock.
+  Transcript
+    cr; 
+    show: 'Lock and Load Grease (to ensure new repo is honored): ', greaseRepo printString.
+  (Metacello image
+    configuration: [ :spec | spec name = 'Grease' ];
+    list) do: [ :greaseSpec |
+      Metacello image
+        configuration: 'Grease';
+        unregister ].
+  Metacello new
+    baseline: 'Grease';
+    repository: greaseRepo;
+    lock.
+  Metacello new
+    baseline: 'Grease';
+    repository: greaseRepo;
+    get.
+  Metacello new
+    baseline: 'Grease';
+    repository: greaseRepo;
+    load.
+    ].
+%
+method
+step_3_loadGLASS1
+"Third step in tODE load process: load GLASS1.
+ Let GsUpgrader do the load. GsUpgrader package loaded during step 1 (upgradeGLASS.ws)."
+
+Transcript cr; show: '---Step 3 of tODE bootstrap process: execute loadGLASS1.ws'.
+
+GsUpgrader batchErrorHandlingDo: [
+  Transcript
+    cr;
+    show: '-----Upgrade GLASS1 using gsUpgrader'.
+  GsUpgrader upgradeGLASS1 ].
+%
+method
+step_4_loadTode
+"Fourth and final step in tODE load process: load tODE."
+
+Transcript cr; show: '---Step 4 of tODE bootstrap process: execute loadTode.ws'.
+
+GsUpgrader batchErrorHandlingDo: [
+  | todeRepo |
+  todeRepo := 'filetree://', projectsHome, '/tode/repository'.
+  Transcript
+    cr;
+    show: '-----Install tODE using ', todeRepo.
+  GsDeployer bulkMigrate: [ 
+    Metacello new
+      baseline: 'Tode';
+      repository: todeRepo;
+      get;
+      lock;
+      load: 'GemStone Dev' ] ].
+%
+doit
+	self 
+		step_1_upgradeGLASS;
+		step_2_loadMetacello;
+		step_3_loadGLASS1;
+		step_4_loadTode;
+		yourself.
+	^ self noResult
+%
