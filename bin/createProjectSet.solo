@@ -7,6 +7,7 @@ SuperDoitOptionalOptionWithRequiredArg long: 'from'.
 SuperDoitOptionalOptionWithRequiredArg long: 'key'.
 SuperDoitOptionalOptionWithNoArg long: 'ssh'.
 SuperDoitOptionalOptionWithNoArg long: 'https'.
+SuperDoitOptionalOptionWithNoArg long: 'spec'.
 }
 %
 usage
@@ -16,7 +17,9 @@ USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
       $basename registry=<registry-name> --projectSet=<projectSet-name> \
                 --from=gsdevkitProjectSpecs.ston --key=server --ssh
       $basename registry=<registry-name> --projectSet=<projectSet-name> \
-                --from=gsdevkitProjectSpecs.ston --key=clientServer --ssh
+                --from=gsdevkitProjectSpecs.ston --key=clientServer --https
+      $basename registry=<registry-name> --projectSet=<projectSet-name> \
+                --from=gsdevkitProjectSpecs.ston --key=clientServer --spec
 
 DESCRIPTION
   A project set is a list of load specs that specify a group of git repositories that are managed together. 
