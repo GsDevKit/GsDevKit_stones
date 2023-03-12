@@ -77,6 +77,6 @@ doit
 		ifTrue: [ projectSet cloneProjectSet: self projectsHome ]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-			projectSet cloneProject: projectName in: self projectsHome ].
+				projectSet cloneProject: projectName in: self projectsHome ] ].
 	true
 %
