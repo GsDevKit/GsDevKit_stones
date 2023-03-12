@@ -28,24 +28,6 @@ EXAMPLES
 -----
 %
 method
-constructUrl: specAr
-	"
-		'https://github.com/dalehenrich/filetree.git' 
-			'git@github.com:dalehenrich/filetree.git'
-	" 
-	| site organization project revision |
-	site := specAr at: 1.
-	organization := specAr at: 2.
-	project := specAr at: 3.
-	revision := specAr at: 4.
-	self https
-		ifTrue: [ ^ 'https://', site, '/', organization, '/', project, '.git' ]
-		ifFalse: [
-			self ssh
-				ifTrue: [ ^ 'git@', site, ':', organization, '/', project, '.git']
-				ifFalse: [ self error: 'Either --https or --ssh must be specified.'] ].
-%
-method
 server
 	| dict |
 	dict := Dictionary new.

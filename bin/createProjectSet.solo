@@ -3,6 +3,9 @@ options
 {
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
+SuperDoitOptionalOptionWithRequiredArg long: 'from'.
+SuperDoitOptionalOptionWithNoArg long: 'ssh'.
+SuperDoitOptionalOptionWithNoArg long: 'https'.
 }
 %
 usage
@@ -29,6 +32,10 @@ EXAMPLES
   $basename --debugGem
   $basename 
   $basename --registry=bosch --projectSet=shared
+  $basename --registry=bosch --projectSet=gsdevkit_home --from=gsdevkitProjectSpecs.ston \
+            --key=server --ssh 
+  $basename --registry=bosch --projectSet=gsdevkit_home --from=gsdevkitProjectSpecs.ston \
+            --key=clientServer --http
 -----
 %
 specs
@@ -51,6 +58,42 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+constructUrl: specAr
+	"
+		'https://github.com/dalehenrich/filetree.git' 
+			'git@github.com:dalehenrich/filetree.git'
+	" 
+	| site organization project revision |
+	site := specAr at: 1.
+	organization := specAr at: 2.
+	project := specAr at: 3.
+	revision := specAr at: 4.
+	self https
+		ifTrue: [ ^ 'https://', site, '/', organization, '/', project, '.git' ]
+		ifFalse: [
+			self ssh
+				ifTrue: [ ^ 'git@', site, ':', organization, '/', project, '.git']
+				ifFalse: [ self error: 'Either --https or --ssh must be specified.'] ].
+%
+method
+populateProjectSet: projectSet from: dictionaryPath
+	| specDictionary loadSpecs specDict |
+	specDictonary := dictionaryPath readFrom: [:fileStream | STON fromStream: fileStream ].
+	loadSpecs := projectSet loadSpecs.
+	(specDictionary at: self key)
+		do: [:specArray |
+			| specUrl projectName |
+			projectName := specArray at: 3.
+			specUrl := self constructUrl: specArray.
+			specDict := Dictionary new 
+							at: 'specUrl' put: specUrl;
+							at: 'revision' put: (specArray at 4);
+							yourself.
+			loadSpecs 
+				at: projectName
+				put: specDict ].
+%
 doit
 	| registryClass stonesRegistry name projectSet |
 	self preDoitSpecLoad: [:spec |
@@ -68,4 +111,9 @@ doit
 	projectSet export.
 	stonesRegistry projectSets at: name put: projectSet registryPath.
 	stonesRegistry export.
+  self from
+		ifNotNil: [:dictionaryPath | 
+			self populateProjectSet: projectSet from: dictionaryPath.
+			projectSet export ].
+	^ projectSet
 %

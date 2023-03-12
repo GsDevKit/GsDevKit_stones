@@ -1,0 +1,66 @@
+{
+	'server' : {
+		'PharoCompatibility' : [
+			'github.com',
+			'glassdb',
+			'PharoCompatibility',
+			'master'
+		],
+		'filetree' : [
+			'github.com',
+			'dalehenrich',
+			'filetree',
+			'gemstone2.4'
+		],
+		'Grease' : [
+			'github.com',
+			'GsDevKit',
+			'Grease',
+			'master'
+		],
+		'glass' : [
+			'github.com',
+			'glassdb',
+			'glass',
+			'master'
+		],
+		'rb' : [
+			'github.com',
+			'dalehenrich',
+			'rb',
+			'dev'
+		],
+		'zinc' : [
+			'github.com',
+			'GsDevKit',
+			'zinc',
+			'gs_master'
+		],
+		'zodiac' : [
+			'github.com',
+			'GsDevKit',
+			'zodiac',
+			'gs_master'
+		]
+	},
+	'clientServer' : {
+		'metacello-work' : [
+			'github.com',
+			'dalehenrich',
+			'metacello-work',
+			'master'
+		],
+		'tode' : [
+			'github.com',
+			'dalehenrich',
+			'tode',
+			'master'
+		],
+		'ston' : [
+			'github.com',
+			'GsDevKit',
+			'ston',
+			'gemstone'
+		]
+	}
+}
