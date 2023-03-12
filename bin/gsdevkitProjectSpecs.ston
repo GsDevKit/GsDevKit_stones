@@ -1,67 +1,97 @@
 {
-	'type' : 'gitUrlSpec',
 	'server' : {
-		'PharoCompatibility' : [
-			'github.com',
-			'glassdb',
-			'PharoCompatibility',
-			'master'
-		],
-		'filetree' : [
-			'github.com',
-			'dalehenrich',
-			'filetree',
-			'gemstone2.4'
-		],
-		'Grease' : [
-			'github.com',
-			'GsDevKit',
-			'Grease',
-			'master'
-		],
-		'glass' : [
-			'github.com',
-			'glassdb',
-			'glass',
-			'master'
-		],
-		'rb' : [
-			'github.com',
-			'dalehenrich',
-			'rb',
-			'dev'
-		],
-		'zinc' : [
-			'github.com',
-			'GsDevKit',
-			'zinc',
-			'gs_master'
-		],
-		'zodiac' : [
-			'github.com',
-			'GsDevKit',
-			'zodiac',
-			'gs_master'
-		]
+		'PharoCompatibility' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'glassdb'
+				]
+			}
+		},
+		'filetree' : {
+			'revision' : 'gemstone2.4',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'dalehenrich'
+				]
+			}
+		},
+		'Grease' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'GsDevKit'
+				]
+			}
+		},
+		'glass' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'glassdb'
+				]
+			}
+		},
+		'rb' : {
+			'revision' : 'dev',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'dalehenrich'
+				]
+			}
+		},
+		'zinc' : {
+			'revision' : 'gs_master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'GsDevKit'
+				]
+			}
+		},
+		'zodiac' : {
+			'revision' : 'gs_master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'GsDevKit'
+				]
+			}
+		}
 	},
+	'type' : 'gitUrlSpec',
 	'clientServer' : {
-		'metacello-work' : [
-			'github.com',
-			'dalehenrich',
-			'metacello-work',
-			'master'
-		],
-		'tode' : [
-			'github.com',
-			'dalehenrich',
-			'tode',
-			'master'
-		],
-		'ston' : [
-			'github.com',
-			'GsDevKit',
-			'ston',
-			'gemstone'
-		]
+		'metacello-work' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'dalehenrich'
+				]
+			}
+		},
+		'tode' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'dalehenrich'
+				]
+			}
+		},
+		'ston' : {
+			'revision' : 'gemstone',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'GsDevKit'
+				]
+			}
+		}
 	}
 }

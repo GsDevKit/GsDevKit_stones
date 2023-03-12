@@ -29,80 +29,104 @@ EXAMPLES
 %
 method
 server
-	| dict |
-	dict := Dictionary new.
+	^ self createDictionaryStructureFrom:
 	{
 		{ 
-			'github.com' . 
-			'dalehenrich' .
-			'filetree' . 
+			'filetree' .
+			{
+				'origin' -> { 'github.com' .  'dalehenrich' .  }
+			} .
 			'gemstone2.4' .
 		}.
 		{ 
-			'github.com' . 
-			'GsDevKit' .
-			'Grease' . 
+			'Grease' .
+			{
+				'origin' -> { 'github.com' .  'GsDevKit' .   } 
+			}.
 			'master' .
 		}.
-		{ 
-			'github.com' . 
-			'glassdb' .
+		{
 			'PharoCompatibility' . 
+			{
+				'origin' -> { 'github.com' .  'glassdb' .   }
+			} .
 			'master' .
 		}.
 		{ 
-			'github.com' . 
-			'glassdb' .
-			'glass' . 
+			'glass' .
+			{
+				'origin' -> { 'github.com' .  'glassdb' .   } 
+			}.
 			'master' .
 		}.
 		{ 
-			'github.com' . 
-			'dalehenrich' .
 			'rb' . 
+			{
+				'origin' -> { 'github.com' .  'dalehenrich' .  } 
+			}.
 			'dev' .
 		}.
 		{ 
-			'github.com' . 
-			'GsDevKit' .
-			'zinc' . 
+			'zinc' .
+			{
+				'origin' -> { 'github.com' .  'GsDevKit' .    } 
+			} .
 			'gs_master' .
 		}.
-		{ 
-			'github.com' . 
-			'GsDevKit' .
+		{
 			'zodiac' . 
+			{
+				'origin' -> { 'github.com' .  'GsDevKit' .   } 
+			} .
 			'gs_master' .
 		}.
-	} do: [:gitAr |
-		dict at: (gitAr at: 3) put: specAr ].
-	^ dict
+	}
 %
 method
 clientServer
-	| dict |
-	dict := Dictionary new.
+	^ self createDictionaryStructureFrom:
 	{
 		{ 
-			'github.com' . 
-			'dalehenrich' .
-			'metacello-work' . 
+			'metacello-work' .
+			{
+				'origin' -> {'github.com' . 'dalehenrich'  } 
+			}.
 			'master' .
 		}.
-		{ 
-			'github.com' . 
-			'dalehenrich' .
+		{
 			'tode' . 
+			{
+				'origin' -> {'github.com' .  'dalehenrich' .    } 
+			}.
 			'master' .
 		}.
 		{ 
-			'github.com' . 
-			'GsDevKit' .
-			'ston' . 
+			'ston' .
+			{
+				'origin' -> {'github.com' .  'GsDevKit' .   } 
+			}.
 			'gemstone' .
 		}.
-	} do: [:gitAr |
-		dict at: (gitAr at: 3) put: specAr ].
+	}
+%
+method
+createDictionaryStructureFrom: array
+	| dict |
+	dict := Dictionary new.
+	array do: [:gitAr |
+		| projectName specDict |
+		projectName := gitAr at: 1.
+		specDict := Dictionary new.
+		(gitAr at: 2)
+			do: [:assoc |
+				specDict add: assoc ].
+		dict 
+			at: projectName 
+			put: 
+				(Dictionary new
+					at: 'gitUrls' put: specDict;
+					at: 'revision' put: (gitAr at: 3); 
+					yourself) ].
 	^ dict
 %
 doit
