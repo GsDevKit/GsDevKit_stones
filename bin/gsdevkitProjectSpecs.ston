@@ -1,4 +1,5 @@
 {
+	'type' : 'gitUrlSpec',
 	'server' : {
 		'PharoCompatibility' : [
 			'github.com',

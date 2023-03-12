@@ -8,7 +8,7 @@ usage
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem]
 
 DESCRIPTION
-  Generate GsDevKit project specs for GsDevKit. The resulting dictionary
+  Generate GsDevKit git project specs for GsDevKit. The resulting dictionary
   is used to generate the default GsDevKit_home project sets.
 
 OPTIONS
@@ -74,8 +74,8 @@ server
 			'zodiac' . 
 			'gs_master' .
 		}.
-	} do: [:specAr |
-		dict at: (specAr at: 3) put: specAr ].
+	} do: [:gitAr |
+		dict at: (gitAr at: 3) put: specAr ].
 	^ dict
 %
 method
@@ -101,14 +101,15 @@ clientServer
 			'ston' . 
 			'gemstone' .
 		}.
-	} do: [:specAr |
-		dict at: (specAr at: 3) put: specAr ].
+	} do: [:gitAr |
+		dict at: (gitAr at: 3) put: specAr ].
 	^ dict
 %
 doit
 	| dict |
 	dict := Dictionary new.
 	dict 
+		at: 'type' put: 'gitUrlSpec';
 		at: 'server' put: self server;
 		at: 'clientServer' put: self clientServer;
 		yourself.

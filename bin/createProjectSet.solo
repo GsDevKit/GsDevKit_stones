@@ -68,7 +68,7 @@ RwLoadSpecificationV2 {
 ]
 %
 method
-constructUrl: specAr
+constructGitUrl: specAr
 	"
 		'https://github.com/dalehenrich/filetree.git' 
 			'git@github.com:dalehenrich/filetree.git'
@@ -87,23 +87,26 @@ constructUrl: specAr
 %
 method
 populateProjectSet: projectSet from: dictionaryPath
-	| specDictionary loadSpecs specDict |
+	| specDictionary loadSpecs specDict type |
 	specDictionary := dictionaryPath asFileReference 
 		readStreamDo: [:fileStream | 
 			(STON reader on:  (ZnBufferedReadStream on:  fileStream)) next ].
 	loadSpecs := projectSet loadSpecs.
-	(specDictionary at: self key)
-		do: [:specArray |
-			| specUrl projectName |
-			projectName := specArray at: 3.
-			specUrl := self constructUrl: specArray.
-			specDict := Dictionary new 
-							at: 'specUrl' put: specUrl;
-							at: 'revision' put: (specArray at: 4);
-							yourself.
-			loadSpecs 
-				at: projectName
-				put: specDict ].
+	(type := specDictonary at: 'type') = 'gitUrlSpec'
+		ifTrue: [ 
+			(specDictionary at: self key)
+				do: [:specArray |
+					| gitUrl projectName |
+					projectName := specArray at: 3.
+					gitUrl := self constructGitUrl: specArray.
+					specDict := Dictionary new 
+									at: 'gitUrl' put: specUrl;
+									at: 'revision' put: (specArray at: 4);
+									yourself.
+					loadSpecs 
+						at: projectName
+						put: specDict ] ]
+		ifFalse: [self error: 'The dictionary of type ', type printString , ' is not supported.'].
 %
 doit
 	| registryClass stonesRegistry name projectSet |
