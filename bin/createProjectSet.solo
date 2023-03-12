@@ -100,7 +100,7 @@ populateProjectSet: projectSet from: dictionaryPath
 					projectName := specArray at: 3.
 					gitUrl := self constructGitUrl: specArray.
 					specDict := Dictionary new 
-									at: 'gitUrl' put: specUrl;
+									at: 'gitUrl' put: gitUrl;
 									at: 'revision' put: (specArray at: 4);
 									yourself.
 					loadSpecs 
