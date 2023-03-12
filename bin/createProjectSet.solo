@@ -4,6 +4,7 @@ options
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'from'.
+SuperDoitOptionalOptionWithRequiredArg long: 'key'.
 SuperDoitOptionalOptionWithNoArg long: 'ssh'.
 SuperDoitOptionalOptionWithNoArg long: 'https'.
 }
@@ -84,7 +85,9 @@ constructUrl: specAr
 method
 populateProjectSet: projectSet from: dictionaryPath
 	| specDictionary loadSpecs specDict |
-	specDictonary := dictionaryPath readFrom: [:fileStream | STON fromStream: fileStream ].
+	specDictionary := dictionaryPath asFileReference 
+		readStreamDo: [:fileStream | 
+			(STON reader on:  (ZnBufferedReadStream on:  fileStream)) next ].
 	loadSpecs := projectSet loadSpecs.
 	(specDictionary at: self key)
 		do: [:specArray |
@@ -93,7 +96,7 @@ populateProjectSet: projectSet from: dictionaryPath
 			specUrl := self constructUrl: specArray.
 			specDict := Dictionary new 
 							at: 'specUrl' put: specUrl;
-							at: 'revision' put: (specArray at 4);
+							at: 'revision' put: (specArray at: 4);
 							yourself.
 			loadSpecs 
 				at: projectName
@@ -108,14 +111,20 @@ doit
 	name := self projectSet.
 	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
 		parentRegistryName: self registry;
-		parentRegistryPath: (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+		parentRegistryPath: (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (stonesRegistry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
 		yourself.
 	projectSet registryFile exists
-		ifTrue: [ self error: 'project set ', projectSet registryfile pathString printString, ' already exists'].
-	projectSet registryDir ensureCreateDirectory.
-	projectSet export.
-	stonesRegistry projectSets at: name put: projectSet registryPath.
-	stonesRegistry export.
+		ifTrue: [
+			| projectSetPath |
+			projectSetPath := stonesRegistry projectSets at: name.
+			projectSet := (self globalNamed: 'GDKProjectSet') 
+				fromPath: projectSetPath
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ] ]
+		ifFalse: [	
+			projectSet registryDir ensureCreateDirectory.
+			projectSet export.
+			stonesRegistry projectSets at: name put: projectSet registryPath.
+			stonesRegistry export ].
   self from
 		ifNotNil: [:dictionaryPath | 
 			self populateProjectSet: projectSet from: dictionaryPath.
