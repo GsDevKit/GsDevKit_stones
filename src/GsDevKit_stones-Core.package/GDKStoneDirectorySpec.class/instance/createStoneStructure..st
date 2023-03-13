@@ -92,6 +92,6 @@ createStoneStructure: stoneSpec
 			fileStream
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
-				nextPutAll: 'set u SystemUser p swordfish';
+				nextPutAll: 'set u DataCurator p swordfish';
 				lf ].
 	self class chmod: (stoneRoot / '.topazini') pathString fileMode: 'u+w,og-rw'
