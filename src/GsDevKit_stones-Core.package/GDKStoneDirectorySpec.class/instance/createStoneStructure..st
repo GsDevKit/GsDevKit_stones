@@ -90,7 +90,7 @@ createStoneStructure: stoneSpec
 	stoneRoot / '.topazini'
 		writeStreamDo: [ :fileStream | 
 			fileStream
-				nextPutAll: 'set GEMSTONE ' , self name;
+				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
 				nextPutAll: 'set u SystemUser p swordfish';
 				lf ].
