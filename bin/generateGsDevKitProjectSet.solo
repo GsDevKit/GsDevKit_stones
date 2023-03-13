@@ -39,6 +39,13 @@ server
 			'gemstone2.4' .
 		}.
 		{ 
+			'ston' .
+			{
+				'origin' -> { 'github.com' .  'GsDevKit' .  }
+			} .
+			'gemstone' .
+		}.
+		{ 
 			'Grease' .
 			{
 				'origin' -> { 'github.com' .  'GsDevKit' .   } 
@@ -50,6 +57,20 @@ server
 			{
 				'origin' -> { 'github.com' .  'glassdb' .   }
 			} .
+			'master' .
+		}.
+		{ 
+			'metacello-work' .
+			{
+				'origin' -> { 'github.com' .  'dalehenrich' .   } 
+			}.
+			'master' .
+		}.
+		{ 
+			'tode' .
+			{
+				'origin' -> { 'github.com' .  'dalehenrich' .   } 
+			}.
 			'master' .
 		}.
 		{ 

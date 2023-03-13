@@ -18,6 +18,15 @@
 				]
 			}
 		},
+		'ston' : {
+			'revision' : 'gemstone',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'GsDevKit'
+				]
+			}
+		},
 		'Grease' : {
 			'revision' : 'master',
 			'gitUrls' : {
@@ -33,6 +42,24 @@
 				'origin' : [
 					'github.com',
 					'glassdb'
+				]
+			}
+		},
+		'metacello-work' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'dalehenrich'
+				]
+			}
+		},
+		'tode' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : [
+					'github.com',
+					'dalehenrich'
 				]
 			}
 		},
