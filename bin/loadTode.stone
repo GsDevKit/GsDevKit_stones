@@ -88,7 +88,7 @@ step_2_loadMetacello
 
 Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello.ws'.
 
-GsUpgrader batchErrorHandlingDo: [
+ (Smalltalk at: #'GsUpgrader')batchErrorHandlingDo: [
   | metacelloRepo filetreeRepo greaseRepo pharoCompatRepo glass1Repo rbRepo stonRepo zincRepo zodiacRepo |
   metacelloRepo := 'filetree://', projectsHome, '/metacello-work/repository'.
   filetreeRepo := 'filetree://', projectsHome, '/filetree/repository'.
@@ -179,11 +179,11 @@ step_3_loadGLASS1
 
 Transcript cr; show: '---Step 3 of tODE bootstrap process: execute loadGLASS1.ws'.
 
-GsUpgrader batchErrorHandlingDo: [
+ (Smalltalk at: #'GsUpgrader') batchErrorHandlingDo: [
   Transcript
     cr;
     show: '-----Upgrade GLASS1 using gsUpgrader'.
-  GsUpgrader upgradeGLASS1 ].
+  (Smalltalk at: #'GsUpgrader') upgradeGLASS1 ].
 %
 method
 step_4_loadTode
@@ -191,7 +191,7 @@ step_4_loadTode
 
 Transcript cr; show: '---Step 4 of tODE bootstrap process: execute loadTode.ws'.
 
-GsUpgrader batchErrorHandlingDo: [
+ (Smalltalk at: #'GsUpgrader')batchErrorHandlingDo: [
   | todeRepo |
   todeRepo := 'filetree://', projectsHome, '/tode/repository'.
   Transcript
