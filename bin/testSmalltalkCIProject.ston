@@ -3,7 +3,7 @@
 	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'named'.
 }
-#%
+%
 #
 usage
 -----
