@@ -3,7 +3,8 @@ options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
-SuperDoitRequiredOptionWithRequiredArg long: 'productPath'.
+SuperDoitOptionalOptionWithRequiredArg long: 'productPath'.
+SuperDoitOptionalOptionWithRequiredArg long: 'fromDirectory'.
 }
 %
 Usage
@@ -47,14 +48,8 @@ RwLoadSpecificationV2 {
 }
 ]
 %
-doit
-	| registryClass stonesRegistry gemstoneVersion gemstonePath |
-	self preDoitSpecLoad: [:spec |
-		spec projectsHome: self dirname asFileReference parent parent].
-	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
-	gemstonePath := GsFile serverRealPath: self productPath.
-	gemstoneVersion := self positionalArgs at: 1.
+method
+register: gemstoneVersion path: gemstonePath for: stonesRegistry
 	(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 		ifNotNil: [:existingPath | 
 			self force 
@@ -65,6 +60,46 @@ doit
 						gemstoneVersion, 
 						'. Use the --force option to override.' ] ].
 	stonesRegistry products at: gemstoneVersion put: gemstonePath.
+%
+doit
+	| registryClass stonesRegistry gemstoneVersion gemstonePath |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: self dirname asFileReference parent parent].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	self productPath
+		ifNotNil: [:productPath |
+			gemstonePath := GsFile serverRealPath: self productPath.
+			gemstoneVersion := self positionalArgs at: 1.
+	(stonesRegistry products at: gemstoneVersion ifAbsent: [])
+		ifNotNil: [:existingPath | 
+			self force 
+				ifFalse: [ 
+					self error: 'There is an existing path (', 
+						existingPath,
+						') for the GemStone version ', 
+						gemstoneVersion, 
+						'. Use the --force option to override.' ].
+			self register: gemstoneVersion path: gemstonePath for: stonesRegistry ]
+		ifNil: [
+			self fromDirectory
+				ifNotNil: [:directory |
+					directory asFileReference 
+						allDirectories do: [:dir | 
+							dir extension isEmpty
+								ifTrue: [
+									| productPrefix dirName |
+									productPrefix := 'GemStone64Bit3.'.
+									dirName := dir basename.
+									(dirName beginsWith: productPrefix)
+										ifTrue: [
+											| gemstoneVersion dashIndex |
+											dashIndex := dirName indexOf: $- ifAbsent: [].
+											(dashIndex notNil and: [ dashIndex > 0 ])
+												ifTrue: [
+													gemstoneVersion := dirName copyFrom: productPrefix size - 2 to: dashIndex.
+													self register: gemstoneVersion path: dir pathString for: stonesRegistry ] ] ] ] ]
+				ifNil: [ self error: 'one of --productPath or --fromDirectory is required' ] ].
 	stonesRegistry export.
 
 %
