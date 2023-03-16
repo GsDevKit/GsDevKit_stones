@@ -1,0 +1,39 @@
+#!/usr/bin/env superdoit_stone
+{
+	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
+	SuperDoitRequiredOptionWithRequiredArg long: 'named'.
+}
+#%
+#
+usage
+-----
+USAGE 
+  $basename [--help | -h] [--debug | -D] -- ([-r] | -l | -L) -I <path-to-.topazini> \
+            [<topaz-command-line-args>]
+
+DESCRIPTION
+  Run the unit tests using the given smalltalk.ston file specified with the --config_ston option.
+
+OPTIONS
+  <path-to-.topazini>        path to a .topazini file with a minimum of username, 
+                             password and stone name set
+  <topaz-command-line-args>  topaz options that should be passed to topaz when running
+                             running the script
+  -h, --help                 display usage message
+  -D, --debug                bring up topaz debugger in the event of a script error
+
+EXAMPLES
+  $basename -h                     -- -l -I ./.topazini
+  $basename -D <script-arguments>  -- -l -I ./.topazini
+  $basename <script-arguments>     -- -l -I ./.topazini
+-----
+%
+doit
+  Transcript
+    cr;
+    show: '----- Run unit tests for ', self named.
+  (Smalltalk at: #SmalltalkCI) 
+		test: self config_ston 
+		named: self named.
+	^ self noResult
+%
