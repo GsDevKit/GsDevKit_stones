@@ -1,4 +1,5 @@
 #!/usr/bin/env superdoit_stone
+options
 {
 	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'named'.

@@ -9,9 +9,10 @@ SuperDoitOptionalOptionWithRequiredArg long: 'fromDirectory'.
 %
 Usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-                --registry=<registry-name> <gemstone-version> \
-                [ --productPath=<path-to-product-tree> | --fromDirectory=<path-to-directory-of-productTrees> ]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] --registry=<registry-name> \
+                [ [ --productPath=<path-to-product-tree> <gemstone-version> ] \
+                  | \
+                [ --fromDirectory=<path-to-directory-of-productTrees> ] ]
 
 DESCRIPTION
   Register a GemStone product tree that is already downloaded/create with <registry-name>.
@@ -27,6 +28,7 @@ EXAMPLES
   $basename --help
   $basename -D
   $basename --registry=bosch --productPath=/export/bosch1/users/dhenrich/_work/c_37x/fast50/gs/product 3.7.0 
+  $basename --registry=bosch --fromDirectory=$GS_HOME/shared/downloads/products 
 -----
 %
 specs
