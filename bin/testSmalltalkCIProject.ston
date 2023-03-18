@@ -42,7 +42,7 @@ doit
 		named: self named.
 	self debug
 		ifTrue: [
-			'build_status.txt' asFileReference contents = '[test failure]'
-				ifTrue: [ self hatl ] ].
+			(GsFile getContentsOfServerFile: '$SMALLTALK_CI_BUILD/build_status.txt') = '[test failure]'
+				ifTrue: [ self halt ] ].
 	^ self noResult
 %
