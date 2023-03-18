@@ -8,5 +8,4 @@ cloneProject: projectName in: gitRootPath
 		at: 'origin'
 		ifPresent: [ :origin | 
 			(gitRootPath asFileReference / projectName) exists
-				ifTrue: [ self stdout nextPutAll: 'Project ' , projectName , ' is already cloned.' ]
 				ifFalse: [ gitTool gitcloneIn: gitRootPath with: origin logging: true ] ]
