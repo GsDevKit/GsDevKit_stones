@@ -40,5 +40,9 @@ doit
   (Smalltalk at: #SmalltalkCI) 
 		test: self config_ston 
 		named: self named.
+	self debug
+		ifTrue: [
+			'build_status.txt' asFileReference contents = '[test failure]'
+				ifTrue: [ self hatl ] ].
 	^ self noResult
 %
