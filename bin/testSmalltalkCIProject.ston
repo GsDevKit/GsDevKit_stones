@@ -30,8 +30,7 @@ EXAMPLES
 -----
 %
 doit
-	| superDoitTransientDictName |
-| res |
+	| superDoitTransientDictName res |
   Transcript
     cr;
     show: '----- Run unit tests for ', self named.
