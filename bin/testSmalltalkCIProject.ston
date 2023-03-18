@@ -30,9 +30,13 @@ EXAMPLES
 -----
 %
 doit
+	| superDoitTransientDictName |
   Transcript
     cr;
     show: '----- Run unit tests for ', self named.
+	"avoid polluting the globals with superDoit classes"
+	superDoitTransientDictName := (self globalNamed: 'SuperDoitCommandParser') transientSymbolDictionaryName.
+	GsSession currentSession symbolList removeDictionaryNamed: superDoitTransientDictName ifAbsent: [].
   (Smalltalk at: #SmalltalkCI) 
 		test: self config_ston 
 		named: self named.
