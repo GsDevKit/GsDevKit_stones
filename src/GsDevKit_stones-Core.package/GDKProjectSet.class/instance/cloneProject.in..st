@@ -6,4 +6,7 @@ cloneProject: projectName in: gitRootPath
 	gitUrls := specDict at: 'gitUrls'.
 	gitUrls
 		at: 'origin'
-		ifPresent: [ :origin | gitTool gitcloneIn: gitRootPath with: origin logging: true ]
+		ifPresent: [ :origin | 
+			(gitRootPath asFileReference / projectName) exists
+				ifTrue: [ self stdout nextPutAll: 'Project ' , projectName , ' is already cloned.' ]
+				ifFalse: [ gitTool gitcloneIn: gitRootPath with: origin logging: true ] ]
