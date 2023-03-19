@@ -39,7 +39,7 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 					stdout
 						nextPutAll: 'Current directory: ' , cwd , ' downloadPath: ' , downloadPath;
 						lf;
-						nextPutAll: 'attaching: ' , downloadDirName;
+						nextPutAll: 'attaching: ' , downloadFileName;
 						lf.
 					volumeList := self
 						executeCommandLine: '/usr/bin/hdiutil attach ' , downloadFileName
