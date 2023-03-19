@@ -1,6 +1,11 @@
 product management
 downloadDirectoryNameFor: productName
-	| gemVersionReport |
+	| gemVersionReport cpuKind |
 	gemVersionReport := System gemVersionReport.
-	^ 'GemStone64Bit' , productName , '-' , (gemVersionReport at: 'cpuKind')
-		, '.' , (gemVersionReport at: 'osName')
+	cpuKind := gemVersionReport at: 'cpuKind'.
+	(gemVersionReport at: 'osName') = 'Darwin'
+		ifTrue: [ 
+			cpuKind = 'x86-64'
+				ifTrue: [ cpuKind := 'i386' ] ].
+	^ 'GemStone64Bit' , productName , '-' , cpuKind , '.'
+		, (gemVersionReport at: 'osName')
