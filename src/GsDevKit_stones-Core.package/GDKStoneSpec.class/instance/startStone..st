@@ -1,6 +1,6 @@
 runtime
 startStone: superDoitScript
-	| arrayOfOutputs |
+	| arrayOfOutputs stoneLogFile |
 	superDoitScript stdout
 		lf;
 		nextPutAll:
@@ -9,10 +9,24 @@ startStone: superDoitScript
 		lf;
 		lf.
 	self defineCustomEnvVars.
+	stoneLogFile := (self rootDir / self stoneDirectorySpec logs / self stoneName
+		, 'log') pathString.
+	[ 
 	arrayOfOutputs := (Rowan globalNamed: 'GsStartStone')
 		startStone: self stoneName
 		exeConfFile: self sysConfFile pathString
-		logFile: (self rootDir / self stoneDirectorySpec logs / self stoneName , 'log') pathString.
+		logFile: stoneLogFile ]
+		on: ChildError
+		do: [ :ex | 
+			| stoneLog |
+			stoneLog := stoneLogFile asFileReference.
+			self stdout
+				nextPutAll: stoneLog contents;
+				lf.
+			superDoitScript stdout
+				nextPutAll: '****************************************';
+				lf.
+			^ self ].
 	superDoitScript stdout nextPutAll: (arrayOfOutputs at: 1).	"stdout"
 	superDoitScript stdout
 		nextPutAll: '****************************************';
