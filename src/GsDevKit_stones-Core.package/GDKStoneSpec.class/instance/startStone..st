@@ -20,7 +20,7 @@ startStone: superDoitScript
 		do: [ :ex | 
 			| stoneLog |
 			stoneLog := stoneLogFile asFileReference.
-			self stdout
+			superDoitScript stdout
 				nextPutAll: stoneLog contents;
 				lf.
 			superDoitScript stdout
