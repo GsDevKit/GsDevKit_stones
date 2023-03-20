@@ -20,6 +20,8 @@ startStone: superDoitScript
 		do: [ :ex | 
 			| stoneLog |
 			stoneLog := stoneLogFile asFileReference.
+			stoneLog exists
+				ifFalse: [ ^ ex pass ].
 			superDoitScript stdout
 				nextPutAll: stoneLog contents;
 				lf.
