@@ -66,7 +66,7 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 									stdout nextPutAll: 'volume: ' , volume pathString ]
 								ifFalse: [ 
 									stdout
-										nextPutAll: 'MISSING line: ' , line;
+										nextPutAll: 'skipped line: ' , line;
 										lf ] ].
 					stdout
 						nextPutAll: 'volume: ' , volume pathString;
