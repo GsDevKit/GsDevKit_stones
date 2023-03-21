@@ -73,7 +73,7 @@ populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath
 	specDictionary := stonSpecDictionaryFilePath asFileReference 
 		readStreamDo: [:fileStream | 
 			(STON reader on:  (ZnBufferedReadStream on:  fileStream)) next ].
-	(type := specDictionary at: 'type') = 'gitUrlSpec'
+	(specDictionary at: 'type') = 'gitUrlSpec'
 		ifTrue: [ 
 			projectSet populateProjectSetGitUrl: type from: (specDictionary at: self key) ]
 		ifFalse: [self error: 'The dictionary of type ', type printString , ' is not supported.'].
