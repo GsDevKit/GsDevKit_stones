@@ -3,13 +3,13 @@ options
 {
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
-SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome' default: '$PROJECTS_HOME'.
+SuperDoitOptionalOptionWithRequiredArg long: 'projectDirectory'.
 SuperDoitOptionalOptionWithNoArg long: 'strict'.
 }
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> --projectSet=<projectSet-name>
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
 
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 
@@ -24,9 +24,12 @@ OPTIONS
                     name of the registry. Default is /usr/bin/hostname
   --projectSet=<projectSet-name>
                     Name of the project set to use.
+  --projectDirectory=<project-directory>
+                    Path to directory where the projects will be cloned. If not
+                    specified the projectDirectory in the registry will be used.
   <project-name>...
                     List of project names in project to be cloned. If not specified
-                    all of the projects in the project set will be cloned,
+                    all of the projects in the project set will be cloned.
 
 EXAMPLES
   $basename --help
@@ -34,9 +37,8 @@ EXAMPLES
   $basename --debugGem
   $basename 
   $basename --registry=bosch --projectSet=dev Rowan \
-            --projectsHome=/home/dhenrich/bosch1/_exp_git
-  $basename --registry=bosch --projectSet=test Rowan --strict \
-            --projectsHome=/home/dhenrich/bosch1/_exp_git
+            --projectDirectory=/home/dhenrich/bosch1/_exp_git
+  $basename --registry=bosch --projectSet=test Rowan --strict 
 -----
 %
 specs
@@ -60,7 +62,7 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryClass stonesRegistry name projectSet projectSetPath |
+	| registryClass stonesRegistry name projectSet projectSetPath projectDir |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 
@@ -73,10 +75,16 @@ doit
 	projectSet := (self globalNamed: 'GDKProjectSet') 
 				fromPath: projectSetPath 
 				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ].
+	projectDir := self projectDirectory
+		ifNil: [ 
+			stonesRegistry projectDirectory
+				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ].
+	projectsDir asFileReference ensureCreateDirectory. 
+		
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneProjectSet: self projectsHome ]
+		ifTrue: [ projectSet cloneProjectSet: projectsDir ]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneProject: projectName in: self projectsHome ] ].
+				projectSet cloneProject: projectName in: projectsDir ] ].
 	true
 %

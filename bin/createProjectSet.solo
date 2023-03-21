@@ -68,67 +68,15 @@ RwLoadSpecificationV2 {
 ]
 %
 method
-constructGitUrlForProject: project spec: organizationArray
-	"
-		'https://github.com/dalehenrich/filetree.git' 
-		'git@github.com:dalehenrich/filetree.git'
-		'git@git.gemtalksystems.com:filetree.git'
-	" 
-	| site organization |
-	site := organizationArray at: 1.
-	organization := organizationArray size = 2
-		ifTrue: [ (organizationArray at: 2), '/' ]
-		ifFalse: [ 
-			organizationArray size = 1
-				ifFalse: [ self error: 'organization array (', organizationArray printString, ' must be of size one or two' ].
-			'/' ].
-	self https
-		ifTrue: [ ^ 'https://', site, '/', organization, project, '.git' ]
-		ifFalse: [
-			self ssh
-				ifTrue: [ ^ 'git@', site, ':', organization,  project, '.git']
-				ifFalse: [ self error: 'Either --https or --ssh must be specified.'] ].
-%
-method
-populateProjectSet: projectSet from: stonSpecDictionaryFilePath
-	| specDictionary loadSpecs type |
+populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath
+	| specDictionary |
 	specDictionary := stonSpecDictionaryFilePath asFileReference 
 		readStreamDo: [:fileStream | 
 			(STON reader on:  (ZnBufferedReadStream on:  fileStream)) next ].
-	loadSpecs := projectSet loadSpecs.
 	(type := specDictionary at: 'type') = 'gitUrlSpec'
 		ifTrue: [ 
-			(specDictionary at: self key)
-				keysAndValuesDo: [:projectName :projectDict |
-					"
-						'metacello-work' : {
-							'revision' : 'master',
-							'gitUrls' : {
-								'origin' : [
-								'github.com',
-								'dalehenrich'
-								],
-								'gs' : [
-								'git.gemtalksystems.com',
-								''
-								]
-							}
-						}
-					"
-					| specDict |
-					specDict := Dictionary new
-						at: 'revision' put: (projectDict at: 'revision');
-						yourself.
-					(projectDict at: 'gitUrls')
-						keysAndValuesDo: [:origin :specArray |
-							| gitUrl  |
-							gitUrl := self constructGitUrlForProject: projectName spec: specArray.
-							(specDict at: 'gitUrls' ifAbsentPut: [ Dictionary new ])
-								at: origin put: gitUrl ].
-					loadSpecs 
-						at: projectName
-						put: specDict ] ]
-	ifFalse: [self error: 'The dictionary of type ', type printString , ' is not supported.'].
+			projectSet populateProjectSetGitUrl: type from: (specDictionary at: self key) ]
+		ifFalse: [self error: 'The dictionary of type ', type printString , ' is not supported.'].
 %
 doit
 	| registryClass stonesRegistry name projectSet |
@@ -137,10 +85,7 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	name := self projectSet.
-	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
-		parentRegistryName: self registry;
-		parentRegistryPath: (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (stonesRegistry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
-		yourself.
+	projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry.
 	projectSet registryFile exists
 		ifTrue: [
 			| projectSetPath |
@@ -154,8 +99,15 @@ doit
 			stonesRegistry projectSets at: name put: projectSet registryPath.
 			stonesRegistry export ].
   self from
-		ifNotNil: [:stonSpecDictionaryFilePath | 
-			self populateProjectSet: projectSet from: stonSpecDictionaryFilePath.
+		ifNotNil: [:stonSpecDictionaryFilePath |
+			| type |
+			type := self https
+				ifTrue: [ 'https' ]
+				ifFalse: [
+					self ssh
+						ifTrue: [ 'ssh' ]
+						ifFalse: [ self error: 'Either --https or --ssh must be specified.' ] ]. 
+			self populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath.
 			projectSet export ].
 	^ projectSet
 %

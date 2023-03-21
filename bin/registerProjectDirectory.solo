@@ -1,0 +1,64 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                --registry=<registry-name> --projectDirectory=<path-to-project-directory>
+
+DESCRIPTION
+  Register a project directory for the named registry. If the directory does not
+  exist the directory is created. It is a good practice to create a single project
+  directory for a given host or environement and share the projects across a number
+  of registries.
+
+OPTIONS
+  -h, --help      display usage message
+  -D, --debug     bring up topaz debugger in the event of a script error
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --registry=bosch --projectDirectory=/home/dhenrich/gemstone/projects
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| registryClass stonesRegistry projectDir projectDirPath |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: self dirname asFileReference parent parent].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	projectDir := self productDirectory asFileReference.
+	projectDir ensureCreateDirectory.
+	projectDirPath := GsFile serverRealPath: productDir pathString.
+	stonesRegistry projectDirectory: productDirPath.
+	stonesRegistry export.
+
+%
