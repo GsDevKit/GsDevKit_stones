@@ -3,7 +3,6 @@ options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitOptionalOptionWithNoArg long: 'start'.
-SuperDoitRequiredOptionWithRequiredArg long: 'projectsHome'.
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'root'.
 SuperDoitRequiredOptionWithRequiredArg long: 'template'.
@@ -13,7 +12,7 @@ SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-f | --force] [-v | --verbose] \
-                --root=<stone-directory> --registry=<registry-name> --projectsHome=<projects-dir>\
+                --root=<stone-directory> --registry=<registry-name> \
                 --template=<template-name> <stone-name> <gemstone-version>
 
 DESCRIPTION
@@ -32,8 +31,8 @@ EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
-  $basename --registry=bosch --template=minimal --projectsHome=/export/bosch1/users/dhenrich/_git --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
-  $basename -f --registry=bosch --template=minimal --projectsHome=/export/bosch1/users/dhenrich/_git --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
+  $basename --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
+  $basename -f --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
 -----
 %
 specs

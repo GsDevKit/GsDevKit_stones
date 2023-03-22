@@ -10,7 +10,6 @@ SuperDoitOptionalOptionWithRequiredArg long: 'revision'.
 SuperDoitOptionalOptionWithRequiredArg long: 'diskUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'readonlyDiskUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'componentName'.
-SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome'.
 }
 %
 usage
@@ -70,7 +69,6 @@ EXAMPLES
             --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston \
             --revision=candidateV3.0 \
             --componentName=Upgrade \
-            --projectsHome=$GS_HOME/shared/repos
   # undefine a field
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
@@ -168,8 +166,6 @@ doit
 		ifNotNil: [:value | self updateField: 'gitUrl' with: value ].
 	self componentName
 		ifNotNil: [:value | self updateField: 'componentName' with: value ].
-	self projectsHome
-		ifNotNil: [:value | self updateField: 'projectsHome' with: value ].
 
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.

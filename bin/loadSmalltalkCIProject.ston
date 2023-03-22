@@ -1,6 +1,7 @@
 #!/usr/bin/env superdoit_stone
 options
 {
+SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
 }
 %
@@ -8,12 +9,13 @@ options
 usage
 -----
 USAGE 
-  $basename [--help | -h] [--debug | -D] -- ([-r] | -l | -L) -I <path-to-.topazini> \
-            [<topaz-command-line-args>]
+  $basename [--help | -h] [--debug | -D]  --projectDirectory=<projects-directory> \
+    --config_ston
 
 DESCRIPTION
   Load the smalltalkCI project and then load the project under test using the smalltalk.ston
-  specified with the --config_ston option.
+  specified with the --config_ston option. Use --projectsDirctory to specify the location 
+  of the project git repositories.
 
 OPTIONS
   <path-to-.topazini>        path to a .topazini file with a minimum of username, 
@@ -30,15 +32,13 @@ EXAMPLES
 -----
 %
 doit
-	| smalltalkCIHome |
-	smalltalkCIHome := GsFile _expandEnvVariable: 'SMALLTALK_CI_HOME' isClient: false.
   Transcript
     cr;
-    show: '-----Install smalltalkCI project from ', smalltalkCIHome.
+    show: '-----Install smalltalkCI project from ', self projectDirectory.
    GsDeployer bulkMigrate: [
      Metacello new
        baseline: 'SmalltalkCI';
-       repository: 'filetree://${SMALLTALK_CI_HOME}/repository';
+       repository: 'filetree://', self projectDirectory, '/repository';
        load: 'Core'.
      System commitTransaction.
      Transcript

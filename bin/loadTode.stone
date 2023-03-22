@@ -1,37 +1,17 @@
 #!/usr/bin/env superdoit_stone
-# Standard options are always present unless customoptions section is used
-#
-#options
-#{
-#  SuperDoitOptionalOptionWithNoArg long: 'help' short: 'h'.
-#  SuperDoitOptionalOptionWithNoArg long: 'debug' short: 'D'.
-#}
-#%
-# Example options section
-#
-#options
-#{
-#	SuperDoitOptionalOptionWithNoArg long: 'noarg'.
-#	SuperDoitOptionalOptionWithNoArg long: 'noarg' short: 'n'.
-#
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional'.
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' default: 'default'.
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o'.
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o' default: 'default'.
-#
-#	SuperDoitRequiredOptionWithRequiredArg long: 'required'.
-#	SuperDoitRequiredOptionWithRequiredArg long: 'required' short: 'r'.
-#}
-#%
-#
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
+}
+%
 usage
 -----
 USAGE 
-  $basename [--help | -h] [--debug | -D] -- ([-r] | -l | -L) -I <path-to-.topazini> \
-            [<topaz-command-line-args>]
+  $basename [--help | -h] [--debug | -D] --projectDirectory=<projects-directory>
 
 DESCRIPTION
-  bootstrap tODE into the stone.
+  bootstrap tODE into the stone. Use --projectsDirctory to specify the location of the
+  project git repositories.
 
 OPTIONS
   <path-to-.topazini>        path to a .topazini file with a minimum of username, 
@@ -45,10 +25,12 @@ EXAMPLES
   $basename -h                     -- -l -I ./.topazini
   $basename -D <script-arguments>  -- -l -I ./.topazini
   $basename <script-arguments>     -- -l -I ./.topazini
+
+  $basename --projectDirectory=$GS_HOME/shared/repos
 -----
 %
 instvars
-projectsHome
+projectDirectory
 %
 method
 step_1_upgradeGLASS
@@ -63,12 +45,11 @@ step_1_upgradeGLASS
   Transcript
     cr;
     show: '-----Install GsUpgrader-Core package '.
-	projectsHome := GsFile _expandEnvVariable: 'STONES_PROJECTS_HOME' isClient: false.
   gofer := Gofer new
     package: 'GsUpgrader-Core';
     yourself.
 
-  repositoryDir := ServerFileDirectory on: projectsHome, '/github-cache'.
+  repositoryDir := ServerFileDirectory on: projectDirectory, '/github-cache'.
 	newCache := MCCacheRepository new directory: repositoryDir.
   MCCacheRepository setDefault: newCache.
   Transcript show: ' from http://ss3.gemtalksystems.com/ss/gsUpgrader'.
@@ -90,15 +71,15 @@ Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello
 
  (Smalltalk at: #'GsUpgrader')batchErrorHandlingDo: [
   | metacelloRepo filetreeRepo greaseRepo pharoCompatRepo glass1Repo rbRepo stonRepo zincRepo zodiacRepo |
-  metacelloRepo := 'filetree://', projectsHome, '/metacello-work/repository'.
-  filetreeRepo := 'filetree://', projectsHome, '/filetree/repository'.
-  greaseRepo := 'filetree://', projectsHome, '/Grease/repository'.
-  pharoCompatRepo := 'filetree://', projectsHome, '/PharoCompatibility/repository'.
-  glass1Repo := 'filetree://', projectsHome, '/glass/repository'.
-  rbRepo := 'filetree://', projectsHome, '/rb/repository'.
-  stonRepo := 'filetree://', projectsHome, '/ston/repository'.
-  zincRepo := 'filetree://', projectsHome, '/zinc/repository'.
-  zodiacRepo := 'filetree://', projectsHome, '/zodiac/repository'.
+  metacelloRepo := 'filetree://', projectDirectory, '/metacello-work/repository'.
+  filetreeRepo := 'filetree://', projectDirectory, '/filetree/repository'.
+  greaseRepo := 'filetree://', projectDirectory, '/Grease/repository'.
+  pharoCompatRepo := 'filetree://', projectDirectory, '/PharoCompatibility/repository'.
+  glass1Repo := 'filetree://', projectDirectory, '/glass/repository'.
+  rbRepo := 'filetree://', projectDirectory, '/rb/repository'.
+  stonRepo := 'filetree://', projectDirectory, '/ston/repository'.
+  zincRepo := 'filetree://', projectDirectory, '/zinc/repository'.
+  zodiacRepo := 'filetree://', projectDirectory, '/zodiac/repository'.
   Transcript 
     cr; 
     show: 'Locking Metacello: ', metacelloRepo printString;
@@ -193,7 +174,7 @@ Transcript cr; show: '---Step 4 of tODE bootstrap process: execute loadTode.ws'.
 
  (Smalltalk at: #'GsUpgrader')batchErrorHandlingDo: [
   | todeRepo |
-  todeRepo := 'filetree://', projectsHome, '/tode/repository'.
+  todeRepo := 'filetree://', projectDirectory, '/tode/repository'.
   Transcript
     cr;
     show: '-----Install tODE using ', todeRepo.
@@ -206,6 +187,7 @@ Transcript cr; show: '---Step 4 of tODE bootstrap process: execute loadTode.ws'.
       load: 'GemStone Dev' ] ].
 %
 doit
+	projectDirectory := self projectDirectory.
 	self 
 		step_1_upgradeGLASS;
 		step_2_loadMetacello;
