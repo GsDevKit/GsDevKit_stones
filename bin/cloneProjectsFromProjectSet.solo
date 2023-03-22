@@ -78,7 +78,7 @@ doit
 	projectDir := self projectDirectory
 		ifNil: [ 
 			stonesRegistry projectDirectory
-				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ].
+				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].
 	projectsDir asFileReference ensureCreateDirectory. 
 		
 	self positionalArgs size = 0
