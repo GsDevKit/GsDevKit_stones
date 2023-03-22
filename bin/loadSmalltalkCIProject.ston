@@ -38,7 +38,7 @@ doit
    GsDeployer bulkMigrate: [
      Metacello new
        baseline: 'SmalltalkCI';
-       repository: 'filetree://', self projectDirectory, '/repository';
+       repository: 'filetree://', self projectDirectory, '/smalltalkCI/repository';
        load: 'Core'.
      System commitTransaction.
      Transcript
