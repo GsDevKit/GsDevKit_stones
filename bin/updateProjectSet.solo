@@ -106,7 +106,7 @@ createProjectSet: name in: registry
 	| projectSet |
 	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
 		parentRegistryName: registry name;
-		parentRegistryPath: (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (registry registryFile relativeTo: (self globalNamed: 'GDK_XDGBase') data_home) pathString;
+		parentRegistryPath: (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (registry registryFile relativeTo: registry class base_data_home) pathString;
 		yourself.
 	projectSet registryFile exists
 		ifTrue: [ self error: 'project set ', projectSet registryfile pathString printString, ' already exists'].

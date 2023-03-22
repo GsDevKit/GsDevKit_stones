@@ -6,7 +6,7 @@ newRegistryNamed: registryName
 		parentRegistryName: registryName;
 		parentRegistryPath:
 				GDKGsDevKit_stonesBase dataHomeEnvVar , '/'
-						, (self configFile relativeTo: self data_home) pathString;
+						, (self configFile relativeTo: GDKGsDevKit_stonesBase base_data_home) pathString;
 		yourself.
 	registryFile := stoneRegistry registryFile.
 	registryFile exists
