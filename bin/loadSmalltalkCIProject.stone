@@ -34,7 +34,7 @@ EXAMPLES
 doit
   Transcript
     cr;
-    show: '-----Install smalltalkCI project from ', self projectDirectory.
+    show: '-----Install smalltalkCI project from ', self projectRoot.
    GsDeployer bulkMigrate: [
      Metacello new
        baseline: 'SmalltalkCI';
