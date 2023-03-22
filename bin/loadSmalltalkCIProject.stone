@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_stone
 options
 {
-	SuperDoitRequiredOptionWithRequiredArg long: 'buildDirectory'.
+	SuperDoitRequiredOptionWithRequiredArg long: 'projectRoot'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
 }
 %
@@ -9,7 +9,7 @@ options
 usage
 -----
 USAGE 
-  $basename [--help | -h] [--debug | -D]  --projectDirectory=<projects-directory> \
+  $basename [--help | -h] [--debug | -D]  --projectRoot=<smalltalkCi-root> \
     --config_ston
 
 DESCRIPTION
@@ -38,7 +38,7 @@ doit
    GsDeployer bulkMigrate: [
      Metacello new
        baseline: 'SmalltalkCI';
-       repository: 'filetree://', self projectDirectory, '/repository';
+       repository: 'filetree://', self projectRoot, '/repository';
        load: 'Core'.
      System commitTransaction.
      Transcript
