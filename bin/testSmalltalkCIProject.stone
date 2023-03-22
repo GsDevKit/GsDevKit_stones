@@ -1,6 +1,7 @@
 #!/usr/bin/env superdoit_stone
 options
 {
+	SuperDoitRequiredOptionWithRequiredArg long: 'buildDirectory'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'named'.
 }
@@ -48,7 +49,7 @@ doit
 		named: self named.
 	self debug
 		ifTrue: [
-			(GsFile getContentsOfServerFile: '$SMALLTALK_CI_BUILD/build_status.txt') = '[test failure]'
+			(GsFile getContentsOfServerFile: self buildDirectory, '/build_status.txt') = '[test failure]'
 				ifTrue: [ self halt ] ].
 	^ self noResult
 %

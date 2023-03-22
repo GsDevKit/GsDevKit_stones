@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_stone
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
+	SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
 }
 %
 usage
