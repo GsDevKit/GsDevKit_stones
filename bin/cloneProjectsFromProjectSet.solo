@@ -79,12 +79,12 @@ doit
 		ifNil: [ 
 			stonesRegistry projectDirectory
 				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].
-	projectsDir asFileReference ensureCreateDirectory. 
+	projectDir asFileReference ensureCreateDirectory. 
 		
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneProjectSet: projectsDir ]
+		ifTrue: [ projectSet cloneProjectSet: projectDir ]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneProject: projectName in: projectsDir ] ].
+				projectSet cloneProject: projectName in: projectDir ] ].
 	true
 %
