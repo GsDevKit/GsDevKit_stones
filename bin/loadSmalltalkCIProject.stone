@@ -14,8 +14,8 @@ USAGE
 
 DESCRIPTION
   Load the smalltalkCI project and then load the project under test using the smalltalk.ston
-  specified with the --config_ston option. Use --projectsDirctory to specify the location 
-  of the project git repositories.
+  specified with the --config_ston option. Use --projectRoot to specify the root directory
+  of the smalltalkCI clone.
 
 OPTIONS
   <path-to-.topazini>        path to a .topazini file with a minimum of username, 
