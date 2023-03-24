@@ -31,6 +31,18 @@ EXAMPLES
   $basename <script-arguments>     -- -l -I ./.topazini
 -----
 %
+method
+checkAndConsumeStatusFile
+	| statusFile |
+	statusFile := (Smalltalk at: #SmalltalkCI) buildStatusFile.
+	(GsFile existsOnServer: statusFile)
+		ifTrue: [ 
+			| buildStatus |
+			buildStatus := GsFile getContentsOfServerFile: statusFile.
+			buildStatus = '[test failure]'
+				ifTrue: [ self error: 'SmalltalkCI load failed' ].
+			GsFile removeServerFile: buildStatus  ]
+%
 doit
   Transcript
     cr;
@@ -46,6 +58,7 @@ doit
        show: '-----load project using ', self config_ston.
      (Smalltalk at: #SmalltalkCI) 
        load: self config_ston.
+     self checkAndConsumeStatusFile.		
    ].
 	^ self noResult
 %

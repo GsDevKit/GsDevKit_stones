@@ -4,6 +4,7 @@ options
 	SuperDoitRequiredOptionWithRequiredArg long: 'buildDirectory'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'named'.
+	SuperDoitOptionalOptionWithRequiredArg long: 'reportFile'.
 }
 %
 #
@@ -30,11 +31,45 @@ EXAMPLES
   $basename <script-arguments>     -- -l -I ./.topazini
 -----
 %
+method
+checkAndConsumeStatusFile
+	| statusFile |
+	statusFile := (Smalltalk at: #SmalltalkCI) buildStatusFile.
+	(GsFile existsOnServer: statusFile)
+		ifTrue: [ 
+			| buildStatus |
+			buildStatus := GsFile getContentsOfServerFile: statusFile.
+			GsFile removeServerFile: statusFile.
+			buildStatus = '[test failure]'
+				ifTrue: [ self error: 'SmalltalkCI test failed' ] ]
+%
+method
+lauchSmalltalkCITest
+  | cls instance fullPathToConfig projectDir |
+	cls := Smalltalk at: #SmalltalkCI.
+	fullPathToConfig := self config_ston.
+	projectDir := cls dirname: fullPathToConfig.
+  instance := cls
+    newInstanceFor: fullPathToConfig
+    projectDirectory: projectDir.
+self stdout nextPutAll: 'name=', self named; lf.
+  instance spec name: self named.
+	self reportFile
+		ifNotNil: [:filePath | 
+self stdout nextPutAll: 'reportFile=', filePath; lf.
+instance reportFilePath: filePath ].
+  ^ [ 
+self stdout nextPutAll: 'run test'; lf.
+instance test ] on: Error do: [:ex | System waitForDebugger ].
+%
 doit
 	| superDoitTransientDictName |
-  Transcript
-    cr;
-    show: '----- Run unit tests for ', self named.
+(Smalltalk at: 'System') gemEnvironmentVariable: 'SCIII_COLORFUL' put: 'true'.
+  self stdout nextPutAll: '----- Running ', self scriptPath; lf.
+  self stdout nextPutAll: '----- Run unit tests for ', self named; lf.
+	self stdout nextPutAll: '----- SCIII_COLORFUL ', ((Smalltalk at: #'System') gemEnvironmentVariable: 'SCIII_COLORFUL') asString; lf.
+  self stdout nextPutAll: '----- SmalltalkCI isColorful ', SmalltalkCI isColorful printString; lf.
+  self stdout nextPutAll: '----- SmalltalkCI ansiYellow ', SmalltalkCI ansiYellow printString; lf.
 	"avoid polluting the globals with superDoit classes"
 	{
 		#SuperDoit_trasientSymbolDictionary .	"workaround superDoit bug in older versions"
@@ -44,12 +79,11 @@ doit
 		GsSession currentSession symbolList 
 			removeDictionaryNamed: superDoitTransientDictName 
 			ifAbsent: [] ].
-  (Smalltalk at: #SmalltalkCI) 
-		test: self config_ston 
-		named: self named.
-	self debug
-		ifTrue: [
-			(GsFile getContentsOfServerFile: self buildDirectory, '/build_status.txt') = '[test failure]'
-				ifTrue: [ self halt ] ].
+	System gemEnvironmentVariable: 'SMALLTALK_CI_BUILD' put: self buildDirectory.
+   self stdout nextPutAll:  '----- build directory ', self buildDirectory; lf.
+   self stdout nextPutAll: '----- config_ston ', self config_ston; lf.
+   self stdout nextPutAll:  '----- isColorful ', (Smalltalk at: #SmalltalkCI) isColorful printString; lf.
+	self lauchSmalltalkCITest.
+	self checkAndConsumeStatusFile.
 	^ self noResult
 %
