@@ -29,6 +29,9 @@ EXAMPLES
   $basename -h                     -- -l -I ./.topazini
   $basename -D <script-arguments>  -- -l -I ./.topazini
   $basename <script-arguments>     -- -l -I ./.topazini
+
+  $basename --named=daleh --config_ston=/home/dhenrich/work/kermit.50402/smalltalkCI/.smalltalk.ston \
+             --buildDirectory=`pwd` --reportFile=report -D
 -----
 %
 method
@@ -52,15 +55,11 @@ lauchSmalltalkCITest
   instance := cls
     newInstanceFor: fullPathToConfig
     projectDirectory: projectDir.
-self stdout nextPutAll: 'name=', self named; lf.
   instance spec name: self named.
 	self reportFile
 		ifNotNil: [:filePath | 
-self stdout nextPutAll: 'reportFile=', filePath; lf.
-instance reportFilePath: filePath ].
-  ^ [ 
-self stdout nextPutAll: 'run test'; lf.
-instance test ] on: Error do: [:ex | System waitForDebugger ].
+			instance reportFilePath: filePath ].
+  ^ instance test
 %
 doit
 	| superDoitTransientDictName |
