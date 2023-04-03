@@ -4,6 +4,7 @@ options
 	SuperDoitRequiredOptionWithRequiredArg long: 'buildDirectory'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'config_ston'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'named'.
+	SuperDoitOptionalOptionWithNoArg long: 'checkAndConsumeStatusFile'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'reportFile'.
 }
 %
@@ -83,6 +84,7 @@ doit
    self stdout nextPutAll: '----- config_ston ', self config_ston; lf.
    self stdout nextPutAll:  '----- isColorful ', (Smalltalk at: #SmalltalkCI) isColorful printString; lf.
 	self lauchSmalltalkCITest.
-	self checkAndConsumeStatusFile.
+	self checkAndConsumeStatusFile
+		ifTrue: [ self checkAndConsumeStatusFile ]. 
 	^ self noResult
 %
