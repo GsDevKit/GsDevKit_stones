@@ -6,6 +6,7 @@ options
 	SuperDoitRequiredOptionWithRequiredArg long: 'named'.
 	SuperDoitOptionalOptionWithNoArg long: 'checkStatusFile'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'reportFile'.
+	SuperDoitOptionalOptionWithNoArg long: 'noColor'.
 }
 %
 #
@@ -32,7 +33,7 @@ EXAMPLES
   $basename <script-arguments>     -- -l -I ./.topazini
 
   $basename --named=daleh --config_ston=/home/dhenrich/work/kermit.50402/smalltalkCI/.smalltalk.ston \
-             --buildDirectory=`pwd` --reportFile=report -D
+             --buildDirectory=`pwd` --reportFile=report --noColor -D
 -----
 %
 method
@@ -64,7 +65,7 @@ lauchSmalltalkCITest
 %
 doit
 	| superDoitTransientDictName |
-(Smalltalk at: 'System') gemEnvironmentVariable: 'SCIII_COLORFUL' put: 'true'.
+	(Smalltalk at: 'System') gemEnvironmentVariable: 'SCIII_COLORFUL' put: self noColor not asString. "default is to use color"
   self stdout nextPutAll: '----- Running ', self scriptPath; lf.
   self stdout nextPutAll: '----- Run unit tests for ', self named; lf.
 	self stdout nextPutAll: '----- SCIII_COLORFUL ', ((Smalltalk at: #'System') gemEnvironmentVariable: 'SCIII_COLORFUL') asString; lf.
