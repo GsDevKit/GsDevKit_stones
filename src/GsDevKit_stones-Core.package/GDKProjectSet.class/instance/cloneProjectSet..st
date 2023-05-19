@@ -11,4 +11,11 @@ cloneProjectSet: gitRootPath
 				at: 'origin'
 				ifPresent: [ :origin | 
 					(gitRootRef / projectName) exists
-						ifFalse: [ gitTool gitcloneIn: gitRootPath with: origin logging: true ] ] ]
+						ifFalse: [ 
+							gitTool gitcloneIn: gitRootPath with: origin logging: true.
+							(specDict at: 'revision' ifAbsent: [  ])
+								ifNotNil: [ :revision | 
+									gitTool gitcheckoutIn: gitRootPath with: revision.
+									Transcript
+										cr;
+										show: '  Set ' , projectName , ' revision to ' , revision ] ] ] ]
