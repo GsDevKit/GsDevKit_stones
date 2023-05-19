@@ -15,7 +15,7 @@ cloneProjectSet: gitRootPath
 							gitTool gitcloneIn: gitRootPath with: origin logging: true.
 							(specDict at: 'revision' ifAbsent: [  ])
 								ifNotNil: [ :revision | 
-									gitTool gitcheckoutIn: gitRootPath with: revision.
+									gitTool gitcheckoutIn: gitRootRef with: revision.
 									Transcript
 										cr;
 										show: '  Set ' , projectName , ' revision to ' , revision ] ] ] ]
