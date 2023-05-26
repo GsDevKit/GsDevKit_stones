@@ -6,7 +6,35 @@ Greatly simplified version of GsDevKit_home
 4. standard location for git repos
 5. if you are using tODE I think you should continue using GsDevKit_home
 
-After running install add superDoit/bin and GsDevKit_stone/bin to $PATH
+After running install add superDoit/bin and GsDevKit_stones/bin to $PATH
+
+## Setting up the registry structure
+```bash
+registryName="_home"
+projectSetName="gsdevkit"
+gemstoneProductsDirectory=""
+createRegistry.solo $registryName
+createProjectSet.solo --registry=$registryName projectSet=$projectSetName --ssh
+cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName \
+  --projectDirectory=$GS_HOME/shared/repos
+registerProductDirectory.solo --registry=$registryName --productDirectory=$GS_HOME/shared/repos
+
+# GemStone version not previously downloaded
+downloadGemStone.solo --directory=$gemstoneProductsDirectory --registry=$registryName 3.6.6
+# GemStone version previously downloaded
+registerProduct.solo --registry=$registryName --fromDirectory=$GS_HOME/shared/downloads/products 3.6.6
+
+registryReport.solo
+```
+
+## Create a stone
+```bash
+stoneDirectoryPath=$GS_HOME/server/stones/gs_366
+createStone.solo --force --registry=$registryName --template=default_seaside \
+				--start --root=stoneDirectoryPath 3.6.6
+
+registryReport.solo
+```
 
 ## Branch naming conventions
 1. vX

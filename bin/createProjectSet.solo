@@ -4,7 +4,7 @@ options
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'from'.
-SuperDoitOptionalOptionWithRequiredArg long: 'key'.
+SuperDoitOptionalOptionWithRequiredArg long: 'key' default: 'server'.
 SuperDoitOptionalOptionWithNoArg long: 'ssh'.
 SuperDoitOptionalOptionWithNoArg long: 'https'.
 SuperDoitOptionalOptionWithNoArg long: 'spec'.
@@ -31,7 +31,7 @@ OPTIONS
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
   --registry=<registry-name>   
-                    name of the registry. Default is /usr/bin/hostname
+                    name of the registry. Default is host name.
   --projectSet=<projectSet-name>
                     Name of the project set.
 
@@ -79,7 +79,7 @@ populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath
 		ifFalse: [self error: 'The dictionary of type ', type printString , ' is not supported.'].
 %
 doit
-	| registryClass stonesRegistry name projectSet |
+	| registryClass stonesRegistry name projectSet stonSpecDictionaryFilePath type |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
@@ -99,15 +99,15 @@ doit
 			stonesRegistry projectSets at: name put: projectSet registryPath.
 			stonesRegistry export ].
   self from
-		ifNotNil: [:stonSpecDictionaryFilePath |
-			| type |
-			type := self https
-				ifTrue: [ 'https' ]
-				ifFalse: [
-					self ssh
-						ifTrue: [ 'ssh' ]
-						ifFalse: [ self error: 'Either --https or --ssh must be specified.' ] ]. 
-			self populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath.
-			projectSet export ].
+		ifNil: [ stonSpecDictionaryFilePath := self scriptPath ].
+		ifNotNil: [:fromPath | stonSpecDictionaryFilePath := fromPath ].
+	type := self https
+		ifTrue: [ 'https' ]
+		ifFalse: [
+			self ssh
+				ifTrue: [ 'ssh' ]
+				ifFalse: [ self error: 'Either --https or --ssh must be specified.' ] ]. 
+	self populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath.
+	projectSet export.
 	^ projectSet
 %

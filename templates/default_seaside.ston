@@ -1,4 +1,4 @@
-GDKstonesStoneDirectorySpec {
+GDKhomeStoneDirectorySpec {
 	#name : 'default_seaside',
 	#backups : 'backups',
 	#bin : 'bin',
@@ -8,5 +8,6 @@ GDKstonesStoneDirectorySpec {
 	#stats : 'stats',
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',
-	#product : 'product'
+	#product : 'product',
+	#tode : 'tode'
 }
