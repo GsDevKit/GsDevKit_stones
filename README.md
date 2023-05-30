@@ -10,23 +10,24 @@ After running install add superDoit/bin and GsDevKit_stones/bin to $PATH
 
 ## Setting up the registry structure
 ```bash
-registryName="issue_4"
+registryName="gsdevkit"
 projectSetName="gsdevkit"
-gemstoneProductsDirectory=""
-projectsDirectory="/bosch1/users/dhenrich/_git/"
+gemstoneProductsDirectory="/bosch1/users/dhenrich/products"
+projectsDirectory="/bosch1/users/dhenrich/projects/"
 
 createRegistry.solo $registryName
 createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh
+createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --https
 cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName \
   --projectDirectory=$projectsDirectory
-registerProductDirectory.solo --registry=$registryName --productDirectory=$projectsDirectory
+registerProductDirectory.solo --registry=$registryName --productDirectory=$gemstoneProductsDirectory
 
 # GemStone version not previously downloaded
-downloadGemStone.solo --directory=$gemstoneProductsDirectory --registry=$registryName 3.6.6
-# GemStone version previously downloaded
-registerProduct.solo --registry=$registryName --fromDirectory=$GS_HOME/shared/downloads/products 3.6.6
-# internal development
-registerProduct.solo --registry=$registryName --fromDirectory=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
+downloadGemStone.solo --registry=$registryName 3.6.6
+# Register full set of previously downloaded product trees
+registerProduct.solo --registry=$registryName --fromDirectory=$GS_HOME/shared/downloads/products
+# register named GemStone version using path to product tree
+registerProduct.solo --registry=$registryName --productPath=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
 
 registryReport.solo
 ```

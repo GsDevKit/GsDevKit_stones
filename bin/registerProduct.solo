@@ -74,16 +74,16 @@ doit
 		ifNotNil: [:productPath |
 			gemstonePath := GsFile serverRealPath: self productPath.
 			gemstoneVersion := self positionalArgs at: 1.
-		(stonesRegistry products at: gemstoneVersion ifAbsent: [])
-			ifNotNil: [:existingPath | 
-				self force 
-					ifFalse: [ 
-						self error: 'There is an existing path (', 
-							existingPath,
-							') for the GemStone version ', 
-							gemstoneVersion, 
-							'. Use the --force option to override.' ].
-				self register: gemstoneVersion path: gemstonePath for: stonesRegistry ] ]
+			(stonesRegistry products at: gemstoneVersion ifAbsent: [])
+				ifNotNil: [:existingPath | 
+					self force 
+						ifFalse: [ 
+							self error: 'There is an existing path (', 
+								existingPath,
+								') for the GemStone version ', 
+								gemstoneVersion, 
+								'. Use the --force option to override.' ] ].
+			self register: gemstoneVersion path: gemstonePath for: stonesRegistry ]
 		ifNil: [
 			self fromDirectory
 				ifNotNil: [:directory |
