@@ -99,7 +99,7 @@ doit
 			stonesRegistry projectSets at: name put: projectSet registryPath.
 			stonesRegistry export ].
   self from
-		ifNil: [ stonSpecDictionaryFilePath := self scriptPath ].
+		ifNil: [ stonSpecDictionaryFilePath := (self scriptPath asFileReference parent / 'gsdevkitProjectSpecs.ston') pathString]
 		ifNotNil: [:fromPath | stonSpecDictionaryFilePath := fromPath ].
 	type := self https
 		ifTrue: [ 'https' ]
