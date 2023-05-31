@@ -16,7 +16,9 @@ createStoneStructure: stoneSpec
 		open: (stoneRoot / 'system.conf') pathString
 		mode: 'w+'
 		onClient: false.	"need to append entries to the file"
-	exportDir at: GDKGsDevKit_stonesBase dataHomeEnvVar put: self class data_home pathString.
+	exportDir
+		at: GDKGsDevKit_stonesBase dataHomeEnvVar
+		put: self class data_home pathString.
 	self
 		keysAndValuesDo: [ :key :value | 
 			key = #'customenv'
@@ -35,8 +37,9 @@ createStoneStructure: stoneSpec
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'extents'
 				ifTrue: [ 
-					useExtentDir := '/' , value, '/'.
-					(stoneRoot / value) ensureCreateDirectory ].
+					useExtentDir := '/' , value , '/'.
+					(stoneRoot / value) ensureCreateDirectory.
+					stoneRoot / 'extent0.dbf' moveTo: stoneRoot / value ].
 			key = #'logs'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'stats'
@@ -51,8 +54,8 @@ createStoneStructure: stoneSpec
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'product'
 				ifTrue: [ 
-					"???"
-					self halt ].
+					"noop, as product symbolic link is created by default"
+					 ].
 			key = #'gemstone'
 				ifTrue: [ 
 					"???"

@@ -4,7 +4,7 @@ options
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitOptionalOptionWithNoArg long: 'start'.
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
-SuperDoitRequiredOptionWithRequiredArg long: 'root'.
+SuperDoitOptionalOptionWithRequiredArg long: 'root'.
 SuperDoitRequiredOptionWithRequiredArg long: 'template'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 }
@@ -31,8 +31,8 @@ EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
-  $basename --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
-  $basename -f --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones/bosch_370 3.7.0 
+  $basename --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones bosch_370 3.7.0 
+  $basename -f --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones bosch_370 3.7.0 
 -----
 %
 specs
@@ -81,13 +81,17 @@ doit
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
-	rootDir := self root asFileReference.
-	stoneName := rootDir basename.
-	gemstoneVersion := self positionalArgs at: 1.
+	rootDir := self root
+		ifNotNil: [:rootPath | rootPath asFileReference ]
+		ifNil: [ stonesRegistry stonesDirectory asFileReference ].
+	self positionalArgs size ~= 2
+		ifTrue: [ self error: 'Expected 2 positional arguments: <stone-name> <gemstone-version>, only got ', self positionalArgs size printString ].
+	stoneName := self positionalArgs at: 1.
+	gemstoneVersion := self positionalArgs at: 2.
 	stoneSpecClass := self globalNamed: 'GDKStoneSpec'.
 	stoneSpec := stoneSpecClass
 		newNamed: stoneName 
-		rootDirectory: rootDir
+		rootDirectory: rootDir / stoneName
 		directorySpecName: self template 
 		gemstoneVersionString: gemstoneVersion.
 	stoneSpec
@@ -96,9 +100,12 @@ doit
 		yourself.
 	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
 		ifTrue: [ 
-			self force
-				ifFalse: [ self error: 'registry file ', stoneSpec registryFile pathString printString, ' still exists. Use --force to clean up.'].
-			stoneSpec destroyStoneStructure ].
+			(stoneSpec rootDir exists)
+				ifTrue: [ 
+					self force
+						ifFalse: [ self error: 'A stone is already present at ', stoneSpec rootDir pathString printString, '. Use --force to clean up.'].
+					stoneSpec destroyStoneStructure ]
+				ifFalse: [ self error: 'A stone with the name ', stoneName printString, ' already exists. Not yet implemented' ] ].
 	stoneSpec createStoneStructureUsing: stonesRegistry.
 	stoneSpec registryDir ensureCreateDirectory.
 	stoneSpec export.

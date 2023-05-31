@@ -29,6 +29,7 @@ registerProduct.solo --registry=$registryName --fromDirectory=$GS_HOME/shared/do
 # register named GemStone version using path to product tree
 registerProduct.solo --registry=$registryName --productPath=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
 
+# register default stones directory
 registerStonesDirectory.solo --registry=$registryName --stonesDirectory=/bosch1/users/dhenrich/_issue_4/stones
 
 registryReport.solo
@@ -36,9 +37,11 @@ registryReport.solo
 
 ## Create a stone
 ```bash
-stoneDirectoryPath=$GS_HOME/server/stones/gs_366
-createStone.solo --force --registry=$registryName --template=default_seaside \
-				--start --root=stoneDirectoryPath 3.6.6
+# create stone in default stones directory
+createStone.solo --force --registry=$registryName --template=default_seaside --start gs_3.6.6 3.6.6 
+
+# create stone in custom stones directory
+createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --force --registry=$registryName --template=default_seaside --start gsd_3.6.6 3.6.6 
 
 registryReport.solo
 ```

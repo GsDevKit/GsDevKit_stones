@@ -1,4 +1,4 @@
- GDKhomeStoneDirectorySpec{
+GDKhomeStoneDirectorySpec{
 	#name : 'default',
 	#backups : 'backups',
 	#bin : 'bin',
