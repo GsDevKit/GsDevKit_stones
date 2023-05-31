@@ -14,6 +14,7 @@
 		"netLdiPort",
 		"gemTask",
 		"userId",
+		"password",
 		"osUserId",
 		"stoneDirectorySpecName",
 		"stoneDirectorySpec",

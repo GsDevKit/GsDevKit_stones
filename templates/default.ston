@@ -2,11 +2,13 @@ GDKhomeStoneDirectorySpec{
 	#name : 'default',
 	#backups : 'backups',
 	#bin : 'bin',
+	#customenv: 'customenv',
 	#extents : 'extents',
 	#logs : 'logs',
 	#stats : 'stats',
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',
 	#product : 'product'
-	#tode : 'tode'
+	#tode : 'tode',
+	#userId : 'DataCurator'
 }

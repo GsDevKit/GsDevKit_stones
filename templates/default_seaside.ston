@@ -2,6 +2,7 @@ GDKhomeStoneDirectorySpec {
 	#name : 'default_seaside',
 	#backups : 'backups',
 	#bin : 'bin',
+	#customenv: 'customenv',
 	#dbfSource : '$GEMSTONE/bin/extent0.seaside.dbf',
 	#extents : 'extents',
 	#logs : 'logs',
@@ -9,5 +10,6 @@ GDKhomeStoneDirectorySpec {
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',
 	#product : 'product',
-	#tode : 'tode'
+	#tode : 'tode',
+	#userId : 'DataCurator'
 }

@@ -1,11 +1,13 @@
 stone creation
 createStoneStructure: stoneSpec
-	| stoneRoot useCustomEnv exportDir gemstoneReference systemConfStream useTranlogDir useExtentDir |
+	| stoneRoot useCustomEnv exportDir gemstoneReference systemConfStream useTranlogDir useExtentDir userId password |
 	exportDir := Dictionary new.
 	stoneRoot := stoneSpec rootDir.
 	useTranlogDir := ''.
 	useExtentDir := '/'.
 	useCustomEnv := false.
+	userId := 'DataCurator'.
+	password := 'swordfish'.
 	gemstoneReference := stoneSpec gemstonePath asFileReference.
 	System gemEnvironmentVariable: 'GEMSTONE' put: gemstoneReference pathString.
 	self class symbolicLink: gemstoneReference linkName: stoneRoot / 'product'.
@@ -52,6 +54,10 @@ createStoneStructure: stoneSpec
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'projectsHome'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
+			key = #'userId'
+				ifTrue: [ userId := value ].
+			key = #'password'
+				ifTrue: [ password := value ].
 			key = #'product'
 				ifTrue: [ 
 					"noop, as product symbolic link is created by default"
@@ -95,6 +101,6 @@ createStoneStructure: stoneSpec
 			fileStream
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
-				nextPutAll: 'set u DataCurator p swordfish';
+				nextPutAll: 'set u ', userId, ' p ', password;
 				lf ].
 	self class chmod: (stoneRoot / '.topazini') pathString fileMode: 'u+w,og-rw'

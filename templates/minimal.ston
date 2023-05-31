@@ -2,5 +2,6 @@ GDKstonesStoneDirectorySpec {
 	#name : 'minimal',
 	#customenv: 'customenv',
 	#bin : 'bin',
-	#logs : 'logs'
+	#logs : 'logs',
+	#userId : 'SystemUser'
 }

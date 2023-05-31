@@ -3,5 +3,6 @@ GDKstonesStoneDirectorySpec {
 	#customenv: 'customenv',
 	#dbfSource : '$GEMSTONE/bin/extent0.seaside.dbf',
 	#bin : 'bin',
-	#logs : 'logs'
+	#logs : 'logs',
+	#userId : 'DataCurator'
 }
