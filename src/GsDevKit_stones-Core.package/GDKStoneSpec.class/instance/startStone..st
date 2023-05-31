@@ -1,11 +1,17 @@
 runtime
-startStone: superDoitScript
-	| arrayOfOutputs stoneLogFile |
-	superDoitScript stdout
+startStone: superDoitScriptOrNil
+	| arrayOfOutputs stoneLogFile stdout scriptPath |
+	stdout := superDoitScriptOrNil
+		ifNotNil: [ 
+			scriptPath := superDoitScriptOrNil scriptPath.
+			superDoitScriptOrNil stdout ]
+		ifNil: [ 
+			scriptPath := ''.
+			GsFile stdout ].
+	stdout
 		lf;
 		nextPutAll:
-				'======  ' , superDoitScript scriptPath , ' starting stone at '
-						, DateAndTime now printString;
+				'======  ' , scriptPath , ' starting stone at ' , DateAndTime now printString;
 		lf;
 		lf.
 	self defineCustomEnvVars.
@@ -22,14 +28,14 @@ startStone: superDoitScript
 			stoneLog := stoneLogFile asFileReference.
 			stoneLog exists
 				ifFalse: [ ^ ex pass ].
-			superDoitScript stdout
+			stdout
 				nextPutAll: stoneLog contents;
 				lf.
-			superDoitScript stdout
+			stdout
 				nextPutAll: '****************************************';
 				lf.
-			^ self ].
-	superDoitScript stdout nextPutAll: (arrayOfOutputs at: 1).	"stdout"
-	superDoitScript stdout
+			^ self error: 'Stone did not start' ].
+	stdout nextPutAll: (arrayOfOutputs at: 1).	"stdout"
+	stdout
 		nextPutAll: '****************************************';
 		lf

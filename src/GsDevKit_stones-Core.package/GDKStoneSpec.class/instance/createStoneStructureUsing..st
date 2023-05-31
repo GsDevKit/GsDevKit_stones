@@ -2,10 +2,11 @@ creation/destruction
 createStoneStructureUsing: stonesRegistry
 	"create stone"
 
+	| stoneDirSpec |
 	self rootDir ensureCreateDirectory.
 	stonesRegistry productNamed: self gemstoneVersionString.
-	self
-		stoneDirectorySpec:
-			((GDKAbstractRegistryStore
-				fromPath: (stonesRegistry templateNamed: self stoneDirectorySpecName)
-				ifAbsent: [  ]) createStoneStructure: self)	"populate directory structure"
+	stoneDirSpec := GDKAbstractRegistryStore
+		fromPath: (stonesRegistry templateNamed: self stoneDirectorySpecName)
+		ifAbsent: [  ].
+	stoneDirSpec createStoneStructure: self.	"populate directory structure"
+	self stoneDirectorySpec: stoneDirSpec

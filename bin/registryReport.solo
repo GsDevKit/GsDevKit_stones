@@ -78,19 +78,6 @@ projectSetReport: projectSetName in: registry
 			ifAbsent: [ self error: 'No file named', projectSetPath , ' found.' ] 
 %
 method
-stoneReport: stoneName in: registry
-	| stonePath |
-	stonePath := registry 
-		stoneNamed: stoneName 
-		ifAbsent: [ 
-			self error: ' No stone named: ', 
-					stoneName, ' found in the registry ', 
-					registry name].
-	^ (self globalNamed: 'GDKAbstractRegistryStore') 
-			fromPath: stonePath
-			ifAbsent: [ self error: 'No file named', stonePath , ' found.' ] 
-%
-method
 templateReport: templateName in: registry
 	| templatePath |
 	templatePath := registry 
@@ -125,7 +112,7 @@ doit
 						ifNil: [ 
 							self stone
 								ifNil: [ ^ stonesRegistry ]
-								ifNotNil: [:stoneName | ^ self stoneReport: stoneName in: stonesRegistry ] ]
+								ifNotNil: [:stoneName | ^ stonesRegistry stoneNamed: stoneName ] ]
 						ifNotNil: [:templateName | ^ self templateReport: templateName in: stonesRegistry ] ]
 				ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: stonesRegistry ] ].
 	self stone ifNotNil: [ self error: 'a --registry is required to list the stone' ].
