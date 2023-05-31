@@ -2,11 +2,9 @@
 options
 {
 SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithNoArg long: 'immediate' short: 'i'.
 SuperDoitOptionalOptionWithNoArg long: 'netldi' short: 'b'.
-SuperDoitOptionalOptionWithNoArg long: 'restart' short: 'r'.
-SuperDoitOptionalOptionWithNoArg long: 'notranlogs' short: 'N'.
-SuperDoitOptionalOptionWithNoArg long: 'restore' short: 'R'.
-SuperDoitOptionalOptionWithRequiredArg long: 'wait' short: 'w'.
+SuperDoitOptionalOptionWithRequiredArg long: 'timeout' short: 't'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 }
 %
@@ -16,7 +14,7 @@ USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
                 --registry=<registry-name> <stone-name>
 
 DESCRIPTION
-  Start named stone.
+  Stop named stone.
 
 OPTIONS
   -h, --help    display usage message
@@ -26,26 +24,26 @@ OPTIONS
                 DEBUGGEM command.
   -v, --verbose Verbose logging enabled.
   --registry    Name of registry that stone is defined in (Required).
-  -b, --netldi  Start netldi associated with the stone.
-  -r, --restart Stop and restart stone if is is already running.
-  -N, --notranlogs
-                Start without transaction logs.
-  -R, --restore Start for restore.
-  -w <waitstone-timeout>, 
-  --wait=<waitstone-timeout>
-                If stone not started within <waitstone-timeout> seconds, signal
-                an error.
-  
+  -b, --netldi  Stop netldi associated with the stone.
+	-i, --immediate
+                Stop stone immediately even if others are logged in.
+  -t, --timeout=<seconds>
+                Wait <seconds> for processes to detach from cache. Default
+                (-1) is to wait forever.
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
   $basename --registry=bosch bosch_370 
+  $basename --registry=bosch bosch_370 -t 60
+  $basename --registry=bosch bosch_370 --immediate
   $basename --registry=bosch bosch_370 -b
-  $basename --registry=bosch bosch_370 -r
-  $basename --registry=bosch bosch_370 -N
-  $basename --registry=bosch bosch_370 -w 5
+  # if launched from stone directory where .GDKStoneSpec.ston is present
+  $basename 
+  $basename -t 60
+  $basename --immediate
+  $basename -b
 -----
 %
 specs
@@ -107,12 +105,6 @@ doit
 			stonesRegistry := registryClass stonesRegistryNamed: self registry.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	System gemEnvironmentVariable: 'GEMSTONE' put: stoneSpec gemstonePath.
-	stoneSpec startStone: self withSuperDoitOptions: true.
-	self wait
-		ifNotNil: [:waitTime |
-			| status |
-			status := stoneSpec waitStone: waitTime asNumber.
-			status != 0
-				ifTrue: [ self error: 'The stone did not start within ', waitTime, ' seconds.' ] ].
+	stoneSpec stopStone: self withSuperDoitOptions: true.
 	^ self noResult
 %
