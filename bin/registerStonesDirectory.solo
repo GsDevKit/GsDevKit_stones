@@ -1,0 +1,63 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'stonesDirectory'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                --registry=<registry-name> --stonesDirectory=<path-to-stones-directory>
+
+DESCRIPTION
+  Register a stones directory for the named registry. If the directory does not
+  exist the directory is created. The stones directory is used as the default location
+  to create a named stone.
+
+OPTIONS
+  -h, --help      display usage message
+  -D, --debug     bring up topaz debugger in the event of a script error
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --registry=bosch -stonesDirectory=/home/dhenrich/gemstone/stones
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| registryClass stonesRegistry stonesDir stonesDirPath |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: self dirname asFileReference parent parent].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesDir := self stonesDirectory asFileReference.
+	stonesDir ensureCreateDirectory.
+	stonesDirPath := GsFile serverRealPath: stonesDir pathString.
+	stonesRegistry stonesDirectory: stonesDirPath.
+	stonesRegistry export.
+
+%

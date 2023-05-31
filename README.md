@@ -29,6 +29,8 @@ registerProduct.solo --registry=$registryName --fromDirectory=$GS_HOME/shared/do
 # register named GemStone version using path to product tree
 registerProduct.solo --registry=$registryName --productPath=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
 
+registerStonesDirectory.solo --registry=$registryName --stonesDirectory=/bosch1/users/dhenrich/_issue_4/stones
+
 registryReport.solo
 ```
 
