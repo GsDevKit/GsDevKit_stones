@@ -16,8 +16,8 @@ createStoneStructure: stoneSpec
 	gemstoneReference / 'data' / 'system.conf' copyTo: stoneRoot / 'system.conf'.
 	systemConfStream := GsFile
 		open: (stoneRoot / 'system.conf') pathString
-		mode: 'w+'
-		onClient: false.	"need to append entries to the file"
+		mode: 'a+'
+		onClient: false.
 	exportDir
 		at: GDKGsDevKit_stonesBase dataHomeEnvVar
 		put: self class data_home pathString.
@@ -101,6 +101,6 @@ createStoneStructure: stoneSpec
 			fileStream
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
-				nextPutAll: 'set u ', userId, ' p ', password;
+				nextPutAll: 'set u ' , userId , ' p ' , password;
 				lf ].
 	self class chmod: (stoneRoot / '.topazini') pathString fileMode: 'u+w,og-rw'
