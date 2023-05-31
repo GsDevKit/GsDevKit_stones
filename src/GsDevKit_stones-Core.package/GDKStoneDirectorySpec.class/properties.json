@@ -6,7 +6,6 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"root",
 		"dbfSource",
 		"backups",
 		"bin",

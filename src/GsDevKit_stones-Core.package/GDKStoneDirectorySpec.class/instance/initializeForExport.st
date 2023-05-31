@@ -1,3 +1,2 @@
-export
+other
 initializeForExport
-	root ifNotNil: [ root := root pathString ]
