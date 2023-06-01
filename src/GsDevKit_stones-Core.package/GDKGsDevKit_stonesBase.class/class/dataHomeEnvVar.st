@@ -1,3 +1,3 @@
 accessing
 dataHomeEnvVar
-	^ '$STONES_DATA_HOME'
+	^ 'STONES_DATA_HOME'

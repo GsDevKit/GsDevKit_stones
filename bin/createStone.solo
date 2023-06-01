@@ -96,7 +96,7 @@ doit
 		gemstoneVersionString: gemstoneVersion.
 	stoneSpec
 		parentRegistryName: self registry;
-		parentRegistryPath: (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (stonesRegistry registryFile relativeTo: stonesRegistry class base_data_home) pathString;
+		parentRegistryPath: '$', (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (stonesRegistry registryFile relativeTo: stonesRegistry class base_data_home) pathString;
 		yourself.
 	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
 		ifTrue: [ 
