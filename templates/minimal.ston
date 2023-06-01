@@ -3,5 +3,6 @@ GDKstonesStoneDirectorySpec {
 	#customenv: 'customenv',
 	#bin : 'bin',
 	#logs : 'logs',
+	#netldiPort : 0,
 	#userId : 'SystemUser'
 }

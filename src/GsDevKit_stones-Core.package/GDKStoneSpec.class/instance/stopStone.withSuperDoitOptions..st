@@ -1,6 +1,7 @@
 runtime
 stopStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 	"if superDoitOptionsBoolean is true, then superDoitScriptOrNil is expected to respond to the following messages:
+		scriptPath
 		immediate
 		timeout"
 
@@ -10,6 +11,7 @@ stopStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 	immediate := false.
 	stdout := superDoitScriptOrNil
 		ifNotNil: [ 
+			scriptPath := superDoitScriptOrNil scriptPath.
 			superDoitScriptOrNil timeout ifNotNil: [ :value | timeout := value asNumber ].
 			immediate := superDoitScriptOrNil immediate.
 			superDoitScriptOrNil stdout ]

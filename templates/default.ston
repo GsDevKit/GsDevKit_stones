@@ -5,6 +5,7 @@ GDKhomeStoneDirectorySpec{
 	#customenv: 'customenv',
 	#extents : 'extents',
 	#logs : 'logs',
+	#netldiPort : 0,
 	#stats : 'stats',
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',

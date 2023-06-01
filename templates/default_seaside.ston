@@ -6,6 +6,7 @@ GDKhomeStoneDirectorySpec {
 	#dbfSource : '$GEMSTONE/bin/extent0.seaside.dbf',
 	#extents : 'extents',
 	#logs : 'logs',
+	#netldiPort : 0,
 	#stats : 'stats',
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',

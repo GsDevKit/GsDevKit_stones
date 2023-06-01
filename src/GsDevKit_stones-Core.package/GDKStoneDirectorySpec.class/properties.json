@@ -11,6 +11,7 @@
 		"bin",
 		"extents",
 		"logs",
+		"netldiPort",
 		"stats",
 		"tranlogs",
 		"snapshots",

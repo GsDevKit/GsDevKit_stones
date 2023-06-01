@@ -44,6 +44,15 @@ createStoneStructure: stoneSpec
 					stoneRoot / 'extent0.dbf' moveTo: stoneRoot / value ].
 			key = #'logs'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
+			key = #'netldiPort'
+				ifTrue: [ 
+					value = 0
+						ifTrue: [ 
+							| socket status |
+							socket := GsSocket new.
+							status := socket bindTo: value.
+							netldiPort := socket port.
+							socket close ] ].
 			key = #'stats'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'tranlogs'

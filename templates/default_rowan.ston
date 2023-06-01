@@ -6,6 +6,7 @@ GDKstonesStoneDirectorySpec {
 	#dbfSource : '$GEMSTONE/bin/extent0.rowan.dbf',
 	#extents : 'extents',
 	#logs : 'logs',
+	#netldiPort : 0,
 	#stats : 'stats',
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',
