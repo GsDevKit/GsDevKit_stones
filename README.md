@@ -38,10 +38,10 @@ registryReport.solo
 ## Create a stone
 ```bash
 # create stone in default stones directory
-createStone.solo --force --registry=$registryName --template=default_seaside --start gs_3.6.6 3.6.6 
+createStone.solo --registry=$registryName --template=default_seaside --start gs_366 3.6.6 
 
 # create stone in custom stones directory
-createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --force --registry=$registryName --template=default_seaside --start gsd_3.6.6 3.6.6 
+createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --registry=$registryName --template=default_seaside --start gsd_3.6.6 3.6.6 
 
 registryReport.solo
 ```
