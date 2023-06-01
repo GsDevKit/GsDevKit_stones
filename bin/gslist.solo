@@ -1,0 +1,123 @@
+#!/usr/bin/env superdoit_solo
+customoptions
+{
+SuperDoitOptionalOptionWithNoArg long: 'help'.
+SuperDoitOptionalOptionWithNoArg long: 'debug'.
+SuperDoitOptionalOptionWithNoArg long: 'debugGem'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithNoArg long: 'verbose'.
+SuperDoitOptionalOptionWithNoArg long: 'long' short: 'l'.
+SuperDoitOptionalOptionWithNoArg long: 'json' short: 'j'.
+SuperDoitOptionalOptionWithNoArg long: 'removeLocks' short: 'c'.
+}
+%
+Usage
+-----
+USAGE $basename [--help] [--debug]  [--debugGem] [--verbose] \
+                --registry=<registry-name> <stone-name>
+
+DESCRIPTION
+  Run gslist command using the GEMSTONE associated with the named stone.
+
+OPTIONS
+	Note that the standard shortcuts options are not supported, since we weant
+  to be faithful to the startnetldi options and they comprise a big chunk
+  of the alphabet.
+
+  --help        display usage message
+  --debug       bring up topaz debugger in the event of a script error
+  --debugGem    If terminal is connected to stdout, bring up debugger. If not,
+                dump stack to stdout and wait for topaz to attach using topaz
+                DEBUGGEM command.
+  --verbose     Verbose logging enabled.
+  #
+  # standard startnetldi options (currently supported)
+  #
+  -l, --long        cause netldi to print extra information to its log file.
+  -j, --json        Print extra long listing in JSON format to stdout. Implies -q and -x
+  -c, --removeLocks Remove locks of killed servers.
+
+EXAMPLES
+  $basename --help
+  $basename --debug
+  $basename --debugGem
+  $basename --registry=bosch 3.7.0 
+  $basename --registry=bosch 3.7.0 --long --removeLocks
+  # if launched from stone directory where .GDKStoneSpec.ston is present
+  $basename  
+  $basename -l
+  $basename -lc
+-----
+%
+instvars
+gemstoneVersionString
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+},
+RwLoadSpecificationV2 {
+	#projectName : 'GsCommands',
+	#projectSpecFile : 'rowan/project.ston',
+	#diskUrl : '$GEMSTONE/examples/GsCommands/projectsHome/GsCommands',
+	#componentNames : [
+		'Commands'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'UserGlobals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+gemstoneVersionString
+	^ gemstoneVersionString ifNil: [ System gemVersionReport at: 'gsVersion' ]
+%
+doit
+	| registryClass stoneName stoneSpec registry output |
+	self preDoitSpecLoad: [:spec | 
+		spec projectName = 'GsCommands'
+			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
+			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	self verbose
+		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
+	self positionalArgs size = 0
+		ifTrue: [
+			| specFile |
+			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.
+			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [].
+			gemstoneVersionString := stoneSpec gemstoneVersionString ]
+		ifFalse: [
+			| stonesRegistry |
+			self positionalArgs size > 1 
+				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
+			stoneName := self positionalArgs at: 1.
+			self registry
+				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
+			stonesRegistry := registryClass stonesRegistryNamed: self registry.
+			stoneSpec := stonesRegistry stoneNamed: stoneName ].
+	registry := stoneSpec registry.
+	output := registry gslist: self withSuperDoitOptions: true.
+	self stdout lf; nextPutAll: output; lf.
+	^ self noResult
+%

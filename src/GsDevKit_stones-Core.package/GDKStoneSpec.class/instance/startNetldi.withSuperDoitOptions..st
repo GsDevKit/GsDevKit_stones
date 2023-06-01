@@ -4,7 +4,7 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		debugLogging
 		restart"
 
-	| scriptPath stdout exitStatus commandLine arrayOfOutputs debugLogging restart |
+	| scriptPath stdout exitStatus commandLine output debugLogging restart |
 	scriptPath := ''.
 	restart := debugLogging := false.
 	stdout := superDoitScriptOrNil
@@ -42,7 +42,7 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 				lf;
 				nextPutAll: commandLine;
 				yourself ].
-	[ arrayOfOutputs := GsHostProcess execute: commandLine ]
+	[ output := GsHostProcess execute: commandLine ]
 		on: ChildError
 		do: [ :ex | 
 			"exit status:
@@ -52,7 +52,7 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 				3 or above, an error occurred and the specified netldi was not started"
 			exitStatus := ex status ].
 	exitStatus = 0
-		ifTrue: [ stdout nextPutAll: (arrayOfOutputs at: 1)	"stdout" ]
+		ifTrue: [ stdout nextPutAll: output	"stdout" ]
 		ifFalse: [ 
 			(exitStatus = 1 or: [ exitStatus = 2 ])
 				ifTrue: [ stdout nextPutAll: 'netldi is already running (' , exitStatus printString , ')' ]
