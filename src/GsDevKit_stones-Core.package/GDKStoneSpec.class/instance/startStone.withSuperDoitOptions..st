@@ -25,9 +25,9 @@ startStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 				'======  ' , scriptPath , ' starting stone at ' , DateAndTime now printString;
 		lf;
 		lf.
-	self defineCustomEnvVars.
 	stoneLogFile := (self rootDir / self stoneDirectorySpec logs / self stoneName
 		, 'log') pathString.
+	self defineCustomEnvVars.
 	[ 
 	arrayOfOutputs := (Rowan globalNamed: 'GsStartStone')
 		startStone: self stoneName

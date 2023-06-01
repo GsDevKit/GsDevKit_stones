@@ -4,6 +4,7 @@ waitStone: timeout
 
 	| exitStatus |
 	exitStatus := 0.
+	self defineCustomEnvVars.
 	[ 
 	(Rowan globalNamed: 'GsWaitStone')
 		waitForStoneName: self stoneName

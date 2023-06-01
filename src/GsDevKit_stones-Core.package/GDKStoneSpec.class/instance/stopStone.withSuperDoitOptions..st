@@ -21,6 +21,7 @@ stopStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		lf;
 		lf.
 	exitStatus := 0.
+	self defineCustomEnvVars.
 	[ 
 	arrayOfOutputs := (Rowan globalNamed: 'GsStopStone')
 		stopStone: self stoneName

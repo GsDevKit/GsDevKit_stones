@@ -79,7 +79,6 @@ doit
 		ifTrue: [ self error: 'Expected a positional argument: <stone-name>' ].
 	stoneName := self positionalArgs at: 1.
 	stoneSpec := stonesRegistry stoneNamed: stoneName.
-	System gemEnvironmentVariable: 'GEMSTONE' put: stoneSpec gemstonePath.
 	stonesRegistry destroyStoneStructureFor: stoneName.
-	^ stonesRegistry
+	^ self noResult
 %

@@ -104,7 +104,6 @@ doit
 				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
 			stonesRegistry := registryClass stonesRegistryNamed: self registry.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
-	System gemEnvironmentVariable: 'GEMSTONE' put: stoneSpec gemstonePath.
 	stoneSpec stopStone: self withSuperDoitOptions: true.
 	^ self noResult
 %
