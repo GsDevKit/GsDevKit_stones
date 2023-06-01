@@ -2,57 +2,32 @@
 options
 {
 SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
-SuperDoitOptionalOptionWithNoArg long: 'startNetldi' short: 'b'.
-SuperDoitOptionalOptionWithNoArg long: 'restart' short: 'r'.
-SuperDoitOptionalOptionWithNoArg long: 'notranlogs' short: 'N'.
-SuperDoitOptionalOptionWithNoArg long: 'restore' short: 'R'.
-SuperDoitOptionalOptionWithRequiredArg long: 'wait' short: 'w'.
-SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
+SuperDoitOptionalOptionWithNoArg long: 'verbose'.
 }
 %
 Usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
+USAGE $basename [--help] [--debug]  [--debugGem] [--verbose] \
                 --registry=<registry-name> <stone-name>
 
 DESCRIPTION
-  Start named stone.
+  Stop netldi for named stone.
 
 OPTIONS
-  -h, --help    display usage message
-  -D, --debug   bring up topaz debugger in the event of a script error
+  --help        display usage message
+  --debug       bring up topaz debugger in the event of a script error
   --debugGem    If terminal is connected to stdout, bring up debugger. If not,
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
-  -v, --verbose Verbose logging enabled.
-  --registry    Name of registry that stone is defined in (Required).
-  -b, --netldi  Start netldi associated with the stone.
-  -r, --restart Stop and restart stone if is is already running.
-  -N, --notranlogs
-                Start without transaction logs.
-  -R, --restore Start for restore.
-  -w <waitstone-timeout>, 
-  --wait=<waitstone-timeout>
-                If stone not started within <waitstone-timeout> seconds, signal
-                an error.
-  
+  --verbose     Verbose logging enabled.  
 
 EXAMPLES
   $basename --help
-  $basename -D
+  $basename --debug
   $basename --debugGem
   $basename --registry=bosch bosch_370 
-  $basename --registry=bosch bosch_370 -b
-  $basename --registry=bosch bosch_370 -r
-  $basename --registry=bosch bosch_370 -N
-  $basename --registry=bosch bosch_370 -w 5
   # if launched from stone directory where .GDKStoneSpec.ston is present
-  $basename 
-  $basename -b
-  $basename -r
-  $basename -N
-  $basename -w 5
-
+  $basename  
 -----
 %
 specs
@@ -113,14 +88,6 @@ doit
 				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
 			stonesRegistry := registryClass stonesRegistryNamed: self registry.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
-	stoneSpec startStone: self withSuperDoitOptions: true.
-	self wait
-		ifNotNil: [:waitTime |
-			| status |
-			status := stoneSpec waitStone: waitTime asNumber.
-			status != 0
-				ifTrue: [ self error: 'The stone did not start within ', waitTime, ' seconds.' ] ].
-	self startNetldi 
-		ifTrue: [ stoneSpec startNetldi ].
+	stoneSpec stopNetldi: self withSuperDoitOptions: true.
 	^ self noResult
 %

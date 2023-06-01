@@ -1,3 +1,3 @@
 runtime
 stopStone
-	self stopStone: nil
+	self stopStone: nil withSuperDoitOptions: false

@@ -3,7 +3,7 @@ options
 {
 SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
 SuperDoitOptionalOptionWithNoArg long: 'immediate' short: 'i'.
-SuperDoitOptionalOptionWithNoArg long: 'netldi' short: 'b'.
+SuperDoitOptionalOptionWithNoArg long: 'stopNetldi' short: 'b'.
 SuperDoitOptionalOptionWithRequiredArg long: 'timeout' short: 't'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 }
@@ -105,5 +105,7 @@ doit
 			stonesRegistry := registryClass stonesRegistryNamed: self registry.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	stoneSpec stopStone: self withSuperDoitOptions: true.
+	self stopNetldi 
+		ifTrue: [ stoneSpec stopNetldi ].
 	^ self noResult
 %

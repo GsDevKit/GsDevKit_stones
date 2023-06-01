@@ -1,12 +1,19 @@
 runtime
-startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptions
-	"nothing special with regards to options at the present time"
+startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
+	"if superDoitOptionsBoolean is true, then superDoitScriptOrNil is expected to respond to the following messages:
+		debugLogging
+		restart"
 
-	| scriptPath stdout exitStatus commandLine arrayOfOutputs |
+	| scriptPath stdout exitStatus commandLine arrayOfOutputs debugLogging restart |
 	scriptPath := ''.
+	restart := debugLogging := false.
 	stdout := superDoitScriptOrNil
 		ifNotNil: [ 
 			scriptPath := superDoitScriptOrNil scriptPath.
+			superDoitOptionsBoolean
+				ifTrue: [ 
+					debugLogging := superDoitScriptOrNil debugLogging.
+					restart := superDoitScriptOrNil restart ].
 			superDoitScriptOrNil stdout ]
 		ifNil: [ GsFile stdout ].
 	stdout
@@ -21,8 +28,20 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptions
 		add: ' -a ' , (System gemEnvironmentVariable: 'USER');
 		add: ' -P ' , self stoneDirectorySpec netldiPort asString;
 		add: ' -l ' , (self logsDir / 'netldi.log') pathString;
+		yourself.
+	debugLogging
+		ifTrue: [ commandLine add: ' -d' ].
+	restart
+		ifTrue: [ commandLine add: ' -r' ].
+	commandLine
 		add: ' ' , self stoneName , '_ldi';
 		yourself.
+	GDKGsDevKit_stonesBase verbose
+		ifTrue: [ 
+			stdout
+				lf;
+				nextPutAll: commandLine;
+				yourself ].
 	[ arrayOfOutputs := GsHostProcess execute: commandLine ]
 		on: ChildError
 		do: [ :ex | 
@@ -36,10 +55,10 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptions
 		ifTrue: [ stdout nextPutAll: (arrayOfOutputs at: 1)	"stdout" ]
 		ifFalse: [ 
 			(exitStatus = 1 or: [ exitStatus = 2 ])
-				ifTrue: [ stdout nextPutAll: 'netldi is already running' ]
+				ifTrue: [ stdout nextPutAll: 'netldi is already running (' , exitStatus printString , ')' ]
 				ifFalse: [ 
 					exitStatus >= 3
-						ifTrue: [ stdout nextPutAll: 'netldi failed to start' ] ] ].
+						ifTrue: [ stdout nextPutAll: 'netldi failed to start (' , exitStatus printString , ')' ] ] ].
 	stdout
 		lf;
 		nextPutAll: '****************************************';

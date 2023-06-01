@@ -6,15 +6,15 @@ startStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		notranlogs
 		restore"
 
-	| arrayOfOutputs stoneLogFile stdout scriptPath notranlogsMode restorMode |
-	notranlogsMode := restorMode := false.
+	| arrayOfOutputs stoneLogFile stdout scriptPath notranlogsMode restoreMode |
+	notranlogsMode := restoreMode := false.
 	stdout := superDoitScriptOrNil
 		ifNotNil: [ 
 			scriptPath := superDoitScriptOrNil scriptPath.
 			superDoitOptionsBoolean
 				ifTrue: [ 
 					notranlogsMode := superDoitScriptOrNil notranlogs.
-					restorMode := superDoitScriptOrNil restore ].
+					restoreMode := superDoitScriptOrNil restore ].
 			superDoitScriptOrNil stdout ]
 		ifNil: [ 
 			scriptPath := ''.
@@ -35,7 +35,7 @@ startStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		sysConfFile: self sysConfFile pathString
 		logFile: stoneLogFile
 		noTranlogs: notranlogsMode
-		restoreMode: restorMode
+		restoreMode: restoreMode
 		conversionMode: false ]
 		on: ChildError
 		do: [ :ex | 

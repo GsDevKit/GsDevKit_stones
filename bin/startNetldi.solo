@@ -1,32 +1,53 @@
 #!/usr/bin/env superdoit_solo
-options
+customoptions
 {
+SuperDoitOptionalOptionWithNoArg long: 'help'.
+SuperDoitOptionalOptionWithNoArg long: 'debug'.
+SuperDoitOptionalOptionWithNoArg long: 'debugGem'.
 SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
-SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
+SuperDoitOptionalOptionWithNoArg long: 'verbose'.
+SuperDoitOptionalOptionWithNoArg long: 'debugLogging' short: 'd'.
+SuperDoitOptionalOptionWithNoArg long: 'restart' short: 'r'.
 }
 %
 Usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
+USAGE $basename [--help] [--debug]  [--debugGem] [--verbose] \
                 --registry=<registry-name> <stone-name>
 
 DESCRIPTION
   Start netldi for named stone.
 
 OPTIONS
-  -h, --help    display usage message
-  -D, --debug   bring up topaz debugger in the event of a script error
+	Note that the standard shortcuts options are not supported, since we weant
+  to be faithful to the startnetldi options and they comprise a big chunk
+  of the alphabet.
+
+  --help        display usage message
+  --debug       bring up topaz debugger in the event of a script error
   --debugGem    If terminal is connected to stdout, bring up debugger. If not,
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
-  -v, --verbose Verbose logging enabled.
+  --verbose     Verbose logging enabled.
+  #
+  # standard startnetldi options (currently supported)
+  #
+  -d, --debugLogging cause netldi to print extra information to its log file.
+  -r, --restart      if a netldi with the specified name is already running, 
+                     stop the running netldi and restart it.
   
 
 EXAMPLES
   $basename --help
-  $basename -D
+  $basename --debug
   $basename --debugGem
   $basename --registry=bosch bosch_370 
+  $basename --registry=bosch bosch_370 -r
+  $basename --registry=bosch bosch_370 -d
+  # if launched from stone directory where .GDKStoneSpec.ston is present
+  $basename  
+  $basename -r
+  $basename -d
 -----
 %
 specs
@@ -87,6 +108,6 @@ doit
 				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
 			stonesRegistry := registryClass stonesRegistryNamed: self registry.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
-	stoneSpec startNetldi: self.
+	stoneSpec startNetldi: self withSuperDoitOptions: true.
 	^ self noResult
 %
