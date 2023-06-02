@@ -8,7 +8,7 @@ gslist: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		gemstoneVersionString
 		removeLocks"
 
-	| stdout scriptPath exitStatus commandLine gslistOutput verbose long json oldGemstone removeLocks |
+	| stdout scriptPath exitStatus commandLine gslistOutput verbose long json removeLocks |
 	verbose := GDKGsDevKit_stonesBase verbose.
 	scriptPath := ' '.
 	removeLocks := json := long := false.
@@ -30,14 +30,6 @@ gslist: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 						'======  starting gslist at' , scriptPath , DateAndTime now printString;
 				lf ].
 	exitStatus := 0.
-	[ 
-	oldGemstone := System gemEnvironmentVariable: 'GEMSTONE'.
-	System
-		gemEnvironmentVariable: 'GEMSTONE'
-		put:
-			(self products
-				at: superDoitScriptOrNil gemstoneVersionString
-				ifAbsent: [ System gemEnvironmentVariable: 'GEMSTONE' ]).
 	commandLine := '$GEMSTONE/bin/gslist' asFileReference pathString.
 	long
 		ifTrue: [ commandLine add: ' -l' ].
@@ -59,8 +51,7 @@ gslist: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 						1 (No servers found)
 						2 (Stale lock(s) removed)
 						3, or 4  (Fatal error)"
-			exitStatus := ex status ] ]
-		ensure: [ System gemEnvironmentVariable: 'GEMSTONE' put: oldGemstone ].
+			exitStatus := ex status ].
 	exitStatus = 0
 		ifTrue: [ 
 			verbose

@@ -4,7 +4,6 @@ customoptions
 SuperDoitOptionalOptionWithNoArg long: 'help'.
 SuperDoitOptionalOptionWithNoArg long: 'debug'.
 SuperDoitOptionalOptionWithNoArg long: 'debugGem'.
-SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose'.
 SuperDoitOptionalOptionWithNoArg long: 'long' short: 'l'.
 SuperDoitOptionalOptionWithNoArg long: 'json' short: 'j'.
@@ -13,11 +12,10 @@ SuperDoitOptionalOptionWithNoArg long: 'removeLocks' short: 'c'.
 %
 Usage
 -----
-USAGE $basename [--help] [--debug]  [--debugGem] [--verbose] \
-                --registry=<registry-name> <stone-name>
+USAGE $basename [--help] [--debug]  [--debugGem] [--verbose]
 
 DESCRIPTION
-  Run gslist command using the GEMSTONE associated with the named stone.
+  Run gslist command using the GEMSTONE of solo stone.
 
 OPTIONS
 	Note that the standard shortcuts options are not supported, since we weant
@@ -41,16 +39,10 @@ EXAMPLES
   $basename --help
   $basename --debug
   $basename --debugGem
-  $basename --registry=bosch 3.7.0 
-  $basename --registry=bosch 3.7.0 --long --removeLocks
-  # if launched from stone directory where .GDKStoneSpec.ston is present
   $basename  
   $basename -l
   $basename -lc
 -----
-%
-instvars
-gemstoneVersionString
 %
 specs
 [
@@ -90,34 +82,18 @@ RwLoadSpecificationV2 {
 %
 method
 gemstoneVersionString
-	^ gemstoneVersionString ifNil: [ System gemVersionReport at: 'gsVersion' ]
+	^ System gemVersionReport at: 'gsVersion'
 %
 doit
-	| registryClass stoneName stoneSpec registry output |
+	| registryClass registry output |
 	self preDoitSpecLoad: [:spec | 
 		spec projectName = 'GsCommands'
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
 			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
-	registryClass := (self globalNamed: 'GDKRegistry').	
+	registryClass := (self globalNamed: 'GDKStonesRegistry').	
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
-	self positionalArgs size = 0
-		ifTrue: [
-			| specFile |
-			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.
-			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [].
-			gemstoneVersionString := stoneSpec gemstoneVersionString ]
-		ifFalse: [
-			| stonesRegistry |
-			self positionalArgs size > 1 
-				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
-			stoneName := self positionalArgs at: 1.
-			self registry
-				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
-			stonesRegistry := registryClass stonesRegistryNamed: self registry.
-			stoneSpec := stonesRegistry stoneNamed: stoneName ].
-	registry := stoneSpec registry.
-	output := registry gslist: self withSuperDoitOptions: true.
+	output := registryClass gslist: self withSuperDoitOptions: true.
 	self stdout lf; nextPutAll: output; lf.
 	^ self noResult
 %
