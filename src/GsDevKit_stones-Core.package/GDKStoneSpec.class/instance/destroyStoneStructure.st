@@ -14,4 +14,8 @@ destroyStoneStructure
 	self rootDir exists
 		ifTrue: [ self rootDir ensureDeleteAll ].
 	self registryFile exists
-		ifTrue: [ self registryFile ensureDelete ]
+		ifTrue: [ self registryFile ensureDelete ].
+	self stoneDirectorySpec
+		ifNotNil: [ :directorySpec | 
+			"delete the todeShared stone reference AFTER deleting the stone directory (with symbolic link) ... see internal bug 50514"
+			directorySpec destroyStoneStructure: self ]

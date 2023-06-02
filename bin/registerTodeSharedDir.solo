@@ -1,0 +1,63 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'todeSharedDirectory'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                --registry=<registry-name> --todeSharedDirectory=<path-to-shared-tode-directory>
+
+DESCRIPTION
+  Register a tode shared directory for the named registry. If the directory does not
+  exist the directory is created. tODE images store information that is shared by all
+  tODE images in the named registry. Necessary for a fully functional tODE stone.
+
+OPTIONS
+  -h, --help      display usage message
+  -D, --debug     bring up topaz debugger in the event of a script error
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --registry=bosch --todeSharedDirectory=/home/dhenrich/gemstone/tode_shared
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+doit
+	| registryClass stonesRegistry todeSharedDir todeSharedDirPath |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: self dirname asFileReference parent parent].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	todeSharedDir := self todeSharedDirectory asFileReference.
+	todeSharedDir ensureCreateDirectory.
+	todeSharedDirPath := GsFile serverRealPath: todeSharedDir pathString.
+	stonesRegistry todeSharedDirectory: todeSharedDirPath.
+	stonesRegistry export.
+
+%

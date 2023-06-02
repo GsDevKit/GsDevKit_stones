@@ -20,7 +20,7 @@ createStoneStructure: stoneSpec
 		onClient: false.
 	exportDir
 		at: GDKGsDevKit_stonesBase dataHomeEnvVar
-		put: self class data_home pathString.
+		put: self class base_data_home pathString.
 	self
 		keysAndValuesDo: [ :key :value | 
 			key = #'customenv'
@@ -55,6 +55,8 @@ createStoneStructure: stoneSpec
 							socket close ] ].
 			key = #'stats'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
+			key = #'tode'
+				ifTrue: [ self createTodeSharedDirectory: stoneSpec ].
 			key = #'tranlogs'
 				ifTrue: [ 
 					useTranlogDir := '/' , value.

@@ -8,6 +8,15 @@ Greatly simplified version of GsDevKit_home
 
 After running install add superDoit/bin and GsDevKit_stones/bin to $PATH
 
+## REQUIRED env vars
+GsDevKit_stones maintains a registry data structure based on the [XDG Base Directory Specification](https://xdgbasedirectoryspecification.com/). On Linux machines, the default location for application specific data is $HOME/.local/share and $XDG_DATA_HOME can be used to optionally define an alternate location. On Mac machines, the XDG Base Directory Specification is not defined. 
+
+Therefore to simplify the coding and allow for the creation of short-leved registry structures, The environment variable STONES_DATA_HOME is used to define the root directory for GsDevKit_STONES applications. On Linux, STONES_DATA_HOME defaults to $HOME/.local/share. On Mac, STONES_DATA_HOME must be defined. 
+
+I recommend that a users regardless of platform define STONES_DATA_HOME in their environment. All of the file system paths in the registry include $STONES_DATA_HOME so if you want to be able view these files outside of a GsDevKit_stones application, having the env var defined is very convenient
+```bash
+export STONES_DATA_HOME=$HOME/.local/share
+```
 ## Setting up the registry structure
 ```bash
 registryName="gsdevkit"
@@ -32,6 +41,8 @@ registerProduct.solo --registry=$registryName --productPath=/bosch1/users/dhenri
 # register default stones directory
 registerStonesDirectory.solo --registry=$registryName --stonesDirectory=/bosch1/users/dhenrich/_issue_4/stones
 
+# register shared tODE directory
+registerTodeSharedDir.solo --registry=issue_4 --todeSharedDirectory=/bosch1/users/dhenrich/_issue_4/tode_shared
 registryReport.solo
 ```
 
