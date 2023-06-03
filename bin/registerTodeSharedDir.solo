@@ -3,17 +3,25 @@ options
 {
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'todeSharedDirectory'.
+SuperDoitOptionalOptionWithNoArg long: 'populate'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-                --registry=<registry-name> --todeSharedDirectory=<path-to-shared-tode-directory>
+                --registry=<registry-name> \
+                --todeSharedDirectory=<path-to-shared-tode-directory>
+                [--populate]
 
 DESCRIPTION
   Register a tode shared directory for the named registry. If the directory does not
   exist the directory is created. tODE images store information that is shared by all
   tODE images in the named registry. Necessary for a fully functional tODE stone.
+
+  The tode shared directory is equivalent to the $GS_HOME/sys/local directory in GsDevKit_home.
+
+  This script creates 'server', 'server/stones', 'server/projects' and 'sessions' 
+  subdirectories of the tode shared directory.
 
 OPTIONS
   -h, --help      display usage message
@@ -21,11 +29,19 @@ OPTIONS
   --debugGem      If terminal is connected to stdout, bring up debugger. If not,
                   dump stack to stdout and wait for topaz to attach using topaz
                   DEBUGGEM command.
+  --registry      Name of registry that stone is defined in (Required).
+  --todeSharedDirectory=<path-to-shared-tode-directory>
+									Path to directory where tODE meta data is to be stored (Required).
+  --populate      If specified, the minimum directory structure required by tODE
+                  will be created.
 
 EXAMPLES
   $basename --help
   $basename -D
-  $basename --registry=bosch --todeSharedDirectory=/home/dhenrich/gemstone/tode_shared
+  $basename --registry=bosch \
+            --todeSharedDirectory=/home/dhenrich/gemstone/tode_shared
+  $basename --registry=bosch --populate \
+            --todeSharedDirectory=/home/dhenrich/gemstone/tode_shared
 -----
 %
 specs
@@ -55,9 +71,8 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	todeSharedDir := self todeSharedDirectory asFileReference.
-	todeSharedDir ensureCreateDirectory.
 	todeSharedDirPath := GsFile serverRealPath: todeSharedDir pathString.
-	stonesRegistry todeSharedDirectory: todeSharedDirPath.
+	stonesRegistry todeSharedDirectory: todeSharedDirPath populate: self populate.
 	stonesRegistry export.
 
 %

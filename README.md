@@ -28,21 +28,28 @@ createRegistry.solo $registryName
 createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh
 createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --https
 cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName \
-  --projectDirectory=$projectsDirectory
-registerProductDirectory.solo --registry=$registryName --productDirectory=$gemstoneProductsDirectory
+                                 --projectDirectory=$projectsDirectory
+registerProductDirectory.solo --registry=$registryName \
+                              --productDirectory=$gemstoneProductsDirectory
 
 # GemStone version not previously downloaded
 downloadGemStone.solo --registry=$registryName 3.6.6
 # Register full set of previously downloaded product trees
-registerProduct.solo --registry=$registryName --fromDirectory=$GS_HOME/shared/downloads/products
+registerProduct.solo --registry=$registryName \
+                     --fromDirectory=$GS_HOME/shared/downloads/products
 # register named GemStone version using path to product tree
-registerProduct.solo --registry=$registryName --productPath=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
+registerProduct.solo --registry=$registryName \
+                     --productPath=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
 
 # register default stones directory
-registerStonesDirectory.solo --registry=$registryName --stonesDirectory=/bosch1/users/dhenrich/_issue_4/stones
+registerStonesDirectory.solo --registry=$registryName \
+                             --stonesDirectory=/bosch1/users/dhenrich/_issue_4/stones
 
 # register shared tODE directory
-registerTodeSharedDir.solo --registry=issue_4 --todeSharedDirectory=/bosch1/users/dhenrich/_issue_4/tode_shared
+registerTodeSharedDir.solo --registry=issue_4 
+                           --todeSharedDirectory=/bosch1/users/dhenrich/_issue_4/tode_shared \
+                           --populate
+
 registryReport.solo
 ```
 

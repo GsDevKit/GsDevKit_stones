@@ -12,4 +12,6 @@ createStoneStructureUsing: stonesRegistry
 	stoneDirSpec createStoneStructure: self.	"populate directory structure"
 	self stoneDirectorySpec: stoneDirSpec ]
 		on: Error
-		do: [ :ex | self rootDir deleteAllChildren ]
+		do: [ :ex | 
+			self rootDir deleteAll.
+			ex pass ]

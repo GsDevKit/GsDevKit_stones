@@ -1,0 +1,2 @@
+stone creation
+createTodeStoneMetadata: stoneSpec
