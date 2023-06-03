@@ -1,3 +1,4 @@
 accessing
-exportTo: filepath
-	self exportTo: filepath extension: ''
+exportTo: fileRef
+	fileRef
+		writeStreamDo: [ :fileStream | STON put: self onStreamPretty: fileStream ]
