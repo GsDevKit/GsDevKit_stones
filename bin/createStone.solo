@@ -31,8 +31,14 @@ EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
-  $basename --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones bosch_370 3.7.0 
-  $basename -f --registry=bosch --template=minimal --root=/export/bosch1/users/dhenrich/_stones/stones bosch_370 3.7.0 
+  # extent0.dbf,  SystemUser
+  $basename --force --registry=gsdevkit --template=minimal gs_366 3.6.6
+  # extent0.rowan.dbf,  SystemUser
+  $basename -f --registry=bosch --template=minimal_rowan rowan_366 3.6.6 
+  # extent0.seaside.dbf, tODE installed, DataCurator
+  $basename --force --registry=gsdevkit --template=default_seaside tode_366 3.6.6
+  # extent0.seaside.dbf,  no tODE installed, DataCurator
+  $basename --force --registry=gsdevkit --template=minimal_seaside seaside_366 3.6.6
 -----
 %
 specs
@@ -71,6 +77,20 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+loadTode: stoneSpec
+	"not currently functioning GsHostProcess issue? ... ERROR message: /usr/bin/env: ‘bash’: No such file or directory"
+	| commandLine |
+	commandLine := (self scriptPath asFileReference parent / 'loadTode.stone') pathString.
+	commandLine 
+		add: ' --projectDirectory=', stoneSpec stonesRegistry projectDirectory;
+		add: ' -- ';
+		add: ' -I ', (stoneSpec rootDir / '.topazini') pathString;
+		yourself.
+	stoneSpec class 
+		executeCommandLine: commandLine 
+		andInput: nil
+%
 doit
 	| registryClass stonesRegistry gemstoneVersion stoneName rootDir stoneSpec stoneSpecClass |
 	self preDoitSpecLoad: [:spec | 
@@ -85,7 +105,10 @@ doit
 		ifNotNil: [:rootPath | rootPath asFileReference ]
 		ifNil: [ stonesRegistry stonesDirectory asFileReference ].
 	self positionalArgs size ~= 2
-		ifTrue: [ self error: 'Expected 2 positional arguments: <stone-name> <gemstone-version>, only got ', self positionalArgs size printString ].
+		ifTrue: [ 
+			self error: 
+				'Expected 2 positional arguments: <stone-name> <gemstone-version>, only got ', 
+				self positionalArgs size printString ].
 	stoneName := self positionalArgs at: 1.
 	gemstoneVersion := self positionalArgs at: 2.
 	stoneSpecClass := self globalNamed: 'GDKStoneSpec'.
@@ -96,16 +119,29 @@ doit
 		gemstoneVersionString: gemstoneVersion.
 	stoneSpec
 		parentRegistryName: self registry;
-		parentRegistryPath: '$', (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (stonesRegistry registryFile relativeTo: stonesRegistry class base_data_home) pathString;
+		parentRegistryPath: 
+			'$', 
+			(self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, 
+			'/' , 
+			(stonesRegistry registryFile relativeTo: stonesRegistry class base_data_home) 
+				pathString;
 		yourself.
 	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
 		ifTrue: [ 
 			(stoneSpec rootDir exists)
 				ifTrue: [ 
 					self force
-						ifFalse: [ self error: 'A stone is already present at ', stoneSpec rootDir pathString printString, '. Use --force to clean up.'].
+						ifFalse: [ 
+							self error: 
+								'A stone is already present at ', 
+								stoneSpec rootDir pathString printString, 
+								'. Use --force to clean up.'].
 					stoneSpec destroyStoneStructure ]
-				ifFalse: [ self error: 'A stone with the name ', stoneName printString, ' already exists. Not yet implemented' ] ].
+				ifFalse: [ 
+					self error: 
+						'A stone with the name ', 
+						stoneName printString, 
+						' already exists. Not yet implemented' ] ].
 	stoneSpec createStoneStructureUsing: stonesRegistry.
 	stoneSpec registryDir ensureCreateDirectory.
 	stoneSpec export.
@@ -114,7 +150,13 @@ doit
 	stoneSpec class 
 		symbolicLink: stoneSpec registryPath 
 		linkName: stoneSpec rootDir / '.GDKStoneSpec.ston'.
-	self start
-		ifTrue: [ stoneSpec startStone: self ].
+	(self start or: [ stoneSpec isTodeEnabled ])
+		ifTrue: [ 
+			stoneSpec startStone: self withSuperDoitOptions: false.
+			stoneSpec isTodeEnabled 
+				ifTrue: [
+					"not currently functioning GsHostProcess issue? ... ERROR message: /usr/bin/env: ‘bash’: No such file or directory
+					self loadTode: stoneSpec
+					" ] ].
 	^ stoneSpec
 %
