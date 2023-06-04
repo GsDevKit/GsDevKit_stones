@@ -13,6 +13,7 @@ DESCRIPTION
   bootstrap tODE into the stone. Use --projectsDirctory to specify the location of the
   project git repositories.
 
+
 OPTIONS
   <path-to-.topazini>        path to a .topazini file with a minimum of username, 
                              password and stone name set
@@ -20,13 +21,20 @@ OPTIONS
                              running the script
   -h, --help                 display usage message
   -D, --debug                bring up topaz debugger in the event of a script error
+  --projectDirectory=<projects-directory>
+                             the customenv file in the stone directory defines the 
+                             env var $GDK_stones_projects which contains the path
+                             for the projects directory registred in the stones 
+                             registry.
 
 EXAMPLES
   $basename -h                     -- -l -I ./.topazini
   $basename -D <script-arguments>  -- -l -I ./.topazini
   $basename <script-arguments>     -- -l -I ./.topazini
 
+  $basename --projectDirectory=/bosch1/users/dhenrich/_issue_4/projects
   $basename --projectDirectory=$GS_HOME/shared/repos
+  $basename --projectDirectory=$GDK_stones_projects
 -----
 %
 instvars

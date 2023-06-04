@@ -32,7 +32,10 @@ createStoneStructure: stoneSpec
 						at: 'GEMSTONE' put: gemstoneReference pathString;
 						at: 'PATH'
 							put:
-								(stoneRoot / 'bin') pathString , ':' , stoneSpec gemstonePath , '/bin:$PATH' ].
+								(stoneRoot / 'bin') pathString , ':' , stoneSpec gemstonePath , '/bin:$PATH';
+						at: 'GDK_stones_projects'
+							put: stoneSpec stonesRegistry projectDirectory asFileReference pathString;
+						yourself ].
 			key = #'bin'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'backups'
