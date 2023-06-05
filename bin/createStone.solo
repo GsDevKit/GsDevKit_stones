@@ -78,6 +78,20 @@ RwLoadSpecificationV2 {
 ]
 %
 method
+restart
+	"startnetldi support"
+	"start netldi or if already running, restart the netldi"
+
+	^ true
+%
+method
+debugLogging
+	"startnetldi support"
+	"no debug logging"
+
+	^ false
+%
+method
 loadTode: stoneSpec
 	"not currently functioning GsHostProcess issue? ... ERROR message: /usr/bin/env: ‘bash’: No such file or directory"
 	| commandLine |
@@ -153,7 +167,7 @@ doit
 	(self start or: [ stoneSpec isTodeEnabled ])
 		ifTrue: [ 
 			stoneSpec startStone: self withSuperDoitOptions: false.
-			stoneSpec startNetldi: self withSuperDoitOptions: false.
+			stoneSpec startNetldi: self withSuperDoitOptions: true.
 false ifTrue: [
 			stoneSpec isTodeEnabled 
 				ifTrue: [

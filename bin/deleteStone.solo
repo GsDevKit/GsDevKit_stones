@@ -66,13 +66,6 @@ RwLoadSpecificationV2 {
 ]
 %
 method
-restart
-	"startnetldi support"
-	"start netldi or if already running, restart the netldi"
-
-	^ true
-%
-method
 debugLogging
 	"startnetldi support"
 	^ false

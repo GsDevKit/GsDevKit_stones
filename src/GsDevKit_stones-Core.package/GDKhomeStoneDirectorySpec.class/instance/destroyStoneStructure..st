@@ -2,9 +2,11 @@ stone destruction
 destroyStoneStructure: stoneSpec
 	"clean up the stone-specific tode meta data"
 
-	| sharedtodeDir stoneDir sessionsFile |
-	sharedtodeDir := stoneSpec todeSharedDirectory asFileReference.
-	stoneDir := sharedtodeDir / 'server' / 'stones' / stoneSpec stoneName.
-	stoneDir ensureDeleteAll.
-	sessionsFile := sharedtodeDir / 'sessions' / stoneSpec stoneName.
-	sessionsFile ensureDelete
+	| todeHomeDir sessionsFile todeMetaDataDir |
+	todeHomeDir := stoneSpec todeHome asFileReference.
+	sessionsFile := todeHomeDir / 'sys' / 'local' / 'sessions'
+		/ stoneSpec stoneName.
+	sessionsFile ensureDelete.
+	todeMetaDataDir := todeHomeDir / 'sys' / 'local' / 'server' / 'stones'
+		/ stoneSpec stoneName.
+	todeMetaDataDir ensureDelete

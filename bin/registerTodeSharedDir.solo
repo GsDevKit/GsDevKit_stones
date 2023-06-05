@@ -2,7 +2,7 @@
 options
 {
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
-SuperDoitRequiredOptionWithRequiredArg long: 'todeSharedDirectory'.
+SuperDoitRequiredOptionWithRequiredArg long: 'todeHome'.
 SuperDoitOptionalOptionWithNoArg long: 'populate'.
 }
 %
@@ -10,7 +10,7 @@ Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
                 --registry=<registry-name> \
-                --todeSharedDirectory=<path-to-shared-tode-directory>
+                --todeHome=<path-to-shared-tode-directory>
                 [--populate]
 
 DESCRIPTION
@@ -30,7 +30,7 @@ OPTIONS
                   dump stack to stdout and wait for topaz to attach using topaz
                   DEBUGGEM command.
   --registry      Name of registry that stone is defined in (Required).
-  --todeSharedDirectory=<path-to-shared-tode-directory>
+  --todeHome=<path-to-shared-tode-directory>
 									Path to directory where tODE meta data is to be stored (Required).
   --populate      If specified, the minimum directory structure required by tODE
                   will be created.
@@ -39,9 +39,9 @@ EXAMPLES
   $basename --help
   $basename -D
   $basename --registry=bosch \
-            --todeSharedDirectory=/home/dhenrich/gemstone/tode_shared
+            --todeHome=/home/dhenrich/gemstone/tode_home
   $basename --registry=bosch --populate \
-            --todeSharedDirectory=/home/dhenrich/gemstone/tode_shared
+            --todeHome=/home/dhenrich/gemstone/tode_home
 -----
 %
 specs
@@ -65,14 +65,14 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryClass stonesRegistry todeSharedDir todeSharedDirPath |
+	| registryClass stonesRegistry todeHomeDir todeHomeDirPath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
-	todeSharedDir := self todeSharedDirectory asFileReference.
-	todeSharedDirPath := GsFile serverRealPath: todeSharedDir pathString.
-	stonesRegistry todeSharedDirectory: todeSharedDirPath populate: self populate.
+	todeHomeDir := self todeHome asFileReference.
+	todeHomeDirPath := GsFile serverRealPath: todeHomeDir pathString.
+	stonesRegistry todeHomeDirectory: todeHomeDirPath populate: self populate.
 	stonesRegistry export.
 
 %

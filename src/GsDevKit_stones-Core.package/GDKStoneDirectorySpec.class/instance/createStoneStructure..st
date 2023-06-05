@@ -56,7 +56,7 @@ createStoneStructure: stoneSpec
 			key = #'stats'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'tode'
-				ifTrue: [ self createTodeSharedDirectory: stoneSpec ].
+				ifTrue: [ self createTodeHomeDirectory: stoneSpec ].
 			key = #'tranlogs'
 				ifTrue: [ 
 					useTranlogDir := '/' , value.

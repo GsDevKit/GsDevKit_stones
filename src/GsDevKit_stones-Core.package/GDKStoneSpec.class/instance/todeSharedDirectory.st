@@ -1,3 +1,0 @@
-accessing
-todeSharedDirectory
-	^ self stonesRegistry todeSharedDirectory

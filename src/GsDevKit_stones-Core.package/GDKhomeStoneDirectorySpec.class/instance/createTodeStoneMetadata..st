@@ -1,2 +1,3 @@
 stone creation
-createTodeStoneMetadata: stoneSpec
+createTodeStoneMetadata: todeStonesDir
+	"todeStonesDir - directory where meta data is to be created"
