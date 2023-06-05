@@ -1,0 +1,37 @@
+{
+	"category" : "GsDevKit_stones-Tode",
+	"classinstvars" : [
+		"currentShell" ],
+	"classvars" : [
+		"DebugMode",
+		"DevKitRoot",
+		"EnableDebugger",
+		"TodeClientRoot",
+		"TodePath",
+		"TodeRoot",
+		"UseTodeSys" ],
+	"commentStamp" : "",
+	"instvars" : [
+		"windowStatus",
+		"topezClient",
+		"inputStream",
+		"actionStack",
+		"stateStack",
+		"promptString",
+		"shellWindow",
+		"console",
+		"shellId",
+		"autoCommit",
+		"adornmentColor",
+		"sessionName",
+		"sessionDescription",
+		"history",
+		"historyIndex",
+		"debugMode",
+		"batchMode",
+		"clientDebugMode" ],
+	"name" : "TDShell",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

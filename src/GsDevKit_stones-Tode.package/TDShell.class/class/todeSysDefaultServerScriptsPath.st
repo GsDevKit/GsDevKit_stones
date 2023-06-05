@@ -1,0 +1,3 @@
+home
+todeSysDefaultServerScriptsPath
+	^ self todeClientSysDefaultPath , self clientServerBootstrapScriptsPath
