@@ -53,10 +53,7 @@ executeScript: command
   script loadTode
   script --list' ]
 		ifPresent: [ :ignored | 
-			^ (TDMultiLineText new
-				prompt: 'Help for ' , command command;
-				template:
-						'NAME
+			^ 'NAME
   script - run sequence of commands from client
 
 SYNOPSIS
@@ -83,4 +80,4 @@ EXAMPLES
   script loadTode
   script --edit loadTode
   script /opt/git/todeHome/client/scripts/loadTode
-') interact ]
+' ]

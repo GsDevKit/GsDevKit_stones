@@ -10,9 +10,7 @@ executeLoadServer: command
       at: 'help'
       ifAbsent: [ ^ self topezClient installTode: options ]
       ifPresent: [ :ignored | 
-        ^ (TDMultiLineText new
-          prompt: 'Help for ' , command command;
-          template: 'NAME
+        ^ 'NAME
     loadServer - load tODE onto the server
   
   SYNOPSIS
@@ -40,4 +38,4 @@ executeLoadServer: command
     loadServer -h
     loadServer
     loadServer --scriptPath=/opt/git/tode/loadTode
-  ') interact ]
+  ' ]

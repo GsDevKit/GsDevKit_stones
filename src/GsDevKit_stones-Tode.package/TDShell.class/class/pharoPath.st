@@ -1,3 +1,0 @@
-home-private
-pharoPath
-	^ 'pharo/'

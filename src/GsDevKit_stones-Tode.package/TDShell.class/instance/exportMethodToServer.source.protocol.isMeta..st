@@ -8,7 +8,7 @@ exportMethodToServer: clientClass source: source protocol: protocol isMeta: aBoo
 	self
 		onServerDo: [ 
 			| cls |
-			cls := Smalltalk at: className.
+			cls := System myCurrentUser objectNamed: className.
 			isMeta
 				ifTrue: [ cls := cls class ].
 			cls compile: methodSource classified: methodProtocol.

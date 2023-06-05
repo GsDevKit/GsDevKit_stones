@@ -7,7 +7,7 @@ onServerDo: aBlock
 	outerContext hasInstVarRef
 		ifTrue: [ self error: 'cannot reference instance variables in server block' ].
 	blockAst := aBlock sourceNode.
-	blockScopes := (OCScopesCollector new visitNode: blockAst) scopes.
+	blockScopes := ((System myCurrentUser objectNamed: 'OCScopesCollector') new visitNode: blockAst) scopes.
 	blockScope := blockScopes at: 1.
 	variableBindings := Dictionary new.
 	blockScope copiedVars

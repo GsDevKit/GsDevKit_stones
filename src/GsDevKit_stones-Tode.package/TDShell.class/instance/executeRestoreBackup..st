@@ -10,10 +10,7 @@ executeRestoreBackup: command
 		at: 'help'
 		ifAbsent: [ ^ self topezClient restoreBackupFrom: (arguments at: 1) ]
 		ifPresent: [ :ignored | 
-			^ (TDMultiLineText new
-				prompt: 'Help for ' , command command;
-				template:
-						'NAME
+			^ 'NAME
   restoreBackup - restore from backup on server
 
 SYNOPSIS
@@ -25,4 +22,4 @@ DESCRIPTION
 EXAMPLES
   restoreBackup /export/foos2/users/dhenrich/3.0/l_gss64bit/backups/wip.dbf	
 
-') interact ]
+' ]

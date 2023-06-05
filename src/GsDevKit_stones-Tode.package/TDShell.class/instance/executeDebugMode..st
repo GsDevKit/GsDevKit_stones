@@ -40,9 +40,7 @@ executeDebugMode: command
 						ifTrue: [ 'SET' ]
 						ifFalse: [ 'CLEAR' ]) ]
 		ifPresent: [ :ignored | 
-			^ (TDMultiLineText new
-				prompt: 'Help for ' , command command;
-				template:
+			^ 
 						'NAME
   debugMode - set and clear debugMode
 
@@ -71,4 +69,4 @@ EXAMPLES
 
   debugMode --client=true
   debugMode --client=false
-') interact ]
+' ]

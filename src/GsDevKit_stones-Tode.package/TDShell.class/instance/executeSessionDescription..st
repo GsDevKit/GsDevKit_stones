@@ -26,10 +26,7 @@ executeSessionDescription: command
 					self sessionDescription exportTo: exportPath ].
 			^ self displaySessionDescription	"default or --list" ]
 		ifPresent: [ :ignored | 
-			^ (TDMultiLineText new
-				prompt: 'Help for ' , command command;
-				template:
-						'NAME
+			^ 'NAME
   sessionDesc - set session description parameters
 
 SYNOPSIS
@@ -55,4 +52,4 @@ EXAMPLES
   sessionDescription --import=/opt/git/todeHome/client/descriptions/glass
   sessionDescription
 
-') interact ]
+' ]

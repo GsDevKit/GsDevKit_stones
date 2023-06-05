@@ -10,7 +10,7 @@ exportClassToServer: clientClass
 	classComment := clientClass comment.
 	self
 		onServerDo: [ 
-			(Smalltalk at: className) comment: classComment.
+			(System myCurrentUser objectNamed: className) comment: classComment.
 			nil	"don't try returning a class to client" ].
 	clientClass
 		selectorsDo: [ :selector | 
