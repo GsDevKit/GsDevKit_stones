@@ -15,6 +15,7 @@ destroyStoneStructureFor: stoneName
 					count > 2
 						ifTrue: [ self error: 'Cannot stop stone' ].
 					Delay waitForSeconds: 1 ] ].
+	stoneSpec stopNetldi.
 	stoneSpec destroyStoneStructure.
 	self stones removeKey: stoneName.
 	self export

@@ -53,13 +53,21 @@ registerTodeSharedDir.solo --registry=issue_4
 registryReport.solo
 ```
 
-## Create a stone
+## Create stones
 ```bash
 # create stone in default stones directory
 createStone.solo --registry=$registryName --template=default_seaside --start gs_366 3.6.6 
 
+# load tODE into stone
+cd /bosch1/users/dhenrich/_stones/stones.gs_366
+loadTode.stone --projectDirectory=$projectsDirectory
+
 # create stone in custom stones directory
 createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --registry=$registryName --template=default_seaside --start gsd_3.6.6 3.6.6 
+
+# load tODE into stone
+cd /bosch1/users/dhenrich/_stones/stones.gsd_366
+loadTode.stone --projectDirectory=$projectsDirectory
 
 registryReport.solo
 ```

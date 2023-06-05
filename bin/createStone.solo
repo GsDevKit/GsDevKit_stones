@@ -153,6 +153,7 @@ doit
 	(self start or: [ stoneSpec isTodeEnabled ])
 		ifTrue: [ 
 			stoneSpec startStone: self withSuperDoitOptions: false.
+			stoneSpec startNetldi: self withSuperDoitOptions: false.
 false ifTrue: [
 			stoneSpec isTodeEnabled 
 				ifTrue: [

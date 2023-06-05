@@ -30,9 +30,6 @@ createStoneStructure: stoneSpec
 					exportDir
 						at: 'stone_dir' put: stoneRoot pathString;
 						at: 'GEMSTONE' put: gemstoneReference pathString;
-						at: 'PATH'
-							put:
-								(stoneRoot / 'bin') pathString , ':' , stoneSpec gemstonePath , '/bin:$PATH';
 						at: 'GDK_stones_projects'
 							put: stoneSpec stonesRegistry projectDirectory asFileReference pathString;
 						yourself ].

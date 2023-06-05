@@ -5,4 +5,8 @@ defineCustomEnvVars
 			dirSpec customenv
 				ifNotNil: [ :customenv | 
 					customenv
-						keysAndValuesDo: [ :varName :valueStr | System gemEnvironmentVariable: varName put: valueStr ] ] ]
+						keysAndValuesDo: [ :varName :valueStr | 
+							varName = 'PATH'
+								ifFalse: [ 
+									"bad idea to monky with PATH in netldi and stone"
+									System gemEnvironmentVariable: varName put: valueStr ] ] ] ]
