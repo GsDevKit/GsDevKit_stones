@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-Tode",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "GsTopezCommandErrorNotification",
+	"pools" : [
+		 ],
+	"super" : "GsErrorNotification",
+	"type" : "normal" }

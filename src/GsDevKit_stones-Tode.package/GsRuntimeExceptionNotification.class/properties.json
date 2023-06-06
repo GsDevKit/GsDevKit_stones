@@ -1,0 +1,15 @@
+{
+	"category" : "GsDevKit_stones-Tode",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"topez",
+		"gciErrSType" ],
+	"name" : "GsRuntimeExceptionNotification",
+	"pools" : [
+		 ],
+	"super" : "Notification",
+	"type" : "normal" }
