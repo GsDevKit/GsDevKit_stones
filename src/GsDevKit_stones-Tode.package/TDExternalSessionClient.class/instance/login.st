@@ -1,6 +1,6 @@
 session management
 login
-	| sess gemNRS stoneNRS sessionDescription |
+	| gemNRS stoneNRS sessionDescription |
 	sessionDescription := self sessionDescription.
 	gemNRS := GsNetworkResourceString
 		gemNRSForNetLDI: sessionDescription netLDIPort
@@ -8,8 +8,8 @@ login
 	stoneNRS := GsNetworkResourceString
 		stoneNRSForStoneName: sessionDescription stoneName
 		onHost: sessionDescription stoneHost.
-	sess := GsTsExternalSession
+	^ (GsTsExternalSession
 		gemNRS: gemNRS
 		stoneNRS: stoneNRS
 		username: sessionDescription userId
-		password: sessionDescription password
+		password: sessionDescription password) login

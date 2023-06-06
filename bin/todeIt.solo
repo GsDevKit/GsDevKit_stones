@@ -77,8 +77,8 @@ doit
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ].
 	sessionDescription := (self globalNamed: 'TDSessionDescription') 
 		fromFile: stoneSpec todeHome asFileReference / 'sys' / 'local' / 'sessions' / stoneSpec stoneName.
-	(self globalNamed: 'TDShell')
+	^ (self globalNamed: 'TDShell')
 		sessionDescription: sessionDescription 
-		evaluate: '3+4' 
+		evaluate: (self positionalArgs at: 1)
 		debugMode: self debug
 %
