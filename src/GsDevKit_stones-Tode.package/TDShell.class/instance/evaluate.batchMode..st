@@ -4,14 +4,7 @@ evaluate: aString batchMode: aBool
 	| result |
 	TDCommandLine
 		fromStream: aString readStream
-		selectLine: [ :line | 
-			self actionStack notEmpty
-				ifTrue: [ 
-					result := self accumulateText: line.
-					false	"do not create or evaluate command for this line" ]
-				ifFalse: [ 
-					self addToHistory: line.
-					true	"create and evaluate the command for this line" ] ]
+		selectLine: [ :line | true ]
 		forEachCommand: [ :command | result := self evaluateCommand: command batchMode: aBool ].
 	^ result ]
 		on: Error , TDRestoreFromBackupComplete , GsTopezCommandErrorNotification

@@ -1,21 +1,15 @@
 session management
 login
-	| sess gemNRS stoneNRS aUsername aPassword |
+	| sess gemNRS stoneNRS sessionDescription |
+	sessionDescription := self sessionDescription.
+	gemNRS := GsNetworkResourceString
+		gemNRSForNetLDI: sessionDescription netLDIPort
+		onHost: sessionDescription gemHost.
+	stoneNRS := GsNetworkResourceString
+		stoneNRSForStoneName: sessionDescription stoneName
+		onHost: sessionDescription stoneHost.
 	sess := GsTsExternalSession
 		gemNRS: gemNRS
 		stoneNRS: stoneNRS
-		username: aUsername
-		password: aPassword.
-	(sess loginWith: self sessionDescription)
-		ifFalse: [ 
-			| gciError messageText |
-			gciError := sess getAndClearLastError.
-			messageText := gciError message.
-			^ Error
-				signal:
-					messageText
-						, ' For further information about login failures, check the gem log file' ].
-	self class addDependent: self.
-	false
-		ifTrue: [ sess enableGemTrace ].
-	^ sess
+		username: sessionDescription userId
+		password: sessionDescription password
