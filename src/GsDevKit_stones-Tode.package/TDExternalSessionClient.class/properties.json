@@ -1,0 +1,15 @@
+{
+	"category" : "GsDevKit_stones-Tode",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"shell",
+		"session" ],
+	"name" : "TDExternalSessionClient",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
