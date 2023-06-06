@@ -1,0 +1,18 @@
+{
+	"category" : "Topez-Common-Core",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"commandLine",
+		"redirectTarget",
+		"tokens",
+		"argPtrs",
+		"hasSubCommand" ],
+	"name" : "TDCommandLine",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }
