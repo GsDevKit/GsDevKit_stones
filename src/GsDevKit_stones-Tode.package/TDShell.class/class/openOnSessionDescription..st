@@ -1,3 +1,0 @@
-instance creation
-openOnSessionDescription: sessionDescription
-	^ self new openOnSessionDescription: sessionDescription
