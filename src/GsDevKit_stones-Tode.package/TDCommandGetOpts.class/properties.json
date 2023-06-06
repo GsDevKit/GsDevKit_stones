@@ -6,12 +6,11 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"commandLine",
-		"redirectTarget",
-		"tokens",
-		"argPtrs",
-		"hasSubCommand" ],
-	"name" : "TDCommandLine",
+		"stream",
+		"command",
+		"options",
+		"arguments" ],
+	"name" : "TDCommandGetOpts",
 	"pools" : [
 		 ],
 	"super" : "Object",

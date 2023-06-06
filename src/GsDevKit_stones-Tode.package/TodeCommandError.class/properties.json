@@ -6,13 +6,9 @@
 		 ],
 	"commentStamp" : "",
 	"instvars" : [
-		"commandLine",
-		"redirectTarget",
-		"tokens",
-		"argPtrs",
-		"hasSubCommand" ],
-	"name" : "TDCommandLine",
+		 ],
+	"name" : "TodeCommandError",
 	"pools" : [
 		 ],
-	"super" : "Object",
+	"super" : "Error",
 	"type" : "normal" }
