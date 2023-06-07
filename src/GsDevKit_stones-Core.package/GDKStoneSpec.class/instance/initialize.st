@@ -4,5 +4,4 @@ initialize
 	gemHost := GDKRegistry hostName.
 	gemTask := 'gemnetobject'.
 	stoneDirectorySpecName := 'default'.
-	stoneHost := GDKRegistry hostName.
-	userId := 'SystemUser'
+	stoneHost := GDKRegistry hostName

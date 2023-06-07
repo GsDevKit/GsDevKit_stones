@@ -6,7 +6,7 @@ createStoneStructure: stoneSpec
 	useTranlogDir := ''.
 	useExtentDir := '/'.
 	useCustomEnv := false.
-	userId := 'DataCurator'.
+	userId := self defaultUserId.
 	password := 'swordfish'.
 	gemstoneReference := stoneSpec gemstonePath asFileReference.
 	System gemEnvironmentVariable: 'GEMSTONE' put: gemstoneReference pathString.
@@ -77,6 +77,10 @@ createStoneStructure: stoneSpec
 				ifTrue: [ 
 					"???"
 					self halt ] ].
+	stoneSpec
+		userId: userId;
+		password: password;
+		yourself.
 	useCustomEnv
 		ifTrue: [ 
 			stoneRoot / 'customenv'
