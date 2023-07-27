@@ -72,6 +72,14 @@ loadTode.stone --projectDirectory=$projectsDirectory
 registryReport.solo
 ```
 
+## Branches
+
+### v1.1
+Used by [smalltalkCI](https://github.com/hpi-swa/smalltalkCI).
+
+### v1.1.1
+Development aimed at smalltalkCI ... namely fixing [issue #322](https://github.com/dalehenrich/tode/issues/322).
+
 ## Branch naming conventions
 1. vX
 2. vX.Y

@@ -1,3 +1,3 @@
 accessing
 objectSerializer
-	^ self topez objectSerializer
+	^ STON

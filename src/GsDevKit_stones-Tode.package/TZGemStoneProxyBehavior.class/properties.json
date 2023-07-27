@@ -3,16 +3,16 @@
 	"classinstvars" : [
 		 ],
 	"classvars" : [
-		 ],
+		"AllGlobalNames",
+		"GciSemaphore" ],
 	"commentStamp" : "",
 	"instvars" : [
-		"shell",
-		"session",
-		"topezServerProxy",
-		"clientForwarderCache",
-		"serverApiVersion",
-		"effectiveApiVersion" ],
-	"name" : "TDExternalSessionClient",
+		"behaviorOop",
+		"topez",
+		"allInstVarNames",
+		"allClassVarNames",
+		"allSharedPoolNames" ],
+	"name" : "TZGemStoneProxyBehavior",
 	"pools" : [
 		 ],
 	"super" : "Object",
