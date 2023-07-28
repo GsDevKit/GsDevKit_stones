@@ -1,16 +1,18 @@
 #!/usr/bin/env superdoit_solo
 options
 {
+SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'stoneName'.
+SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
-                --registry=<registry-name> <stone-name>
+                --registry=<registry-name> --stoneName=<stone-name> <tode-command>
 
 DESCRIPTION
-  This script is designed to run in the stone of interest and picks up the stone
-  information from the .GDKStoneSpec.ston file in the stone directory.
+  Execute tODE commands in the stone and print the result.
 
 OPTIONS
   -h, --help    display usage message
@@ -23,7 +25,8 @@ EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
-  $basename "3+4"
+  $basename "eval \`3+4\`"
+  $basename "eval \`3+4\`" --registry=issue_4 --stoneName=gs_370
 -----
 %
 specs
@@ -69,16 +72,25 @@ doit
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
 			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
 	registryClass := (self globalNamed: 'GDKRegistry').	
+	self verbose
+		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
 	self positionalArgs size = 0
-		ifTrue: [ self error: 'a tODE command must be entered on command line' ]
-		ifFalse: [
+		ifTrue: [ self error: 'a tODE command must be entered on command line' ].
+	self registry
+		ifNotNil: [:registryName |
+			| stonesRegistry |
+			self stoneName
+				ifNil: [ self error: 'A --stoneName must be specified with --registry' ].
+			stonesRegistry := registryClass stonesRegistryNamed: self registry.
+			stoneSpec := stonesRegistry stoneNamed: self stoneName ] 
+		ifNil: [
 			| specFile |
 			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ].
 	sessionDescription := (self globalNamed: 'TDSessionDescription') 
 		fromFile: stoneSpec todeHome asFileReference / 'sys' / 'local' / 'sessions' / stoneSpec stoneName.
-	^ (self globalNamed: 'TDShell')
+	^ ((self globalNamed: 'TDShell')
 		sessionDescription: sessionDescription 
 		evaluate: (self positionalArgs at: 1)
-		debugMode: self debug
+		debugMode: self debug) asString
 %
