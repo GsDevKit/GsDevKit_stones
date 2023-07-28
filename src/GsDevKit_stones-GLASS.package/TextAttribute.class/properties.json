@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-GLASS",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "TextAttribute",
+	"pools" : [
+		 ],
+	"super" : "Object",
+	"type" : "normal" }

@@ -1,0 +1,18 @@
+{
+	"category" : "GsDevKit_stones-GLASS",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"runs",
+		"values",
+		"lastIndex",
+		"lastRun",
+		"lastOffset" ],
+	"name" : "RunArray",
+	"pools" : [
+		 ],
+	"super" : "ArrayedCollection",
+	"type" : "normal" }

@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-GLASS",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"alpha" ],
+	"name" : "TranslucentColor",
+	"pools" : [
+		 ],
+	"super" : "Color",
+	"type" : "normal" }

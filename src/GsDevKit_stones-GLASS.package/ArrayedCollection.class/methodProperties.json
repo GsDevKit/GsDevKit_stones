@@ -1,0 +1,23 @@
+{
+	"class" : {
+		"new" : "",
+		"new:withAll:" : "",
+		"newFrom:" : "",
+		"with:" : "",
+		"with:with:" : "",
+		"with:with:with:" : "",
+		"with:with:with:with:" : "",
+		"with:with:with:with:with:" : "",
+		"with:with:with:with:with:with:" : "sw 10/24/1998 22:22",
+		"withAll:" : "sma 5/12/2000 17:37" },
+	"instance" : {
+		"add:" : "sma 5/12/2000 14:09",
+		"asSortedArray" : "sma 5/12/2000 18:18",
+		"byteSize" : "nk 3/17/2004 15:22",
+		"bytesPerBasicElement" : "nk 3/17/2004 16:28",
+		"bytesPerElement" : "nk 3/17/2004 18:51",
+		"defaultElement" : "",
+		"isSorted" : "sma 6/1/2000 11:57",
+		"isSortedBy:" : "sma 6/1/2000 11:58",
+		"storeElementsFrom:to:on:" : "",
+		"storeOn:" : "" } }

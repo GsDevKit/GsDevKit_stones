@@ -1,0 +1,4 @@
+accessing
+attribute
+
+	^self hex

@@ -1,0 +1,15 @@
+{
+	"category" : "GsDevKit_stones-GLASS",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		"emphasisCode",
+		"setMode" ],
+	"name" : "TextEmphasis",
+	"pools" : [
+		 ],
+	"super" : "TextAttribute",
+	"type" : "normal" }

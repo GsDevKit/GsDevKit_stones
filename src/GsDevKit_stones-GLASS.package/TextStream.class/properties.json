@@ -1,0 +1,14 @@
+{
+	"category" : "GsDevKit_stones-GLASS",
+	"classinstvars" : [
+		 ],
+	"classvars" : [
+		 ],
+	"commentStamp" : "",
+	"instvars" : [
+		 ],
+	"name" : "TextStream",
+	"pools" : [
+		 ],
+	"super" : "WriteStreamLegacy",
+	"type" : "normal" }

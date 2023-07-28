@@ -2,7 +2,9 @@ RwSimpleProjectLoadComponentV2 {
 	#name : 'Tode',
 	#condition : 'common',
 	#projectNames : [ ],
-	#componentNames : [ ],
+	#componentNames : [ 
+		'GLASS'
+	],
 	#packageNames : [
 		'GsDevKit_stones-Tode'
 	],

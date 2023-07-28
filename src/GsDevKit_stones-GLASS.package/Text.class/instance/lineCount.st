@@ -1,0 +1,3 @@
+accessing
+lineCount
+	^ string lineCount

@@ -1,0 +1,10 @@
+RwSimpleProjectLoadComponentV2 {
+	#name : 'GLASS',
+	#condition : 'common',
+	#projectNames : [ ],
+	#componentNames : [ ],
+	#packageNames : [
+		'GsDevKit_stones-GLASS'
+	],
+	#comment : 'GLASS classes needed to support the Text, since Text is (currently) passed back as a result when a remote tODE command is executed ... a feature we want (remote tODE commands)'
+}
