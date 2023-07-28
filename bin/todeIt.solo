@@ -1,6 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
+SuperDoitOptionalOptionWithRequiredArg long: 'file'.
 SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
 SuperDoitOptionalOptionWithRequiredArg long: 'stoneName'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
@@ -9,10 +10,13 @@ SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
-                --registry=<registry-name> --stoneName=<stone-name> <tode-command>
+                [--registry=<registry-name> --stoneName=<stone-name>] \
+                [ <tode-command> | --file=<tode-commands-file> ]
 
 DESCRIPTION
-  Execute tODE commands in the stone and print the result.
+  Execute tODE commands in the stone and print the result. With no --registry
+  and no --stoneName specified, the script must be executed in the target stone
+  directory. 
 
 OPTIONS
   -h, --help    display usage message
@@ -20,13 +24,34 @@ OPTIONS
   --debugGem    If terminal is connected to stdout, bring up debugger. If not,
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
+  --registry=<registry-name>
+                Name of registry used to look up stoneName.
+  --stoneName=<stone-name>
+                Name of stone to run script against.
+  --file=<tode-commands-file>
+                Name of file containing one or more tODE commands
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
-  $basename "eval \`3+4\`"
-  $basename "eval \`3+4\`" --registry=issue_4 --stoneName=gs_370
+# passing tests
+  cat - > testing << EOF
+eval \`TDTestToolTests enableTests: false\`
+test --batch class TDTestToolTests
+eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
+EOF
+  $basename --file=testing
+#failing tests
+  cat - > testing << EOF
+eval \`TDTestToolTests enableTests: true\`
+test --batch class TDTestToolTests
+eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
+EOF
+  $basename --file=testing
+
+  $basename 'eval `3+4`' --registry=issue_4 --stoneName=gs_370
+  $basename "eval `3+4`"
 -----
 %
 specs
@@ -66,7 +91,7 @@ RwLoadSpecificationV2 {
 ]
 %
 doit
-	| registryClass stoneSpec sessionDescription |
+	| registryClass stoneSpec sessionDescription commands result |
 	self preDoitSpecLoad: [:spec | 
 		spec projectName = 'GsCommands'
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
@@ -74,8 +99,6 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
-	self positionalArgs size = 0
-		ifTrue: [ self error: 'a tODE command must be entered on command line' ].
 	self registry
 		ifNotNil: [:registryName |
 			| stonesRegistry |
@@ -89,8 +112,18 @@ doit
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ].
 	sessionDescription := (self globalNamed: 'TDSessionDescription') 
 		fromFile: stoneSpec todeHome asFileReference / 'sys' / 'local' / 'sessions' / stoneSpec stoneName.
-	^ ((self globalNamed: 'TDShell')
+	self positionalArgs size > 0
+		ifTrue: [ 
+			"workaround for https://github.com/dalehenrich/superDoit/issues/56"
+			commands := String new.
+			self positionalArgs do: [:arg | commands add: arg; add: ' ' ] ]
+		ifFalse: [
+			self file 
+				ifNil: [ self error: 'a tODE command must be entered on command line as a positional argument or via --file option' ]
+				ifNotNil: [ :commandsFile |
+					commands := commandsFile asFileReference contents ] ].
+	result := ((self globalNamed: 'TDShell')
 		sessionDescription: sessionDescription 
-		evaluate: (self positionalArgs at: 1)
-		debugMode: self debug) asString
+		evaluate: commands
+		debugMode: self debugGem) asString.
 %

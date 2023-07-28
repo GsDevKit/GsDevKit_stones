@@ -6,5 +6,5 @@ evaluateCommand: command batchMode: aBool
 		ifTrue: [ ^ '' ].
 	(self builtInCommands includes: command command)
 		ifTrue: [ ^ self executeBuiltIn: command ].
-	^ (self topezClient evaluateCommand: command batchMode: aBool)
+	^ (self topezClient evaluateCommand: command batchMode: aBool debugMode: self debugMode)
 		convertTDEvaluateTokenResponseToText: self objectSerializer

@@ -1,13 +1,16 @@
 server external session calls
-_serverExecuteString: executeString
+_serverExecuteString: executeString debugMode: debugMode
 	| doitString |
-	doitString := '
+	doitString := debugMode
+		ifTrue: [ 
+			'
 [ 
-  ^ (' , executeString 
-		,
-			') ]
+  ^ (' , executeString
+				,
+					') ]
     on: Error, Halt
-    do: [ :ex | System waitForDebug ]'.
+    do: [ :ex | System waitForDebug ]' ]
+		ifFalse: [ executeString ].
 	[ self session nbExecute: doitString ]
 		on: GsErrorNotification
 		do: [ :ex | self error: 'Unable to execute #executeString: on tODE server' ].
