@@ -12,8 +12,8 @@ named: newName put: aColor
 		accessor _ str, (String with: Character cr with: Character tab), 			'^', cap.
 		self class compile: accessor
 			classified: 'named colors'].
-	(self classPool includesKey: csym) ifFalse: [
+	(self _classVars includesKey: csym) ifFalse: [
 		self addClassVarName: cap].
 	(ColorNames includes: sym) ifFalse: [
 		ColorNames add: sym].
-	^ self classPool at: csym put: aColor
+	^ self _classVars at: csym put: aColor
