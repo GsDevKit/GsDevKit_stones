@@ -3,6 +3,8 @@
 #  Disable test running so all tests pass
 #  Throw a script error if the tests fail
 #
+#  todeIt.solo --file=example1
+#
 eval `TDTestToolTests enableTests: false`
 test --batch class TDTestToolTests
 eval `self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]`
