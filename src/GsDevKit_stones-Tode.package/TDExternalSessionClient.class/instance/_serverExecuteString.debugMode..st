@@ -14,4 +14,13 @@ _serverExecuteString: executeString debugMode: debugMode
 	[ self session nbExecute: doitString ]
 		on: GsErrorNotification
 		do: [ :ex | self error: 'Unable to execute #executeString: on tODE server' ].
-	^ self session nbResult
+	[ ^ self session nbResult ]
+		on: GciError
+		do: [ :ex | 
+			ex gsNumber = 2336
+				ifTrue: [ 
+self halt. "need to make sure that we are using the client forwarder cache for look up"
+					GsClientForwarderSendNotification new
+						session: self;
+						tag: ex gciErrSType;
+						signal ] ]

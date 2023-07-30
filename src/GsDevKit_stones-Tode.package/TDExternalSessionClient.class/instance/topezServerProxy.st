@@ -18,14 +18,22 @@ topezServerProxy
 								error:
 									'Unable to log into server:' , ex description , 'with: '
 										, todeServerCreationString printString ] ].
+"
+ ^ {(topezServer asOop).
+  transcriptClientForwarderOop.
+  (Reflection oopOf: topezClientClientForwarder).
+  (TodeObjectSerializer protocolSignatureArray).
+  (self todeServerAPIVersionString)}
+"
 			resultArray := STON fromString: jsonString.
+resultArray halt.	"need to make sure that the clientForwarderCache is updated correctly"
 			topezServerOop := resultArray at: 1.
 			topezClientOopType := resultArray at: 3.
 			topezServerProxy := topezServerOop.
 			(resultArray at: 2)
 				ifNotNil: [ :transcriptOop | 
 					transcriptOopType := transcriptOop.
-					self clientForwarderCache at: transcriptOopType put: Transcript ].
+					self clientForwarderCache at: transcriptOopType put: GsFile stdout ].
 			self clientForwarderCache at: topezClientOopType put: self.
 			resultArray size > 3
 				ifTrue: [ 
