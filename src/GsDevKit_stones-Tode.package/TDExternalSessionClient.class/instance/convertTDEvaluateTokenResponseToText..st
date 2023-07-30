@@ -1,0 +1,3 @@
+debugging
+convertTDEvaluateTokenResponseToText: serializer
+	^ self session lastResult convertTDEvaluateTokenResponseToText: serializer

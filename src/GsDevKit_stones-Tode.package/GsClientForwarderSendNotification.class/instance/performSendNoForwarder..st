@@ -1,8 +1,12 @@
 as yet unclassified
 performSendNoForwarder: noForwarderBlock
 	| forwarder clientForwarderOop selector args messageArgs |
+	true
+		ifTrue: [ 
+			"bypass all clientforwarder messages ... for now"
+			^ noForwarderBlock ].
 	args := self tag args.
-	clientForwarderOop := session asOopType: (args at: 1).
+	clientForwarderOop := args at: 1.
 	forwarder := session clientObjectForwardedFrom: clientForwarderOop.
 	forwarder == nil
 		ifTrue: [ ^ noForwarderBlock value ].

@@ -26,10 +26,9 @@ topezServerProxy
   (self todeServerAPIVersionString)}
 "
 			resultArray := STON fromString: jsonString.
-resultArray halt.	"need to make sure that the clientForwarderCache is updated correctly"
 			topezServerOop := resultArray at: 1.
 			topezClientOopType := resultArray at: 3.
-			topezServerProxy := topezServerOop.
+			topezServerProxy := topezServerOop. "instance variable in receiver"
 			(resultArray at: 2)
 				ifNotNil: [ :transcriptOop | 
 					transcriptOopType := transcriptOop.
