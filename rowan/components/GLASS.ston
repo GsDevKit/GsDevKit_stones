@@ -2,7 +2,9 @@ RwSimpleProjectLoadComponentV2 {
 	#name : 'GLASS',
 	#condition : 'common',
 	#projectNames : [ ],
-	#componentNames : [ ],
+	#componentNames : [
+		'GLASS-37x'
+	],
 	#packageNames : [
 		'GsDevKit_stones-GLASS'
 	],

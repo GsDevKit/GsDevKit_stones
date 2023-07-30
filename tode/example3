@@ -1,6 +1,6 @@
 #
 # Simple expression evaluation ... test for expected results
-#   Return value if is is correct
+# Return value if is is correct
 #
 #
 #  todeIt.solo --file=example3

@@ -1,5 +1,10 @@
 #
 #  todeIt.solo --file=example4
 #
+#  the result string of some tODE commands are not very useful.
+#	 the man command is an example ... it returns a printString
+#	 of the ordered collection of all commands in tODE
+#	 it is better to use tODE itself to view the documentation.
+#
 man --all
 # eval `STON toStringPretty: self`

@@ -1,0 +1,10 @@
+RwPlatformNestedProjectLoadComponentV2 {
+	#name : 'GLASS-37x',
+	#condition : [
+		'gs3.[7-]'
+	],
+	#packageNames : [
+		'GsDevKit_stones-GLASS-37x'
+	],
+	#comment : 'GLASS gs3.[7-]  packages '
+}

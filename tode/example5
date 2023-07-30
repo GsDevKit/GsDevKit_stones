@@ -1,0 +1,18 @@
+#
+#
+###########
+# Summary #
+###########
+# 
+# TDProjectCommandTests
+#  ✗ #testProjectNew (16ms)
+#  ✗ #testProjectNewCreateClass (10ms)
+# 
+# TDGemStoneCommandTests
+#  ✗ #testBuDirectoryCommand (3ms)
+#  ✗ #testBuRestoreCommand (3ms)
+#
+#  todeIt.solo --file=example5
+#
+test --batch class TDProjectCommandTests TDGemStoneCommandTests
+eval `(self failures, self errors)  asArray`

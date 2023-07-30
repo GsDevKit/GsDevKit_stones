@@ -1,0 +1,23 @@
+#
+#
+###########
+# Summary #
+###########
+# 
+# TDProjectCommandTests
+#  ✗ #testProjectNew (16ms)
+#  ✗ #testProjectNewCreateClass (10ms)
+# 
+# TDGemStoneCommandTests
+#  ✗ #testBuDirectoryCommand (3ms)
+#  ✗ #testBuRestoreCommand (3ms)
+#
+#  todeIt.solo --file=example6 -D --debugGem
+#
+#  ... look in the gemnet file for the gem to find the
+#  DEBUGGEM expression to use
+#
+eval `TDProjectCommandTests debug: #testProjectNew`
+eval `TDProjectCommandTests debug: #testProjectNewCreateClass`
+eval `TDGemStoneCommandTests debug: #testBuDirectoryCommand`
+eval `TDGemStoneCommandTests debug: #testBuRestoreCommand`
