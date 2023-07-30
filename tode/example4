@@ -1,4 +1,5 @@
 #
 #  todeIt.solo --file=example4
 #
-man --all
+limit chars 5000
+man abort

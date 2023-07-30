@@ -125,5 +125,5 @@ doit
 	^ result := ((self globalNamed: 'TDShell')
 		sessionDescription: sessionDescription 
 		evaluate: commands
-		debugMode: self debugGem).
+		debugMode: self debugGem) asString.
 %
