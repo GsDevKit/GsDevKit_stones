@@ -1,0 +1,6 @@
+#
+# Simple expression evaluation ... test for expected results
+#   Return value if is is correct
+#
+eval `3+4`
+eval `self = 7 ifTrue: [ self ] ifFalse: [ self error: 'wrong value']`

@@ -1,0 +1,9 @@
+#
+# Run TDTestToolTests tests. 
+#  Enable test running so you will get test failures
+#  Throw a script error if the tests fail
+#
+eval `TDTestToolTests enableTests: true`
+test --batch class TDTestToolTests
+eval `self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]`
+
