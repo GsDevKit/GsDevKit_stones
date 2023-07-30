@@ -1,5 +1,5 @@
 #
 #  todeIt.solo --file=example4
 #
-limit chars 5000
-man abort
+man --all
+# eval `STON toStringPretty: self`
