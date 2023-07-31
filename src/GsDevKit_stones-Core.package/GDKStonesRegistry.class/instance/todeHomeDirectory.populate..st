@@ -10,6 +10,7 @@ todeHomeDirectory: todeHomePath populate: populate
 		ifTrue: [ 
 			todeHomeDir ensureCreateDirectory.
 			(todeHomeDir / 'sys') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server' / 'gemstone') ensureCreateDirectory.

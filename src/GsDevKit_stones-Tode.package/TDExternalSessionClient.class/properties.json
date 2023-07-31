@@ -9,6 +9,7 @@
 		"shell",
 		"session",
 		"topezServerProxy",
+		"debugMode",
 		"clientForwarderCache",
 		"serverApiVersion",
 		"effectiveApiVersion" ],

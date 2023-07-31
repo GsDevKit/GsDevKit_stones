@@ -3,5 +3,6 @@ session
 	session
 		ifNil: [ 
 			session := self login.
-			self topezServerProxy ].
+			self topezServerProxy.
+			self _setupSessionForGsDevKit_stones].
 	^ session

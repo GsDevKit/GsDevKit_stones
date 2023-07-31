@@ -1,6 +1,7 @@
 server external session calls
-_serverExecuteString: executeString debugMode: debugMode
+_serverExecuteString: executeString debugMode: debugModeBool
 	| doitString |
+	debugMode := debugModeBool.
 	doitString := debugMode
 		ifTrue: [ 
 			'
@@ -14,7 +15,7 @@ _serverExecuteString: executeString debugMode: debugMode
 	[ self session nbExecute: doitString ]
 		on: GsErrorNotification
 		do: [ :ex | self error: 'Unable to execute #executeString: on tODE server' ].
-	[self session nbResult]
+	[ self session nbResult ]
 		on: GciError
 		do: [ :ex | 
 			ex gsNumber = 2336
@@ -26,5 +27,4 @@ _serverExecuteString: executeString debugMode: debugMode
 								session: self;
 								tag: ex gciErrSType;
 								signal ].
-ex continue. "after this continue, lastResult is the string we are looking for, however, the continue is necessary and we end up returning something different"
- ] ]
+					ex continue	"after this continue, lastResult is the string we are looking for, however, the continue is necessary and we end up returning something different" ] ]

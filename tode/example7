@@ -1,0 +1,7 @@
+#
+#	test project command
+#
+#  ... look in the gemnet file for the gem to find the
+#  DEBUGGEM expression to use
+#
+project new --force Foo
