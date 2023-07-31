@@ -11,18 +11,25 @@ todeHomeDirectory: todeHomePath populate: populate
 			todeHomeDir ensureCreateDirectory.
 			(todeHomeDir / 'sys') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'default') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'gemstone') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'home') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'projects') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'stones') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'templates')
+				ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'upgrade') ensureCreateDirectory.
+
 			(todeHomeDir / 'sys' / 'local') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'local' / 'server') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server' / 'gemstone') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server' / 'home') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'local' / 'server' / 'monticello')
-				ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server' / 'projects') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'local' / 'server' / 'stones') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'local' / 'sessions') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'local' / 'server') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server' / 'templates')
 				ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server' / 'upgrade') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'local' / 'sessions') ensureCreateDirectory.
+
 			self class
 				symbolicLink: todeHomeDir / 'sys' / 'local' / 'server' / 'stones'
 				linkName: todeHomeDir / 'sys' / 'stones' ]
