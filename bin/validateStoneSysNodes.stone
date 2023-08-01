@@ -1,0 +1,125 @@
+#!/usr/bin/env superdoit_stone
+options
+{
+	SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+	SuperDoitRequiredOptionWithRequiredArg long: 'todeHome'.
+	SuperDoitRequiredOptionWithRequiredArg long: 'stoneName'.
+	SuperDoitOptionalOptionWithNoArg long: 'files'.
+	SuperDoitOptionalOptionWithNoArg long: 'repair'.
+}
+%
+usage
+NAME
+  validateStoneSysNodes - validateStoneSysNodes sript utility template
+SYNOPSIS
+  validateStoneSysNodes [-h|--help] [--stone=<stone-name>] [--force] [--files] [--repair]
+
+DESCRIPTION
+  Verifies that the minimal per-stone directory structure exists for the given stone. By default
+  the currently running stone is validated. If the --stone option is used, then the directory
+  structure for <stone-name> is validated.
+
+  In the following the minimal per-stone directory structure is shown at <stone-name> and below:
+
+  +-$GS_HOME\
+    +-tode\
+      +-sys\
+        +-stones\
+          +-<stone-name>\
+            +-dirs.ston
+            +-home\
+            +-homeComposition.ston
+            +-packages.ston
+            +-projectComposition.ston
+            +-projects\
+            +-repos.ston
+ 
+  The home and projects directories are empty and the *.ston and files are copies of the files in 
+  $GS_HOME/tode/sys/stones/templates.
+
+  With no options, an error is thrown if the directories are missing.
+
+  With the --files option an error is also thrown if either of the files are missing.
+
+  If the --repair option is present, missing directories are created and missing
+  files are copied from $GS_HOME/tode/sys/stones/templates.
+
+  The --force option deletes the directories, if present and then rebuilt as if both the --repair and 
+  --files options are set.
+
+EXAMPLES
+ $basename --help
+ $basename -h
+
+ $basename --files
+ $basename --repair
+ $basename  --todeHome=/export/bosch1/users/dhenrich/_issue_4/tode_home --stoneName=gs_370 --files --repair -D
+%
+instvars
+%
+doit
+	| topez cpTool validateDirBlock stoneRoot stoneRootDir homeDir projectsDir upgradeDir rootDir dir sessionDescription |
+	topez := TDTopezServer for: 0.
+	cpTool := topez toolInstanceFor: 'cp'.
+	(self todeHome, '/sys/local/sessions/', self stoneName) asFileReference 
+		readStreamDo: [:fileStream | 
+			sessionDescription := STON fromString: fileStream contents].
+	stoneRoot := sessionDescription serverTodeRoot , '/sys/stones/' , self stoneName.
+	stoneRootDir := ServerFileDirectory on: stoneRoot.
+	homeDir := stoneRootDir directoryNamed: 'home'.
+	projectsDir := stoneRootDir directoryNamed: 'projects'.
+	upgradeDir := stoneRootDir directoryNamed: 'upgrade'.
+	validateDirBlock := [ :dir | 
+	dir exists
+	  ifFalse: [ 
+	    self repair
+	      ifTrue: [ 
+	        dir assureExistence.
+	        dir
+	          newFileNamed: 'README.md'
+	          do: [ :file | 
+	            "just create empty to satisfy git"
+	             ] ]
+	      ifFalse: [ nil error: 'Missing directory: ' , dir pathName printString ] ] ].
+	validateDirBlock value: stoneRootDir.
+	validateDirBlock value: homeDir.
+	validateDirBlock value: projectsDir.
+	validateDirBlock value: upgradeDir.
+	self files ifTrue: [ 
+	    | validateFileBlock |
+	    validateFileBlock := [ :dir :filename :nodename | 
+	    (dir fileExists: filename)
+	      ifFalse: [ 
+	        self repair
+	          ifTrue: [ 
+	            | templateNodePath |
+	            templateNodePath := self todeHome, '/sys/local/server/templates/'.
+							(ServerFileDirectory on:  templateNodePath , nodename) exists
+								ifFalse: [  templateNodePath := self todeHome, '/sys/default/server/templates/' ].
+	            cpTool
+	              cp: templateNodePath , nodename
+	              to: self todeHome, '/sys/stones/' , self stoneName ]
+	          ifFalse: [ 
+	            nil
+	              error:
+	                'Missing file: ' , filename printString , ' in path: '
+	                  , dir pathName printString ] ] ].
+	    validateFileBlock
+	      value: stoneRootDir
+	      value: 'homeComposition.ston'
+	      value: 'homeComposition'.
+	    validateFileBlock
+	      value: stoneRootDir
+	      value: 'projectComposition.ston'
+	      value: 'projectComposition'.
+	    validateFileBlock value: stoneRootDir value: 'dirs.ston' value: 'dirs'.
+	    validateFileBlock
+	      value: stoneRootDir
+	      value: 'packages.ston'
+	      value: 'packages'.
+	    validateFileBlock
+	      value: stoneRootDir
+	      value: 'repos.ston'
+	      value: 'repos' ].
+	^ self noResult
+%
