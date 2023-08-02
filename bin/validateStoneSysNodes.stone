@@ -93,12 +93,12 @@ doit
 	        self repair
 	          ifTrue: [ 
 	            | templateNodePath |
-	            templateNodePath := self todeHome, '/sys/local/server/templates/'.
-							(ServerFileDirectory on:  templateNodePath , nodename) exists
-								ifFalse: [  templateNodePath := self todeHome, '/sys/default/server/templates/' ].
+	            templateNodePath := '/sys/local/server/templates/'.
+							(ServerFileDirectory on:  self todeHome, templateNodePath , nodename) exists
+								ifFalse: [  templateNodePath := '/sys/default/server/templates/' ].
 	            cpTool
 	              cp: templateNodePath , nodename
-	              to: self todeHome, '/sys/stones/' , self stoneName ]
+	              to: '/sys/stones/' , self stoneName ]
 	          ifFalse: [ 
 	            nil
 	              error:

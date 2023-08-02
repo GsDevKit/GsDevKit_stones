@@ -1,9 +1,9 @@
 accessing
-todeHomeDirectory: todeHomePath populate: populate
+todeHomeDirectory: todeHomePath templatesDir: sourceTemplatesDir populate: populate
 	"The tode shared directory is equivalent to the $GS_HOME/sys/local directory in GsDevKit_home. 
 		The directories created in this method are required for the proper functioning of a tODE client."
 
-	| todeHomeDir |
+	| todeHomeDir todeTemplatesDir |
 	todeHomeDir := todeHomePath asFileReference.
 	self todeHome: todeHomeDir pathString.
 	(todeHomeDir exists not or: [ populate ])
@@ -12,13 +12,22 @@ todeHomeDirectory: todeHomePath populate: populate
 			(todeHomeDir / 'sys') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'default') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'default' / 'server') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'default' / 'server' / 'gemstone') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'default' / 'server' / 'home') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'default' / 'server' / 'projects') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'default' / 'server' / 'stones') ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'default' / 'server' / 'templates')
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'gemstone')
 				ensureCreateDirectory.
-			(todeHomeDir / 'sys' / 'default' / 'server' / 'upgrade') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'home') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'projects')
+				ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'stones') ensureCreateDirectory.
+
+			(todeTemplatesDir := todeHomeDir / 'sys' / 'default' / 'server' / 'templates')
+				ensureCreateDirectory.
+			sourceTemplatesDir files
+				do: [ :templateFile | 
+					templateFile extension = 'ston'
+						ifTrue: [ templateFile copyTo: todeTemplatesDir ] ].
+
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'upgrade')
+				ensureCreateDirectory.
 
 			(todeHomeDir / 'sys' / 'local') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'local' / 'server' / 'gemstone') ensureCreateDirectory.
