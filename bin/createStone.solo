@@ -142,20 +142,11 @@ doit
 		yourself.
 	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
 		ifTrue: [ 
-			(stoneSpec rootDir exists)
-				ifTrue: [ 
-					self force
-						ifFalse: [ 
-							self error: 
-								'A stone is already present at ', 
-								stoneSpec rootDir pathString printString, 
-								'. Use --force to clean up.'].
-					stoneSpec destroyStoneStructure ]
+			self force
 				ifFalse: [ 
 					self error: 
-						'A stone with the name ', 
-						stoneName printString, 
-						' already exists. Not yet implemented' ] ].
+						'A stone named ', stoneName, ' already exists. Use --force to clean up.'].
+			stoneSpec destroyStoneStructure ].
 	stoneSpec createStoneStructureUsing: stonesRegistry.
 	stoneSpec registryDir ensureCreateDirectory.
 	stoneSpec export.

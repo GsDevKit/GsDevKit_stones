@@ -83,7 +83,9 @@ doit
 	self positionalArgs size ~= 1
 		ifTrue: [ self error: 'Expected a positional argument: <stone-name>' ].
 	stoneName := self positionalArgs at: 1.
-	stoneSpec := stonesRegistry stoneNamed: stoneName.
+	stoneSpec := stonesRegistry 
+		stoneNamed: stoneName 
+		ifAbsent: [ self error: 'The stone ', stoneName printString, ' does not exist' ].
 	stonesRegistry destroyStoneStructureFor: stoneName.
 	^ self noResult
 %

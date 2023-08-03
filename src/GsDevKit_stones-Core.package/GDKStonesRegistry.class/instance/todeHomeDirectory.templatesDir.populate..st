@@ -14,7 +14,13 @@ todeHomeDirectory: todeHomePath templatesDir: sourceTemplatesDir populate: popul
 			(todeHomeDir / 'sys' / 'default' / 'server') ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'default' / 'server' / 'gemstone')
 				ensureCreateDirectory.
+
 			(todeHomeDir / 'sys' / 'default' / 'server' / 'home') ensureCreateDirectory.
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'home' / 'tode') ensureCreateDirectory.
+"copy GsDevKit_stones/todeHome/tode"
+			(todeHomeDir / 'sys' / 'default' / 'server' / 'home' / 'utils' ) ensureCreateDirectory.
+"copy GsDevKit_stones/todeHome/utils"
+
 			(todeHomeDir / 'sys' / 'default' / 'server' / 'projects')
 				ensureCreateDirectory.
 			(todeHomeDir / 'sys' / 'default' / 'server' / 'stones') ensureCreateDirectory.

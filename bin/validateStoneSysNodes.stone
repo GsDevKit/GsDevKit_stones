@@ -121,5 +121,5 @@ doit
 	      value: stoneRootDir
 	      value: 'repos.ston'
 	      value: 'repos' ].
-	^ self noResult
+	^ System commit
 %
