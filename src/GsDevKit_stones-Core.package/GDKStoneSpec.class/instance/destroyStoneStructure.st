@@ -4,18 +4,13 @@ destroyStoneStructure
 
 	"shut down stone BEFORE calling"
 
-	[ 
 	(self waitStone: 1) ~= 3
 		ifTrue: [ 
 			self
 				error:
 					'The stone ' , self stoneName
 						,
-							' is still running. It must be stopped BEFORE destroying the stone structure' ] ]
-		on: Error
-		do: [ :ignored | 
-			"ignore errors during waitstone"
-			 ].
+							' is still running. It must be stopped BEFORE destroying the stone structure' ].
 	self rootDir exists
 		ifTrue: [ self rootDir ensureDeleteAll ].
 	self registryFile exists

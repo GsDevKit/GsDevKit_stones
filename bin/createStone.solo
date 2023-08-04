@@ -159,12 +159,11 @@ doit
 		ifTrue: [ 
 			stoneSpec startStone: self withSuperDoitOptions: false.
 			stoneSpec startNetldi: self withSuperDoitOptions: true.
-false ifTrue: [
 			stoneSpec isTodeEnabled 
 				ifTrue: [
 					"not currently functioning GsHostProcess issue? ... see https://github.com/GsDevKit/GsDevKit_stones/issues/5"
 					self loadTode: stoneSpec
 					].
- ] ].
+ ].
 	^ stoneSpec
 %

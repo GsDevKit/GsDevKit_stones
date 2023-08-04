@@ -9,8 +9,8 @@ createStoneStructureUsing: stonesRegistry
 	stoneDirSpec := GDKAbstractRegistryStore
 		fromPath: (stonesRegistry templateNamed: self stoneDirectorySpecName)
 		ifAbsent: [  ].
-	stoneDirSpec createStoneStructure: self.	"populate directory structure"
-	self stoneDirectorySpec: stoneDirSpec ]
+	self stoneDirectorySpec: stoneDirSpec.
+	stoneDirSpec createStoneStructure: self	"populate directory structure" ]
 		on: Error
 		do: [ :ex | 
 			self rootDir deleteAll.

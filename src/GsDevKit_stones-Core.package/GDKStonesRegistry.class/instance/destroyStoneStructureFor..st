@@ -2,7 +2,6 @@ stone management
 destroyStoneStructureFor: stoneName
 	| stoneSpec status |
 	stoneSpec := self stoneNamed: stoneName.
-	[ 
 	(stoneSpec waitStone: 1) = 0
 		ifTrue: [ 
 			| count |
@@ -15,16 +14,8 @@ destroyStoneStructureFor: stoneName
 					count := count + 1.
 					count > 2
 						ifTrue: [ self error: 'Cannot stop stone' ].
-					Delay waitForSeconds: 1 ] ] ]
-		on: Error
-		do: [ :ignored | 
-			"ignore errors during waitstone/stopstone"
-			 ].
-	[ stoneSpec stopNetldi ]
-		on: Error
-		do: [ :ignored | 
-			"ignore errors during stopNetldi"
-			 ].
+					Delay waitForSeconds: 1 ] ].
+	stoneSpec stopNetldi.
 	stoneSpec destroyStoneStructure.
 	self stones removeKey: stoneName.
 	self export

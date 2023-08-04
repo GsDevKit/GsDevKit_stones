@@ -122,8 +122,9 @@ doit
 				ifNil: [ self error: 'a tODE command must be entered on command line as a positional argument or via --file option' ]
 				ifNotNil: [ :commandsFile |
 					commands := commandsFile asFileReference contents ] ].
-	^ result := ((self globalNamed: 'TDShell')
+	result := ((self globalNamed: 'TDShell')
 		sessionDescription: sessionDescription 
 		evaluate: commands
 		debugMode: self debugGem) asString.
+	^ result
 %

@@ -12,7 +12,7 @@ login
 		gemNRS: gemNRS
 		stoneNRS: stoneNRS
 		username: sessionDescription userId
-		password: sessionDescription password.
+		password: sessionDescription password copy.	"Warning the password size is set to zero during GsTsExternalSession processing -- see GemStoneParameters>>password"
 	sess nbLogin.
 	sess waitForReadReady.
 	sess nbLoginFinished.

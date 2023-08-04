@@ -1,0 +1,7 @@
+# /sys/default/bin/validateStoneSysNodes --files --repair
+mount --stoneRoot / /sys stone
+# Define /home and /projects based on a composition of the /sys nodes
+mount --stoneRoot homeComposition.ston / home
+mount --stoneRoot projectComposition.ston / projects
+commit
+cd 
