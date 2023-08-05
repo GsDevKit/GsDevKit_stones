@@ -2,20 +2,20 @@ mount command
 executeMountCommand: command batchMode: aBool
 	"only one of --todeRoot of --serverRoot may be present"
 
-	| index option commandLine todeRoot serverRoot rest |
+	| index option commandLine todeRoot stoneRoot rest |
 	commandLine := command commandLine copy.
 	todeRoot := '--todeRoot'.
-	serverRoot := '--serverRoot'.
+	stoneRoot := '--stoneRoot'.
 	(index := commandLine findString: todeRoot startingAt: 1) > 0
 		ifTrue: [ option := todeRoot ]
 		ifFalse: [ 
-			(index := commandLine findString: serverRoot startingAt: 1) > 0
-				ifTrue: [ option := serverRoot ] ].
+			(index := commandLine findString: stoneRoot startingAt: 1) > 0
+				ifTrue: [ option := stoneRoot ] ].
 	index > 0
 		ifTrue: [ 
 			| newCommandLine commandStream skipDone optionPath |
-			"--todeRoot and --serverRoot options for mount command use a call back, so hard-wire 
-				todeRoot/serverRoot path into the command and remove --todeRoot/--serverRoot 
+			"--todeRoot and --stoneRoot options for mount command use a call back, so hard-wire 
+				todeRoot/stoneRoot path into the command and remove --todeRoot/--stoneRoot 
 				option from commandLine"
 			newCommandLine := (commandLine copyFrom: 1 to: index - 1)
 				, (commandLine copyFrom: index + option size to: commandLine size).
@@ -29,8 +29,8 @@ executeMountCommand: command batchMode: aBool
 				ifTrue: [ self sessionDescription serverTodeRoot ]
 				ifFalse: [ 
 					"fabricate the --stoneRoot path for the stone associated with session description"
-					self sessionDescription serverTodeRoot.
-					'/' , '/sys/stones/' , self sessionDescription stoneName ].
+					self sessionDescription serverTodeRoot , '/sys/stones/'
+						, self sessionDescription stoneName ].
 			newCommandLine := 'mount ' , optionPath.
 			commandStream peek = $/
 				ifFalse: [ 
