@@ -1,7 +1,7 @@
 stone creation
 createStoneStructure: stoneSpec
-	| stoneRoot useCustomEnv exportDir gemstoneReference systemConfStream useTranlogDir useExtentDir userId password |
-	exportDir := Dictionary new.
+	| stoneRoot useCustomEnv exportDict gemstoneReference systemConfStream useTranlogDir useExtentDir userId password |
+	exportDict := Dictionary new.
 	stoneRoot := stoneSpec rootDir.
 	useTranlogDir := ''.
 	useExtentDir := '/'.
@@ -18,7 +18,7 @@ createStoneStructure: stoneSpec
 		open: (stoneRoot / 'system.conf') pathString
 		mode: 'a+'
 		onClient: false.
-	exportDir
+	exportDict
 		at: GDKGsDevKit_stonesBase dataHomeEnvVar
 		put: self class base_data_home pathString.
 	self
@@ -26,13 +26,14 @@ createStoneStructure: stoneSpec
 			key = #'customenv'
 				ifTrue: [ 
 					useCustomEnv := true.
-					customenv := exportDir.
-					exportDir
+					customenv := exportDict.
+					exportDict
 						at: 'stone_dir' put: stoneRoot pathString;
 						at: 'GEMSTONE' put: gemstoneReference pathString;
 						at: 'GDK_stones_projects'
 							put: stoneSpec stonesRegistry projectDirectory asFileReference pathString;
-						yourself ].
+						yourself.
+					self customizeCustomEnv: exportDict stoneSpec: stoneSpec].
 			key = #'bin'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'backups'
@@ -85,7 +86,7 @@ createStoneStructure: stoneSpec
 		ifTrue: [ 
 			stoneRoot / 'customenv'
 				writeStreamDo: [ :fileStream | 
-					exportDir
+					exportDict
 						keysAndValuesDo: [ :key :value | 
 							fileStream
 								nextPutAll: 'export ' , key , '=' , value;

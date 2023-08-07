@@ -2,6 +2,7 @@
 options
 {
 	SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
+	SuperDoitOptionalOptionWithNoArg long: 'fullLogging'.
 }
 %
 usage
@@ -32,7 +33,7 @@ EXAMPLES
   $basename -D <script-arguments>  -- -l -I ./.topazini
   $basename <script-arguments>     -- -l -I ./.topazini
 
-  $basename --projectDirectory=/bosch1/users/dhenrich/_issue_4/projects
+  $basename --projectDirectory=/bosch1/users/dhenrich/_issue_4/projects --fullLogging
   $basename --projectDirectory=$GS_HOME/shared/repos
   $basename --projectDirectory=$GDK_stones_projects
 -----
@@ -195,12 +196,26 @@ Transcript cr; show: '---Step 4 of tODE bootstrap process: execute loadTode.ws'.
       load: 'GemStone Dev' ] ].
 %
 doit
+	| originalTranscript |
 	projectDirectory := self projectDirectory.
-	self 
-		step_1_upgradeGLASS;
-		step_2_loadMetacello;
-		step_3_loadGLASS1;
-		step_4_loadTode;
-		yourself.
-	^ self noResult
+	self fullLogging
+		ifTrue: [ 
+			originalTranscript := UserGlobals at: #Transcript ].
+	[
+		UserGlobals at: #Transcript put: TranscriptStreamPortable new.
+		SessionTemps current at: #'TranscriptStream_SessionStream' put: GsFile stdout.
+		self 
+			step_1_upgradeGLASS;
+			step_2_loadMetacello;
+			step_3_loadGLASS1;
+			step_4_loadTode;
+			yourself.
+		^ self noResult ] 
+			ensure: [ 
+				self fullLogging
+					ifTrue: [
+						UserGlobals 
+							at: #Transcript 
+							put: originalTranscript.
+						System commit ] ]
 %

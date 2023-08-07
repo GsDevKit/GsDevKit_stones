@@ -98,11 +98,13 @@ loadTode: stoneSpec
 	commandLine := (self scriptPath asFileReference parent / 'loadTode.stone') pathString.
 	commandLine 
 		add: ' --projectDirectory=', stoneSpec stonesRegistry projectDirectory;
+		add: ' --fullLogging';
 		add: ' -- ';
 		add: ' -I ', (stoneSpec rootDir / '.topazini') pathString;
 		yourself.
 	stoneSpec class 
 		executeCommandLine: commandLine 
+		stdout: nil 
 		andInput: nil
 %
 doit
