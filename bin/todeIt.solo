@@ -109,7 +109,9 @@ doit
 		ifNil: [
 			| specFile |
 			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.
-			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ].
+			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') 
+				fromPath: specFile 
+				ifAbsent: [ self error: 'No .GDKStoneSpec.ston file found in current directory. If you are not in a stone directory, you must use --registry and --stoneName options. If you are in a stone directory, then the stone itself is not registered.'] ].
 	sessionDescription := (self globalNamed: 'TDSessionDescription') 
 		fromFile: stoneSpec todeHome asFileReference / 'sys' / 'local' / 'sessions' / stoneSpec stoneName.
 	self positionalArgs size > 0
@@ -122,9 +124,11 @@ doit
 				ifNil: [ self error: 'a tODE command must be entered on command line as a positional argument or via --file option' ]
 				ifNotNil: [ :commandsFile |
 					commands := commandsFile asFileReference contents ] ].
-	result := ((self globalNamed: 'TDShell')
+	result := (self globalNamed: 'TDShell') 
 		sessionDescription: sessionDescription 
 		evaluate: commands
-		debugMode: self debugGem) asString.
-	^ result
+		debugMode: self debugGem.
+	^ self file
+		ifNotNil: [ result collect: [:each | each asString ] ]
+		ifNil: [ result first asString ]
 %

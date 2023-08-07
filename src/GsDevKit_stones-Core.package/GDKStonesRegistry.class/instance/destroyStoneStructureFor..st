@@ -5,8 +5,8 @@ destroyStoneStructureFor: stoneName
 	(stoneSpec waitStone: 1) = 0
 		ifTrue: [ 
 			| count |
-			"if running, stop the stone"
-			stoneSpec stopStone.
+			"if running, stop the stone and logout any logged in sessions"
+			stoneSpec stopStone: nil immediate: true.
 			count := 0.
 			[ (status := stoneSpec waitStone: 1) ~= 3 ]
 				whileTrue: [ 

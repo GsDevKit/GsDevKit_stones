@@ -1,6 +1,10 @@
 evaluator engine
 evaluate: aString batchMode: aBool
+	"return an array of command results, with one result per command"
+
 	[ 
+	| results |
+	results := {}.
 	TDCommandLine
 		fromStream: aString readStream
 		selectLine: [ :line | true ]
@@ -10,8 +14,9 @@ evaluate: aString batchMode: aBool
 			command command = 'mount'
 				ifTrue: [ 
 					"--todeRoot and --stoneRoot options for mount command involve client forwarder sends, so handle --todeRoot and --stoneRoot before calling server"
-					^ self executeMountCommand: command batchMode: aBool ]
-				ifFalse: [ ^ self evaluateCommand: command batchMode: aBool ] ] ]
+					results add: (self executeMountCommand: command batchMode: aBool) ]
+				ifFalse: [ results add: (self evaluateCommand: command batchMode: aBool) ] ].
+	^ results ]
 		on: Error , TDRestoreFromBackupComplete , GsTopezCommandErrorNotification
 		do: [ :ex | 
 			(ex isKindOf: GciError)
