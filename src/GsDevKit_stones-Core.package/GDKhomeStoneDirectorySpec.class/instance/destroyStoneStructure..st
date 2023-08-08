@@ -9,4 +9,4 @@ destroyStoneStructure: stoneSpec
 	sessionsFile ensureDelete.
 	todeMetaDataDir := todeHomeDir / 'sys' / 'local' / 'server' / 'stones'
 		/ stoneSpec stoneName.
-	todeMetaDataDir ensureDelete
+	todeMetaDataDir ensureDeleteAll

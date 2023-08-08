@@ -7,7 +7,7 @@ customizeCustomEnv: exportDict stoneSpec: stoneSpec
 	{'GS_SHARED'.
 	(stoneSpec todeHome , '/shared')}.
 	{'GS_SERVER_STONES'.
-	(stoneSpec todeHome , 'sys/local/server/stones')}.
+	(stoneSpec todeHome , '/sys/local/server/stones')}.
 	{'GS_SYS'.
 	(stoneSpec todeHome , '/sys')}}
 		do: [ :ar | exportDict at: (ar at: 1) put: (ar at: 2) ]
