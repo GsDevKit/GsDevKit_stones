@@ -1,6 +1,6 @@
 GDKstonesStoneDirectorySpec {
 	#name : 'minimal_seaside',
-	#customenv: 'customenv',
+	#customenv : 'customenv',
 	#dbfSource : '$GEMSTONE/bin/extent0.seaside.dbf',
 	#bin : 'bin',
 	#logs : 'logs',
