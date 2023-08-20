@@ -6,23 +6,40 @@ Greatly simplified version of GsDevKit_home
 4. standard location for git repos
 5. if you are using tODE I think you should continue using GsDevKit_home
 
-After running install add superDoit/bin and GsDevKit_stones/bin to $PATH
+## Installation
+``` bash
+git clone git@github.com:GsDevKit/GsDevKit_stones.git
+GsDevKit_stones/bin/install.sh
 
-## REQUIRED env vars
+export PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH
+versionReport.solo
+export STONES_DATA_HOME=$XDG_DATA_HOME
+if [ "$STONES_DATA_HOME" = "" ] ; then
+	# on Mac ensure the directory you choose exists
+	export STONES_DATA_HOME=$HOME/.local/share
+fi
+```
+
+## STONES_DATA_HOME
 GsDevKit_stones maintains a registry data structure based on the [XDG Base Directory Specification](https://xdgbasedirectoryspecification.com/). On Linux machines, the default location for application specific data is $HOME/.local/share and $XDG_DATA_HOME can be used to optionally define an alternate location. On Mac machines, the XDG Base Directory Specification is not defined. 
 
-Therefore to simplify the coding and allow for the creation of short-leved registry structures, The environment variable STONES_DATA_HOME is used to define the root directory for GsDevKit_STONES applications. On Linux, STONES_DATA_HOME defaults to $HOME/.local/share. On Mac, STONES_DATA_HOME must be defined. 
+Therefore to simplify the coding and allow for the creation of short-leved registry structures, The environment variable STONES_DATA_HOME is used to define the root directory for GsDevKit_STONES applications. On Linux, STONES_DATA_HOME defaults to $HOME/.local/share. On Mac, STONES_DATA_HOME must be defined.
 
-I recommend that a users regardless of platform define STONES_DATA_HOME in their environment. All of the file system paths in the registry include $STONES_DATA_HOME so if you want to be able view these files outside of a GsDevKit_stones application, having the env var defined is very convenient
-```bash
-export STONES_DATA_HOME=$HOME/.local/share
-```
 ## Setting up the registry structure
 ```bash
-registryName="gsdevkit"
-projectSetName="gsdevkit"
-gemstoneProductsDirectory="/bosch1/users/dhenrich/products"
-projectsDirectory="/bosch1/users/dhenrich/projects/"
+registryName=`hostname`
+projectSetName="devkit"
+gemstoneProductsDirectory="/home/dhenrich/_stones/gemstone"
+projectsDirectory="/home/dhenrich/_stones/git/"
+stonesDirectory="/home/dhenrich/_stones/stones"
+todeHome="/home/dhenrich/_stones/tode"
+echo "
+ registry:    $registryName
+ project set: $projectSetName 
+ products:    $gemstoneProductsDirectory
+ projects:    $projectsDirectory 
+ stones:      $stonesDirectory
+ tode:        $todeHome"
 
 createRegistry.solo $registryName
 createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh
@@ -34,6 +51,7 @@ registerProductDirectory.solo --registry=$registryName \
 
 # GemStone version not previously downloaded
 downloadGemStone.solo --registry=$registryName 3.6.6
+
 # Register full set of previously downloaded product trees
 registerProduct.solo --registry=$registryName \
                      --fromDirectory=$GS_HOME/shared/downloads/products
@@ -43,11 +61,11 @@ registerProduct.solo --registry=$registryName \
 
 # register default stones directory
 registerStonesDirectory.solo --registry=$registryName \
-                             --stonesDirectory=/bosch1/users/dhenrich/_issue_4/stones
+                             --stonesDirectory=$stonesDirectory
 
 # register shared tODE directory
-registerTodeSharedDir.solo --registry=issue_4 
-                           --todeSharedDirectory=/bosch1/users/dhenrich/_issue_4/tode_shared \
+registerTodeSharedDir.solo --registry=$registryName  \
+                           --todeHome=$todeHome \
                            --populate
 
 registryReport.solo
