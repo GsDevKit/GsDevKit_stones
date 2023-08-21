@@ -1,4 +1,4 @@
-GDKhomeStoneDirectorySpec{
+GDKstonesStoneDirectorySpec {
 	#name : 'default',
 	#backups : 'backups',
 	#bin : 'bin',
@@ -10,6 +10,5 @@ GDKhomeStoneDirectorySpec{
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',
 	#product : 'product',
-	#tode : 'tode',
-	#userId : 'DataCurator'
+	#userId : 'SystemUser'
 }
