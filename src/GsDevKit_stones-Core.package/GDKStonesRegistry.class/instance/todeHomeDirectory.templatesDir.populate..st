@@ -30,7 +30,7 @@ todeHomeDirectory: todeHomePath templatesDir: sourceTemplatesDir populate: popul
 			sourceTemplatesDir files
 				do: [ :templateFile | 
 					templateFile extension = 'ston'
-						ifTrue: [ templateFile copyTo: todeTemplatesDir ] ].
+						ifTrue: [ templateFile copyTo: todeTemplatesDir / templateFile basename ] ].
 
 			(todeHomeDir / 'sys' / 'default' / 'server' / 'upgrade')
 				ensureCreateDirectory.
