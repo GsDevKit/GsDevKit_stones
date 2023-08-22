@@ -99,7 +99,7 @@ updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=RowanCli
                       --specUrl=https://raw.githubusercontent.com/GemTalk/RowanClientServices/eric_component_V3.0/rowan/specs/RowanClientServices.ston
 updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=PharoGemStoneFFI --specUrl=git@github.com:GemTalk/PharoGemStoneFFI.git --revision=main
 updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=JadeiteForPharo --specUrl=git@github.com:GemTalk/JadeiteForPharo.git --revision=main
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=JadeiteForPharo --specUrl=https://raw.githubusercontent.com/GemTalk/Announcements/main/rowan/specs/Announcements.ston --revision=main
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Announcements --specUrl=https://raw.githubusercontent.com/GemTalk/Announcements/main/rowan/specs/Announcements.ston --revision=main
 ```
 ## sample registry report
 ```
