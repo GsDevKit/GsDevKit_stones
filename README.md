@@ -122,7 +122,6 @@ GDKStonesRegistry {
 	}
 }
 ```
-```
 
 ## Branches
 
