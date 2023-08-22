@@ -16,10 +16,10 @@ createSessionDescripton: stoneSpec
 		gemTask: 'gemnetobject';
 		userId: stoneSpec userId;
 		password: stoneSpec password;
-		backupDirectory: (stoneSpec rootDir / self backups) fullName;
-		snapshotDirectory: (stoneSpec rootDir / self snapshots) fullName;
+		backupDirectory: (stoneSpec rootDir / self backups) pathString;
+		snapshotDirectory: (stoneSpec rootDir / self snapshots) pathString;
 		serverGitRoot:
-				stoneSpec stonesRegistry projectDirectory asFileReference fullName;
-		serverTodeRoot: todeHome asFileReference fullName;
+				stoneSpec stonesRegistry projectDirectory asFileReference pathString;
+		serverTodeRoot: todeHome asFileReference pathString;
 		yourself.
 	description exportTo: sessionDescriptionFile

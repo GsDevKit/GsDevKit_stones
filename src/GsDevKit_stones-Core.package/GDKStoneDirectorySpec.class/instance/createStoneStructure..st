@@ -9,18 +9,18 @@ createStoneStructure: stoneSpec
 	userId := self defaultUserId.
 	password := 'swordfish'.
 	gemstoneReference := stoneSpec gemstonePath asFileReference.
-	System gemEnvironmentVariable: 'GEMSTONE' put: gemstoneReference fullName.
+	System gemEnvironmentVariable: 'GEMSTONE' put: gemstoneReference pathString.
 	self class symbolicLink: gemstoneReference linkName: stoneRoot / 'product'.
 	(self dbfSource: stoneSpec) copyTo: stoneRoot / 'extent0.dbf'.
-	self class chmod: (stoneRoot / 'extent0.dbf') fullName fileMode: 'u+w'.
+	self class chmod: (stoneRoot / 'extent0.dbf') pathString fileMode: 'u+w'.
 	gemstoneReference / 'data' / 'system.conf' copyTo: stoneRoot / 'system.conf'.
 	systemConfStream := GsFile
-		open: (stoneRoot / 'system.conf') fullName
+		open: (stoneRoot / 'system.conf') pathString
 		mode: 'a+'
 		onClient: false.
 	exportDict
 		at: GDKGsDevKit_stonesBase dataHomeEnvVar
-		put: self class base_data_home fullName.
+		put: self class base_data_home pathString.
 	self
 		keysAndValuesDo: [ :key :value | 
 			key = #'customenv'
@@ -28,10 +28,10 @@ createStoneStructure: stoneSpec
 					useCustomEnv := true.
 					customenv := exportDict.
 					exportDict
-						at: 'stone_dir' put: stoneRoot fullName;
-						at: 'GEMSTONE' put: gemstoneReference fullName;
+						at: 'stone_dir' put: stoneRoot pathString;
+						at: 'GEMSTONE' put: gemstoneReference pathString;
 						at: 'GDK_stones_projects'
-							put: stoneSpec stonesRegistry projectDirectory asFileReference fullName;
+							put: stoneSpec stonesRegistry projectDirectory asFileReference pathString;
 						yourself.
 					self customizeCustomEnv: exportDict stoneSpec: stoneSpec].
 			key = #'bin'
@@ -101,10 +101,10 @@ createStoneStructure: stoneSpec
 			systemConfStream
 				lf;
 				nextPutAll:
-						'DBF_EXTENT_NAMES = ' , stoneRoot fullName , useExtentDir , 'extent0.dbf;';
+						'DBF_EXTENT_NAMES = ' , stoneRoot pathString , useExtentDir , 'extent0.dbf;';
 				lf;
 				nextPutAll:
-						'STN_TRAN_LOG_DIRECTORIES = ' , stoneRoot fullName , useTranlogDir , ';';
+						'STN_TRAN_LOG_DIRECTORIES = ' , stoneRoot pathString , useTranlogDir , ';';
 				lf ].
 	systemConfStream close.
 	stoneRoot / 'gem.conf'
@@ -119,4 +119,4 @@ createStoneStructure: stoneSpec
 				lf;
 				nextPutAll: 'set u ' , userId , ' p ' , password;
 				lf ].
-	self class chmod: (stoneRoot / '.topazini') fullName fileMode: 'u+w,og-rw'
+	self class chmod: (stoneRoot / '.topazini') pathString fileMode: 'u+w,og-rw'
