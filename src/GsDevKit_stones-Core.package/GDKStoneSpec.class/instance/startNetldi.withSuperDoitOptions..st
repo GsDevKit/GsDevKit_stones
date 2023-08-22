@@ -22,12 +22,12 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		lf.
 	exitStatus := 0.
 	self defineCustomEnvVars.
-	commandLine := '$GEMSTONE/bin/startnetldi' asFileReference pathString.
+	commandLine := '$GEMSTONE/bin/startnetldi' asFileReference fullName.
 	commandLine
 		add: ' -g';
 		add: ' -a ' , (System gemEnvironmentVariable: 'USER');
 		add: ' -P ' , self stoneDirectorySpec netldiPort asString;
-		add: ' -l ' , (self logsDir / 'netldi.log') pathString;
+		add: ' -l ' , (self logsDir / 'netldi.log') fullName;
 		yourself.
 	debugLogging
 		ifTrue: [ commandLine add: ' -d' ].

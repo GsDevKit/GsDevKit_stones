@@ -26,13 +26,13 @@ startStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		lf;
 		lf.
 	stoneLogFile := (self rootDir / self stoneDirectorySpec logs / self stoneName
-		, 'log') pathString.
+		, 'log') fullName.
 	self defineCustomEnvVars.
 	[ 
 	arrayOfOutputs := (Rowan globalNamed: 'GsStartStone')
 		startStone: self stoneName
-		exeConfFile: self sysConfFile pathString
-		sysConfFile: self sysConfFile pathString
+		exeConfFile: self sysConfFile fullName
+		sysConfFile: self sysConfFile fullName
 		logFile: stoneLogFile
 		noTranlogs: notranlogsMode
 		restoreMode: restoreMode

@@ -30,7 +30,7 @@ gslist: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 						'======  starting gslist at' , scriptPath , DateAndTime now printString;
 				lf ].
 	exitStatus := 0.
-	commandLine := '$GEMSTONE/bin/gslist' asFileReference pathString.
+	commandLine := '$GEMSTONE/bin/gslist' asFileReference fullName.
 	long
 		ifTrue: [ commandLine add: ' -l' ].
 	json

@@ -17,7 +17,7 @@ stopNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		lf.
 	exitStatus := 0.
 	self defineCustomEnvVars.
-	commandLine := '$GEMSTONE/bin/stopnetldi' asFileReference pathString.
+	commandLine := '$GEMSTONE/bin/stopnetldi' asFileReference fullName.
 	commandLine
 		add: ' ' , self stoneName , '_ldi';
 		yourself.

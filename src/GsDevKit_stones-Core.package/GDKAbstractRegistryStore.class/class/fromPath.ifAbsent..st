@@ -11,4 +11,4 @@ fromPath: registryPath ifAbsent: absentBlock
 			stream := ZnBufferedReadStream on: fileStream.	"wrap with buffered stream to bypass https://github.com/GemTalk/FileSystemGs/issues/9"
 			[ ^ STON fromStream: stream ]
 				on: STONReaderError
-				do: [ :ex | Error signal: ex asString , ' while reading ' , registryFile pathString ] ]
+				do: [ :ex | Error signal: ex asString , ' while reading ' , registryFile fullName ] ]

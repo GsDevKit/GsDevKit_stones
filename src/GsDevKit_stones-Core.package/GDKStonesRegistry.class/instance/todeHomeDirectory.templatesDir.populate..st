@@ -5,7 +5,7 @@ todeHomeDirectory: todeHomePath templatesDir: sourceTemplatesDir populate: popul
 
 	| todeHomeDir todeTemplatesDir |
 	todeHomeDir := todeHomePath asFileReference.
-	self todeHome: todeHomeDir pathString.
+	self todeHome: todeHomeDir fullName.
 	(todeHomeDir exists not or: [ populate ])
 		ifTrue: [ 
 			todeHomeDir ensureCreateDirectory.

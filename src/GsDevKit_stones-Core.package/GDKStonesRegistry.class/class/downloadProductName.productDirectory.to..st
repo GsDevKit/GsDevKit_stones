@@ -11,7 +11,7 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 	self chdir: downloadPath.
 	stdout
 		nextPutAll:
-				'Downloading ' , downloadDirName , ' to ' , downloadDir pathString , ' for '
+				'Downloading ' , downloadDirName , ' to ' , downloadDir fullName , ' for '
 						, osName;
 		lf.
 	(downloadDir / downloadDirName) exists
@@ -63,27 +63,27 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 										nextPutAll: 'matching line: ' , line;
 										lf.
 									volume := (line copyFrom: start to: line size) asFileReference.
-									stdout nextPutAll: 'volume: ' , volume pathString ]
+									stdout nextPutAll: 'volume: ' , volume fullName ]
 								ifFalse: [ 
 									stdout
 										nextPutAll: 'skipped line: ' , line;
 										lf ] ].
 					stdout
-						nextPutAll: 'volume: ' , volume pathString;
+						nextPutAll: 'volume: ' , volume fullName;
 						lf.
 					[ 
 					stdout
 						nextPutAll:
-								'copying ' , (volume / downloadDirName) pathString , ' to '
-										, (downloadDir / downloadDirName) pathString;
+								'copying ' , (volume / downloadDirName) fullName , ' to '
+										, (downloadDir / downloadDirName) fullName;
 						lf.
 					self
 						executeCommandLine:
-							'/bin/cp -R ' , (volume / downloadDirName) pathString , ' '
-								, (downloadDir / downloadDirName) pathString
+							'/bin/cp -R ' , (volume / downloadDirName) fullName , ' '
+								, (downloadDir / downloadDirName) fullName
 						stdout: nil
 						andInput: nil ]
 						ensure: [ 
 							volume
-								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach ' , volume pathString ] ] ] ] ]
+								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach ' , volume fullName ] ] ] ] ]
 		ensure: [ self chdir: cwd ]

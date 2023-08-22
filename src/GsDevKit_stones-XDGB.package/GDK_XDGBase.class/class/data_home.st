@@ -4,6 +4,6 @@ data_home
 	tmps := SessionTemps current.
 	(tmps at: #'GDK_XDGBase_data_home' otherwise: nil)
 		ifNotNil: [ :cachedRef | ^ cachedRef ].
-	fileRef := self _envName: 'DATA' defaultDir: '$HOME/.local/share' asFileReference pathString.
+	fileRef := self _envName: 'DATA' defaultDir: '$HOME/.local/share' asFileReference fullName.
 	fileRef ensureCreateDirectory.
 	^ tmps at: #'GDK_XDGBase_data_home' put: fileRef

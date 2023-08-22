@@ -7,4 +7,4 @@ downloadProductNamed: productName
 		downloadProductName: productName
 		productDirectory: downloadDirectoryName
 		to: productDirPath.
-	^ (self productDirectory asFileReference / downloadDirectoryName) pathString
+	^ (self productDirectory asFileReference / downloadDirectoryName) fullName

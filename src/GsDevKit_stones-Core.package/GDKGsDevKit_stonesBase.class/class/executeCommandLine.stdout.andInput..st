@@ -9,13 +9,13 @@ executeCommandLine: commandLine stdout: stdoutOrNil andInput: stdinStringOrNil
 			GsFile
 				gciLogServer:
 					'executing ' , commandLine printString , ' stdout: ' , stdoutOrNil printString
-						, ' stderr: ' , errorRedirectReference pathString ].
+						, ' stderr: ' , errorRedirectReference fullName ].
 	[ 
 	| hp |
 	hp := GsHostProcess new
 		commandLine: commandLine;
 		appendToFiles: true;
-		stderrPath: errorRedirectReference pathString;
+		stderrPath: errorRedirectReference fullName;
 		yourself.
 	stdoutOrNil ifNotNil: [ hp stdoutPath: stdoutOrNil ].
 	^ hp executeWithInput: stdinStringOrNil ]
@@ -25,7 +25,7 @@ executeCommandLine: commandLine stdout: stdoutOrNil andInput: stdinStringOrNil
 				error:
 					'The command ' , commandLine printString , ' exited with status '
 						, ex status printString , '. See the file '
-						, errorRedirectReference pathString printString
+						, errorRedirectReference fullName printString
 						,
 							(stdoutOrNil
 								ifNil: [ '' ]

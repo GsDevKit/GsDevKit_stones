@@ -8,4 +8,4 @@ chmod: path fileMode: symbolicModes
 		ifFalse: [ '/usr/bin/chmod ' ].
 	self
 		executeCommandLine:
-			chmod , symbolicModes , ' ' , path asFileReference pathString
+			chmod , symbolicModes , ' ' , path asFileReference fullName

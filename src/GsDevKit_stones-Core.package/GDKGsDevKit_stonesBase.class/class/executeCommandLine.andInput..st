@@ -6,5 +6,5 @@ executeCommandLine: commandLine andInput: stdinStringOrNil
 		suffix: '.out'.
 	self
 		executeCommandLine: commandLine
-		stdout: stdoutRedirectPath pathString
+		stdout: stdoutRedirectPath fullName
 		andInput: stdinStringOrNil
