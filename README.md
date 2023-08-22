@@ -74,20 +74,54 @@ registryReport.solo
 ## Create stones
 ```bash
 # create stone in default stones directory
-createStone.solo --registry=$registryName --template=default_seaside --start gs_366 3.6.6 
-
-# load tODE into stone
-cd /bosch1/users/dhenrich/_stones/stones.gs_366
-loadTode.stone --projectDirectory=$projectsDirectory
+createStone.solo --registry=$registryName --template=default --start gs_366 3.6.6
 
 # create stone in custom stones directory
-createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --registry=$registryName --template=default_seaside --start gsd_3.6.6 3.6.6 
+createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --registry=$registryName --template=default --start cust_3.6.6 3.6.6 
 
-# load tODE into stone
-cd /bosch1/users/dhenrich/_stones/stones.gsd_366
-loadTode.stone --projectDirectory=$projectsDirectory
+# create a seaside stone in default stones directory (tODE loaded)
+createStone.solo --registry=rogue --force --template=default_seaside --start seaside_370 3.7.0
 
-registryReport.solo
+# create a rowan_v3 stone in default stones directory
+createStone.solo --registry=rogue --template=minimal_rowan --start rowan_370_v3 3.7.0_rowanv3
+
+registryReport.solo --registry=$registryName
+```
+## sample registry report
+```
+GDKStonesRegistry {
+	#name : 'rogue',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#stones : {
+		'seaside_370' : '$STONES_DATA_HOME/gsdevkit_stones/stones/rogue/seaside_370.ston',
+		'gs_366' : '$STONES_DATA_HOME/gsdevkit_stones/stones/rogue/gs_366.ston',
+		'rowan_370_v3' : '$STONES_DATA_HOME/gsdevkit_stones/stones/rogue/rowan_370_v3.ston'
+	},
+	#todeHome : '/home/dhenrich/_stones/tode',
+	#stonesDirectory : '/home/dhenrich/_stones/stones',
+	#sessions : { },
+	#productDirectory : '/home/dhenrich/_stones/gemstone',
+	#projectDirectory : '/home/dhenrich/_stones/git',
+	#products : {
+		'3.7.0' : '/secure/users/dhenrich/work/l_37x/noop50/gs/product',
+		'3.6.6' : '/home/dhenrich/_homes/rogue/_home/shared/downloads/products/GemStone64Bit3.6.6-x86_64.Linux',
+		'3.6.5' : '/home/dhenrich/_stones/git/superDoit/gemstone/products/GemStone64Bit3.6.5-x86_64.Linux',
+		'3.7.0_rowanv3' : '/home/dhenrich/_homes/rogue/_home/shared/downloads/products/GemStone64Bit3.7.0_rowanv3-x86_64.Linux'
+	},
+	#projectSets : {
+		'devkit' : '$STONES_DATA_HOME/gsdevkit_stones/projectSets/rogue/devkit.ston'
+	},
+	#templates : {
+		'default_seaside' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_seaside.ston',
+		'minimal_rowan' : '$STONES_DATA_HOME/gsdevkit_stones/templates/minimal_rowan.ston',
+		'default_rowan' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_rowan.ston',
+		'default' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default.ston',
+		'minimal_seaside' : '$STONES_DATA_HOME/gsdevkit_stones/templates/minimal_seaside.ston',
+		'minimal' : '$STONES_DATA_HOME/gsdevkit_stones/templates/minimal.ston'
+	}
+}
+```
 ```
 
 ## Branches
