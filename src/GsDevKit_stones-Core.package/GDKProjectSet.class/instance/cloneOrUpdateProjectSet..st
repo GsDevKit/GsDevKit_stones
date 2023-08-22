@@ -1,4 +1,3 @@
 installation
 cloneOrUpdateProjectSet: gitRootPath
-	self loadSpecs
-		keysDo: [ :projectName | self cloneOrUpdateProject: projectName in: gitRootPath ]
+	self cloneOrUpdateProjectSet: gitRootPath pull: false

@@ -84,11 +84,11 @@ doit
 			stonesRegistry projectDirectory
 				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].
 	projectDir asFileReference ensureCreateDirectory. 
-		
+	Rowan projectTools startTracing.
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir ]
+		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self strict ]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneOrUpdateProject: projectName in: projectDir ] ].
+				projectSet cloneOrUpdateProject: projectName in: projectDir pull: self strict ] ].
 	true
 %
