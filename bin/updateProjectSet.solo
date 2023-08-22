@@ -146,7 +146,7 @@ doit
 		ifNotNil: [:url | 
 			specDict at: 'specUrl' put: url.
 			self diskUrl 
-				ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ].
+				ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ]
 				ifNil: [
 					self readonlyDiskUrl 
 						ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ] ] ]
@@ -162,8 +162,6 @@ doit
 						ifNil: [ self error: 'required field ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' has not been defined.' ] ] ].
 	self revision
 		ifNotNil: [:value | self updateField: 'revision' with: value ].
-	self gitUrl
-		ifNotNil: [:value | self updateField: 'gitUrl' with: value ].
 	self componentName
 		ifNotNil: [:value | self updateField: 'componentName' with: value ].
 
@@ -171,4 +169,5 @@ doit
 	projectSet export.
 	stonesRegistry projectSets at: name put: projectSet registryPath.
 	stonesRegistry export.
+	^ projectSet
 %

@@ -87,6 +87,20 @@ createStone.solo --registry=rogue --template=minimal_rowan --start rowan_370_v3 
 
 registryReport.solo --registry=$registryName
 ```
+## custom project set
+```
+createProjectSet.solo --registry=rogue --projectSet=rowan_dev --empty
+
+updateProjectSet.solo --registry=rogue --projectSet=rowan_dev --projectName=Rowan --revision=masterV3.0 \
+                      --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston
+updateProjectSet.solo --registry=rogue --projectSet=rowan_dev --projectName=RemoteServiceReplication --revision=main \
+                      --specUrl=https://raw.githubusercontent.com/GemTalk/RemoteServiceReplication/main/rowan/specs/RemoteServiceReplication.ston
+updateProjectSet.solo --registry=rogue --projectSet=rowan_dev --projectName=RowanClientServices --revision=eric_component_V3.0 \
+                      --specUrl=https://raw.githubusercontent.com/GemTalk/RowanClientServices/eric_component_V3.0/rowan/specs/RowanClientServices.ston
+updateProjectSet.solo --registry=rogue --projectSet=rowan_dev --projectName=PharoGemStoneFFI --specUrl=git@github.com:GemTalk/PharoGemStoneFFI.git --revision=main
+updateProjectSet.solo --registry=rogue --projectSet=rowan_dev --projectName=JadeiteForPharo --specUrl=git@github.com:GemTalk/JadeiteForPharo.git --revision=main
+updateProjectSet.solo --registry=rogue --projectSet=rowan_dev --projectName=JadeiteForPharo --specUrl=https://raw.githubusercontent.com/GemTalk/Announcements/main/rowan/specs/Announcements.ston --revision=main
+```
 ## sample registry report
 ```
 GDKStonesRegistry {

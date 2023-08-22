@@ -4,7 +4,8 @@ options
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'from'.
-SuperDoitOptionalOptionWithRequiredArg long: 'key' default: 'server'.
+SuperDoitOptionalOptionWithRequiredArg long: 'key'.
+SuperDoitOptionalOptionWithNoArg long: 'empty'.
 SuperDoitOptionalOptionWithNoArg long: 'ssh'.
 SuperDoitOptionalOptionWithNoArg long: 'https'.
 SuperDoitOptionalOptionWithNoArg long: 'spec'.
@@ -40,10 +41,12 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename 
-  $basename --registry=bosch --projectSet=shared
-  $basename --registry=bosch --projectSet=gsdevkit_home --from=gsdevkitProjectSpecs.ston \
-            --key=server --ssh 
-  $basename --registry=bosch --projectSet=gsdevkit_home --from=gsdevkitProjectSpecs.ston \
+  # populate projectSet using updateProjectSet.solo
+  $basename --registry=bosch --projectSet=shared --empty
+  # populate use default specs dictionary gsdevkitProjectSpecs.ston (in projectSet directory)
+  $basename --registry=bosch --projectSet=gsdevkit_home --key=server --ssh 
+  # populate use custom specs dictionary (see generateGsDevKitProjectSet.solo) 
+  $basename --registry=bosch --projectSet=gsdevkit_home --from=$HOME/myProjectSpecs.ston \
             --key=clientServer --http
 -----
 %
@@ -98,16 +101,18 @@ doit
 			projectSet export.
 			stonesRegistry projectSets at: name put: projectSet registryPath.
 			stonesRegistry export ].
-  self from
-		ifNil: [ stonSpecDictionaryFilePath := (self scriptPath asFileReference parent / 'gsdevkitProjectSpecs.ston') pathString]
-		ifNotNil: [:fromPath | stonSpecDictionaryFilePath := fromPath ].
-	type := self https
-		ifTrue: [ 'https' ]
+	self empty
 		ifFalse: [
-			self ssh
-				ifTrue: [ 'ssh' ]
-				ifFalse: [ self error: 'Either --https or --ssh must be specified.' ] ]. 
-	self populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath.
+		  self from
+				ifNil: [ stonSpecDictionaryFilePath := (self scriptPath asFileReference parent parent / 'projectSets' / 'gsdevkitProjectSpecs.ston') pathString]
+				ifNotNil: [:fromPath | stonSpecDictionaryFilePath := fromPath ].
+			type := self https
+				ifTrue: [ 'https' ]
+				ifFalse: [
+					self ssh
+						ifTrue: [ 'ssh' ]
+						ifFalse: [ self error: 'Either --https or --ssh must be specified.' ] ]. 
+			self populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath ].
 	projectSet export.
 	^ projectSet
 %

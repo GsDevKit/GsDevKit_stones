@@ -75,7 +75,7 @@ doit
 	todeHomeDirPath := GsFile serverRealPath: todeHomeDir pathString.
 	stonesRegistry 
 		todeHomeDirectory: todeHomeDirPath
-		templatesDir: projectDir / 'templates'
+		templatesDir: projectDir / 'todeTemplates'
 		populate: self populate.
 	stonesRegistry export.
 
