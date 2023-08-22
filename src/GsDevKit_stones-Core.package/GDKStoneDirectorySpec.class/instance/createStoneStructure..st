@@ -33,7 +33,7 @@ createStoneStructure: stoneSpec
 						at: 'GDK_stones_projects'
 							put: stoneSpec stonesRegistry projectDirectory asFileReference fullName;
 						yourself.
-					self customizeCustomEnv: exportDict stoneSpec: stoneSpec].
+					self customizeCustomEnv: exportDict stoneSpec: stoneSpec ].
 			key = #'bin'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
 			key = #'backups'
@@ -109,11 +109,13 @@ createStoneStructure: stoneSpec
 	systemConfStream close.
 	stoneRoot / 'gem.conf'
 		writeStreamDo: [ :fileStream | 
+			fileStream truncate.
 			fileStream
 				nextPutAll: 'GEM_TEMPOBJ_CACHE_SIZE = 1000000;';
 				lf ].
 	stoneRoot / '.topazini'
 		writeStreamDo: [ :fileStream | 
+			fileStream truncate.
 			fileStream
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;

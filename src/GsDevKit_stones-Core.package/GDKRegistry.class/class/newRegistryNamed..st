@@ -6,7 +6,8 @@ newRegistryNamed: registryName
 		parentRegistryName: registryName;
 		parentRegistryPath:
 				'$' , GDKGsDevKit_stonesBase dataHomeEnvVar , '/'
-						, (self configFile relativeTo: GDKGsDevKit_stonesBase base_data_home) fullName;
+						,
+							(self configFile relativeTo: GDKGsDevKit_stonesBase base_data_home) fullName;
 		yourself.
 	registryFile := stoneRegistry registryFile.
 	registryFile exists
@@ -15,6 +16,8 @@ newRegistryNamed: registryName
 				error: 'The registry named ' , registryName printString , ' already exists.' ].
 	stonesRegistry at: registryName put: stoneRegistry registryPath.
 	self configFile
-		writeStreamDo: [ :fileStream | STON put: stonesRegistry onStreamPretty: fileStream ].
+		writeStreamDo: [ :fileStream | 
+			fileStream truncate.
+			STON put: stonesRegistry onStreamPretty: fileStream ].
 	stoneRegistry export.
 	^ stoneRegistry

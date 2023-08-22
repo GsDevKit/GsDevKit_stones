@@ -1,4 +1,6 @@
 accessing
 exportTo: fileRef
 	fileRef
-		writeStreamDo: [ :fileStream | STON put: self onStreamPretty: fileStream ]
+		writeStreamDo: [ :fileStream | 
+			fileStream truncate.
+			STON put: self onStreamPretty: fileStream ]

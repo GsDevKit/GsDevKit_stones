@@ -86,9 +86,9 @@ doit
 	projectDir asFileReference ensureCreateDirectory. 
 		
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneProjectSet: projectDir ]
+		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir ]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneProject: projectName in: projectDir ] ].
+				projectSet cloneOrUpdateProject: projectName in: projectDir ] ].
 	true
 %
