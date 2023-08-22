@@ -77,7 +77,7 @@ doit
 				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ].
 	projectDir := self projectDirectory
 		ifNotNil: [:dir |
-			stonesRegistry projectDirectory: dir asFileReference pathString.
+			stonesRegistry projectDirectory: dir asFileReference fullName.
 			stonesRegistry export.
 			stonesRegistry projectDirectory ]
 		ifNil: [ 

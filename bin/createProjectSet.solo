@@ -104,7 +104,7 @@ doit
 	self empty
 		ifFalse: [
 		  self from
-				ifNil: [ stonSpecDictionaryFilePath := (self scriptPath asFileReference parent parent / 'projectSets' / 'gsdevkitProjectSpecs.ston') pathString]
+				ifNil: [ stonSpecDictionaryFilePath := (self scriptPath asFileReference parent parent / 'projectSets' / 'gsdevkitProjectSpecs.ston') fullName]
 				ifNotNil: [:fromPath | stonSpecDictionaryFilePath := fromPath ].
 			type := self https
 				ifTrue: [ 'https' ]

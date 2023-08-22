@@ -57,7 +57,7 @@ doit
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	productDir := self productDirectory asFileReference.
 	productDir ensureCreateDirectory.
-	productDirPath := GsFile serverRealPath: productDir pathString.
+	productDirPath := GsFile serverRealPath: productDir fullName.
 	stonesRegistry productDirectory: productDirPath.
 	stonesRegistry export.
 

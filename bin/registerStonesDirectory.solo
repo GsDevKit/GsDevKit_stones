@@ -56,7 +56,7 @@ doit
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	stonesDir := self stonesDirectory asFileReference.
 	stonesDir ensureCreateDirectory.
-	stonesDirPath := GsFile serverRealPath: stonesDir pathString.
+	stonesDirPath := GsFile serverRealPath: stonesDir fullName.
 	stonesRegistry stonesDirectory: stonesDirPath.
 	stonesRegistry export.
 

@@ -72,7 +72,7 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	todeHomeDir := self todeHome asFileReference.
-	todeHomeDirPath := GsFile serverRealPath: todeHomeDir pathString.
+	todeHomeDirPath := GsFile serverRealPath: todeHomeDir fullName.
 	stonesRegistry 
 		todeHomeDirectory: todeHomeDirPath
 		templatesDir: projectDir / 'todeTemplates'

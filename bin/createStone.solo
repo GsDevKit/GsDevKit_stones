@@ -95,12 +95,12 @@ method
 loadTode: stoneSpec
 	"not currently functioning GsHostProcess issue? ... ERROR message: /usr/bin/env: ‘bash’: No such file or directory"
 	| commandLine |
-	commandLine := (self scriptPath asFileReference parent / 'loadTode.stone') pathString.
+	commandLine := (self scriptPath asFileReference parent / 'loadTode.stone') fullName.
 	commandLine 
 		add: ' --projectDirectory=', stoneSpec stonesRegistry projectDirectory;
 		add: ' --fullLogging';
 		add: ' -- ';
-		add: ' -I ', (stoneSpec rootDir / '.topazini') pathString;
+		add: ' -I ', (stoneSpec rootDir / '.topazini') fullName;
 		yourself.
 	stoneSpec class 
 		executeCommandLine: commandLine 
@@ -140,7 +140,7 @@ doit
 			(self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, 
 			'/' , 
 			(stonesRegistry registryFile relativeTo: stonesRegistry class base_data_home) 
-				pathString;
+				fullName;
 		yourself.
 	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
 		ifTrue: [ 
