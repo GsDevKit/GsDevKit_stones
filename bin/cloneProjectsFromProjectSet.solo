@@ -79,10 +79,7 @@ doit
 				fromPath: projectSetPath 
 				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ].
 	projectDir := self projectDirectory
-		ifNotNil: [:dir |
-			stonesRegistry projectDirectory: dir asFileReference fullName.
-			stonesRegistry export.
-			stonesRegistry projectDirectory ]
+		ifNotNil: [:dir | dir asFileReference fullName ]
 		ifNil: [ 
 			stonesRegistry projectDirectory
 				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].

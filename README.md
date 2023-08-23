@@ -44,8 +44,8 @@ echo "
 createRegistry.solo $registryName
 createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh
 createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --https
-cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName \
-                                 --projectDirectory=$projectsDirectory
+registerProjectDirectory.solo --registry=$registryName --projectDirectory=$projectsDirectory
+cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName 
 registerProductDirectory.solo --registry=$registryName \
                               --productDirectory=$gemstoneProductsDirectory
 

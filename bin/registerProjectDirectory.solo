@@ -55,10 +55,10 @@ doit
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
-	projectDir := self productDirectory asFileReference.
+	projectDir := self projectDirectory asFileReference.
 	projectDir ensureCreateDirectory.
-	projectDirPath := GsFile serverRealPath: productDir pathString.
-	stonesRegistry projectDirectory: productDirPath.
+	projectDirPath := GsFile serverRealPath: projectDir fullName.
+	stonesRegistry projectDirectory: projectDirPath.
 	stonesRegistry export.
 
 %
