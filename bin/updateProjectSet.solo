@@ -5,9 +5,10 @@ SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectName'.
 
-SuperDoitOptionalOptionWithRequiredArg long: 'specUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'revision'.
 SuperDoitOptionalOptionWithRequiredArg long: 'diskUrl'.
+SuperDoitOptionalOptionWithRequiredArg long: 'gitUrl'.
+SuperDoitOptionalOptionWithRequiredArg long: 'remote' default: 'origin'.
 SuperDoitOptionalOptionWithRequiredArg long: 'readonlyDiskUrl'.
 SuperDoitOptionalOptionWithRequiredArg long: 'componentName'.
 }
@@ -16,7 +17,7 @@ usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> \
                 --projectSet=<projectSet-name> --projectName=<project-name> \
-                --specUrl=<spec-url>
+                --gitUrl=<spec-url>
 
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 
@@ -31,12 +32,8 @@ OPTIONS
                     name of the registry. Default is /usr/bin/hostname
   --projectSet=<projectSet-name>
                     Name of the project set.
-  --specUrl=<spec-url>
-                    The specUrl must be defined for a project. The first time a 
-                    spec is created the <spec-url> must be defined. The 
-                    <spec-url> may be an https:, file:, or git url. The https: 
-                    and file: url must speccifiy the location of 
-                    a RwSpecificationV2 instance.
+  --gitUrl=<git-url>
+                    The gitUrl must be defined for a project.
 
 EXAMPLES
   $basename --help
@@ -46,15 +43,15 @@ EXAMPLES
   # simplest definition using a https: url to specify spec location
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
-            --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston
+            --gitUrl=git@github.com:GemTalk/Rowan.git
   # simplest definition using a file: url to specify spec location
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
-            --specUrl=file:/home/dhenrich/_homes/rogue/_home/shared/repos/Rowan/rowan/specs/Rowan.ston
+            --gitUrl=git@github.com:GemTalk/Rowan.git
   # simplest definition using a git url to specify where to clone the repo from
   $basename --registry=bosch --projectSet=dev \
             --projectName=superDoit \
-            --specUrl=git@github.com:dalehenrich/superDoit.git
+            --gitUrl=git@github.com:dalehenrich/superDoit.git
   # simplest definition using a diskUrl to specify where the existing clone can be found
   $basename --registry=bosch --projectSet=dev \
             --projectName=superDoit \
@@ -63,13 +60,7 @@ EXAMPLES
   $basename --registry=bosch --projectSet=dev \
             --projectName=superDoit \
             --readonlyDiskUrl=file:$GEMSTONE/upgrade/projects/Rowan
-  # remaining fields
-  $basename --registry=bosch --projectSet=dev \
-            --projectName=Rowan \
-            --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston \
-            --revision=candidateV3.0 \
-            --componentName=Upgrade \
-  # undefine a field
+  # undefine a field`
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
             --revision=nil
@@ -121,7 +112,7 @@ updateField: fieldName with: value
 		ifFalse: [ specDict at: fieldName put: value ].
 %
 doit
-	| registryClass stonesRegistry name projectSet projectSetPath loadSpecs urls |
+	| registryClass stonesRegistry name projectSet projectSetPath loadSpecs |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
@@ -141,25 +132,16 @@ doit
 	loadSpecs := projectSet loadSpecs.
 	specDict := loadSpecs at: self projectName ifAbsentPut: [ Dictionary new ].
 
-	urls := Dictionary new.
-	self specUrl 
+	self gitUrl 
 		ifNotNil: [:url | 
-			specDict at: 'specUrl' put: url.
-			self diskUrl 
-				ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ]
-				ifNil: [
-					self readonlyDiskUrl 
-						ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ] ] ]
+			(specDict at: 'gitUrls' ifAbsentPut: [ Dictionary new ]) at: self remote put: url ]
 		ifNil: [
 			self diskUrl 
-				ifNotNil: [:url | 
-					specDict at: 'specUrl' put: url.
-					self readonlyDiskUrl 
-						ifNotNil: [ self error: 'only one of ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' may be defined.' ] ]
+				ifNotNil: [ self error: 'diskUrl option not yet implemented' ]
 				ifNil: [
 					self readonlyDiskUrl 
-						ifNotNil: [:url | specDict at: 'specUrl' put: url ]
-						ifNil: [ self error: 'required field ''specUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' has not been defined.' ] ] ].
+						ifNotNil: [  self error: 'readonlyDiskUrl not yet implemented' ]
+						ifNil: [ self error: 'one of ''gitUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' must be defined.' ] ] ].
 	self revision
 		ifNotNil: [:value | self updateField: 'revision' with: value ].
 	self componentName

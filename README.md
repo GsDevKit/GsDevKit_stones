@@ -92,14 +92,31 @@ registryReport.solo --registry=$registryName
 createProjectSet.solo --registry=rogue --projectSet=rowan --empty
 
 updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Rowan --revision=masterV3.0 \
-                      --specUrl=https://raw.githubusercontent.com/GemTalk/Rowan/masterV3.0/rowan/specs/Rowan.ston
+                      --gitUrl=git@github.com:GemTalk/Rowan.git
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Rowan --revision=masterV3.0 \
+                      --remote=gs --gitUrl=git@git.gemtalksystems.com:Rowan
+
 updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=RemoteServiceReplication --revision=main \
-                      --specUrl=https://raw.githubusercontent.com/GemTalk/RemoteServiceReplication/main/rowan/specs/RemoteServiceReplication.ston
+                      --gitUrl=git@github.com:GemTalk/RemoteServiceReplication.git
+
 updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=RowanClientServices --revision=eric_component_V3.0 \
-                      --specUrl=https://raw.githubusercontent.com/GemTalk/RowanClientServices/eric_component_V3.0/rowan/specs/RowanClientServices.ston
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=PharoGemStoneFFI --specUrl=git@github.com:GemTalk/PharoGemStoneFFI.git --revision=main
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=JadeiteForPharo --specUrl=git@github.com:GemTalk/JadeiteForPharo.git --revision=main
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Announcements --specUrl=https://raw.githubusercontent.com/GemTalk/Announcements/main/rowan/specs/Announcements.ston --revision=main
+                      --gitUrl=git@github.com:GemTalk/RowanClientServices.git
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=RowanClientServices --revision=eric_component_V3.0 \
+                      --remote=gs --gitUrl=git@git.gemtalksystems.com:RowanClientServices
+
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=PharoGemStoneFFI \
+                      --gitUrl=git@github.com:GemTalk/PharoGemStoneFFI.git --revision=main
+
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=JadeiteForPharo \
+                      --gitUrl=git@github.com:GemTalk/JadeiteForPharo.git --revision=main
+
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Announcements \
+                      --gitUrl=git@github.com:GemTalk/Announcements.git --revision=main
+
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=GsDevKit_stones \
+                      --gitUrl=git@github.com:GsDevKit/GsDevKit_stones.git --revision=v1.1.1
+updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=GsDevKit_stones \
+                      --remote=gs --gitUrl=git@git.gemtalksystems.com:GsDevKit_stones --revision=v1.1.1
 ```
 ## sample registry report
 ```

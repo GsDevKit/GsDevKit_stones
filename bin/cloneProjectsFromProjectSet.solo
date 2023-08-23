@@ -27,6 +27,9 @@ OPTIONS
   --projectDirectory=<project-directory>
                     Path to directory where the projects will be cloned. If not
                     specified the projectDirectory in the registry will be used.
+  --strict          If present, a pull request will be issued for the origin remote
+                    to update the repository to the latest version of the branch 
+                    available.
   <project-name>...
                     List of project names in project to be cloned. If not specified
                     all of the projects in the project set will be cloned.
@@ -84,7 +87,7 @@ doit
 			stonesRegistry projectDirectory
 				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].
 	projectDir asFileReference ensureCreateDirectory. 
-	Rowan projectTools startTracing.
+	Rowan projectTools trace startTracing.
 	self positionalArgs size = 0
 		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self strict ]
 		ifFalse: [ 
