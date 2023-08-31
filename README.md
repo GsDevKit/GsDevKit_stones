@@ -42,9 +42,12 @@ echo "
  tode:        $todeHome"
 
 createRegistry.solo $registryName
-createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh
-createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --https
+
+createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --key=server --ssh
+createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --key=server --https
+
 registerProjectDirectory.solo --registry=$registryName --projectDirectory=$projectsDirectory
+
 cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName 
 registerProductDirectory.solo --registry=$registryName \
                               --productDirectory=$gemstoneProductsDirectory
