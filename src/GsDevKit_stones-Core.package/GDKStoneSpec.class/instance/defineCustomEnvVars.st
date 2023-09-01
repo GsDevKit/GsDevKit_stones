@@ -3,10 +3,26 @@ defineCustomEnvVars
 	self stoneDirectorySpec
 		ifNotNil: [ :dirSpec | 
 			dirSpec customenv
-				ifNotNil: [ :customenv | 
-					customenv
-						keysAndValuesDo: [ :varName :valueStr | 
-							varName = 'PATH'
-								ifFalse: [ 
-									"bad idea to monky with PATH in netldi and stone"
-									System gemEnvironmentVariable: varName put: valueStr ] ] ] ]
+				ifNotNil: [ :customenv |
+					| customenvRef block | 
+					customenvRef := root asFileReference / 'customenv'.
+					block := [ :varName :valueStr | 
+						System gemEnvironmentVariable: varName put: valueStr ].
+					customenvRef exists
+						ifTrue: [
+							"customenv file has precedence"
+							customenvRef readStreamDo: [:stream |
+								[ stream atEnd ] whileFalse: [
+										| line index keyAndValue |
+								 	line := stream nextLine trimBoth.
+									(line beginsWith: '#')
+										ifFalse: [
+											"looking for 'export xxx=yyy'"
+											index := line indexOfSubCollection: 'export' startingAt: 1.
+											(index > 0)
+												ifTrue: [ 
+													" export at beginning of line"
+													line := line copyFrom: index + 'export ' size to: line size.
+													keyAndValue := line subStringsDelimitedBy: $=.
+													block value: (keyAndValue at: 1) value: (keyAndValue at: 2) ] ] ] ] ]
+						ifFalse: [ customenv keysAndValuesDo: block ] ] ]
