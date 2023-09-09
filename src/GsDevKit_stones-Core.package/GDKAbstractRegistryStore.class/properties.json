@@ -8,7 +8,8 @@
 	"instvars" : [
 		"name",
 		"parentRegistryName",
-		"parentRegistryPath" ],
+		"parentRegistryPath",
+		"comment" ],
 	"name" : "GDKAbstractRegistryStore",
 	"pools" : [
 		 ],

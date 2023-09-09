@@ -17,7 +17,7 @@ cloneOrUpdateProject: projectName in: gitRootPath pull: pull
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
-			gitTool gitcheckoutIn: gitProjectRef with: ' -b ', revision, ' ', remote, '/', revision.
+			gitTool gitcheckoutIn: gitProjectRef with: ' -B ', revision, ' ', remote, '/', revision.
 			Transcript
 				cr;
 				show: '  Set ' , projectName , ' revision to ' , revision.
