@@ -12,6 +12,15 @@ cloneOrUpdateProject: projectName in: gitRootPath pull: pull
 	gitProjectRef := gitRootPath asFileReference / projectName.
 	cloned := false.
 	gitProjectRef exists
+		ifTrue: [ 
+			(Rowan gitTools gitstatusIn: gitProjectRef fullName with: '--porcelain') isEmpty
+				not
+				ifTrue: [ 
+					"the git repository has unsaved modifications, so abort the operation"
+					self
+						error:
+							'There are unsaved changes in ' , gitProjectRef fullName printString
+								, '. We cannot clone or update a repository with unsaved chnages' ] ]
 		ifFalse: [ 
 			gitTool gitcloneIn: gitRootPath with: origin logging: true.
 			cloned := true ].
