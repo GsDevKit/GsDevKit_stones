@@ -17,19 +17,19 @@ cloneOrUpdateProject: projectName in: gitRootPath pull: pull
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
-			gitTool
-				gitcheckoutIn: gitProjectRef
-				with: ' -B ' , revision , ' ' , remote , '/' , revision.
 			Transcript
 				cr;
 				show: '  Set ' , projectName , ' revision to ' , revision.
+			gitTool
+				gitcheckoutIn: gitProjectRef
+				with: ' -B ' , revision , ' ' , remote , '/' , revision.
 			pull
 				ifTrue: [ 
-					gitTool gitpullIn: gitProjectRef fullName remote: remote branch: revision.
 					Transcript
 						cr;
 						show:
-								'  Pull ' , projectName , ' revision ' , revision , ' from remote ' , origin ] ].
+								'  Pull ' , projectName , ' revision ' , revision , ' from remote ' , origin.
+					gitTool gitpullIn: gitProjectRef fullName remote: remote branch: revision ] ].
 	cloned
 		ifTrue: [ 
 			(gitUrls keys reject: [ :each | each = remote ])
