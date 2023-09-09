@@ -87,6 +87,7 @@ doit
 			stonesRegistry projectDirectory
 				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].
 	projectDir asFileReference ensureCreateDirectory. 
+	Rowan projectTools trace startTracing.
 	self dirty
 		ifTrue: [
 			].
