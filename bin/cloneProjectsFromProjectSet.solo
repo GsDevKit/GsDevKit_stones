@@ -5,7 +5,6 @@ SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectDirectory'.
 SuperDoitOptionalOptionWithNoArg long: 'strict'.
-SuperDoitOptionalOptionWithNoArg long: 'dirty'.
 }
 %
 usage
@@ -31,8 +30,6 @@ OPTIONS
   --strict          If present, a pull request will be issued for the origin remote
                     to update the repository to the latest version of the branch 
                     available.
-  --dirty           If present, the projects in the project set are check to see if
-                    the project repository is not dirty.
   <project-name>...
                     List of project names in project to be cloned. If not specified
                     all of the projects in the project set will be cloned.
@@ -88,9 +85,6 @@ doit
 				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].
 	projectDir asFileReference ensureCreateDirectory. 
 	Rowan projectTools trace startTracing.
-	self dirty
-		ifTrue: [
-			].
 	self positionalArgs size = 0
 		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self strict ]
 		ifFalse: [ 
