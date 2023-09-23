@@ -34,10 +34,18 @@ if [ "$STONES_DATA_HOME" = "" ] ; then
 fi
 ```
 
-## Create a Rowan v3 development environment
+## Create registry and set up a Rowan v3 development environment
 
 ``` bash
 cd $STONES_HOME
+
+createRegistry.solo rowanV3
+createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_common \
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
+createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_gs.ston
+createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_pharo \
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_pharo.ston
 
 # create a Rowan v3 development environment: 
 #  1. git repositories with required GitHub projects

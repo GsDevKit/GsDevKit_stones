@@ -41,13 +41,11 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename 
-  # populate projectSet using updateProjectSet.solo
+  # create projectSet to be populated using updateProjectSet.solo
   $basename --registry=bosch --projectSet=shared --empty
-  # populate use default specs dictionary gsdevkitProjectSpecs.ston (in projectSet directory)
-  $basename --registry=bosch --projectSet=gsdevkit_home --key=server --ssh 
-  # populate use custom specs dictionary (see generateGsDevKitProjectSet.solo) 
-  $basename --registry=bosch --projectSet=gsdevkit_home --from=$HOME/myProjectSpecs.ston \
-            --key=clientServer --http
+  # populate using a pre-defined project set 
+  $basename --registry=bosch --projectSet=rowanV3_common \
+    --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
 -----
 %
 specs
@@ -88,31 +86,20 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
 	name := self projectSet.
-	projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry.
-	projectSet registryFile exists
-		ifTrue: [
-			| projectSetPath |
-			projectSetPath := stonesRegistry projectSets at: name.
-			projectSet := (self globalNamed: 'GDKProjectSet') 
-				fromPath: projectSetPath
-				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ] ]
-		ifFalse: [	
-			projectSet registryDir ensureCreateDirectory.
-			projectSet export.
-			stonesRegistry projectSets at: name put: projectSet registryPath.
-			stonesRegistry export ].
-	self empty
-		ifFalse: [
-		  self from
-				ifNil: [ stonSpecDictionaryFilePath := (self scriptPath asFileReference parent parent / 'projectSets' / 'gsdevkitProjectSpecs.ston') fullName]
-				ifNotNil: [:fromPath | stonSpecDictionaryFilePath := fromPath ].
-			type := self https
-				ifTrue: [ 'https' ]
-				ifFalse: [
-					self ssh
-						ifTrue: [ 'ssh' ]
-						ifFalse: [ self error: 'Either --https or --ssh must be specified.' ] ]. 
-			self populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath ].
+	self from
+		ifNotNil: [:fromPath | 
+			projectSet := (self globalNamed: 'GDKProjectSet') fromPath: fromPath ifAbsent: [ self error: 'No project set found at ', fromPath printString ].
+			projectSet
+				name: name;
+				parentRegistryName: stonesRegistry parentRegistryName;
+				parentRegistryPath: stonesRegistry parentRegistryPath ]
+		ifNil: [
+				self empty
+					ifFalse: [ self error: 'Must specify a --from or --empty argument to indicate that the project set will be pipulated using updateProjectSet.solo' ].
+				projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ].
+	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
+	stonesRegistry projectSets at: name put: projectSet registryPath.
+	stonesRegistry export.
 	^ projectSet
 %
