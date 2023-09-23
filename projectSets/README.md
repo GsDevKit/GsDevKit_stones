@@ -39,7 +39,14 @@ fi
 ``` bash
 cd $STONES_HOME
 
+# create registry
 createRegistry.solo rowanV3
+
+# create directory structure for rowanV3-specific artifacts: projects and stones
+mkdir $STONES_HOME/rowanV3
+mkdir $STONES_HOME/rowanV3/stones
+
+# create project sets using existing templates: rowanV3_common, rowanV3_gs, and rowanV3_pharo
 createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_common \
   --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
 createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
@@ -47,6 +54,28 @@ createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
 createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_pharo \
   --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_pharo.ston
 
+# There are three project sets involved, because different versions of the same projects may
+#    be required by GemStone and Pharo:
+#
+#  - rowanV3_common projects are used by both JadeiteForPharo and Gemstone
+#  - rowanV3_gs projects are used by GemStone
+#  - rowanV3_pharo projects are usd by JadeiteForPharo
+#
+# If you are using JadeiteForDolphin, then the rowanV3_pharo projects do not need to be 
+#  cloned.
+#
+# cloneProjectsFromProjectSet.solo will create the project directory if it does not already exist
+#
+cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_common \
+  --projectDirectory=$STONES_HOME/rowanV3/common_projects
+cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
+  --projectDirectory=$STONES_HOME/rowanV3/gs_projects
+cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_pharo \
+  --projectDirectory=$STONES_HOME/rowanV3/pharo_projects
+
+-----
+scripts run up to this point ...
+-----
 # create a Rowan v3 development environment: 
 #  1. git repositories with required GitHub projects
 #  2. a Rowan v3 development stone

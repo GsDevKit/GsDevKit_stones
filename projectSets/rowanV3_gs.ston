@@ -18,7 +18,7 @@ GDKProjectSet {
 			}
 		},
 		'superDoit' : {
-			'revision' : 'v3.1',
+			'revision' : 'v4.1',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:superDoit',
 				'origin' : 'git@github.com:dalehenrich/superDoit.git'
