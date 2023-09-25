@@ -1,10 +1,14 @@
 ## Install superDoit and GsDevKit_stones
 
 ``` bash
+# create a root directory where the stones and git repository directories that 
+#   you create will be located ... using STONES_HOME for convencience
 mkdir /home/dhenrich/_stones
 cd /home/dhenrich/_stones
 export STONES_HOME=`pwd`
 
+# create a git repository for superDoit and GsDevKit_stones since they must be
+#  installed before they can be used.
 mkdir git
 cd git
 
@@ -34,11 +38,22 @@ if [ "$STONES_DATA_HOME" = "" ] ; then
 fi
 ```
 
-## Create registry and set up a Rowan v3 development environment
-
 ``` bash
 cd $STONES_HOME
 
+## Create a registry called _stones for managing the superDoit and GsDevKit_stones repositories in $STONES_HOME/git
+# create registry
+createRegistry.solo _stones
+
+# create project set using existing template: _stones
+createProjectSet.solo --registry=_stones --projectSet=_stones \
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/_stones.ston
+
+# use cloneProjectsFromProjectSet.solo to update the projects to match the specification in _stones.ston
+cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones \
+  --projectDirectory=$STONES_HOME/git
+
+## Create registry called rowanV3 and set up a Rowan v3 development environment
 # create registry
 createRegistry.solo rowanV3
 
@@ -73,34 +88,3 @@ cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
 cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_pharo \
   --projectDirectory=$STONES_HOME/rowanV3/pharo_projects
 
------
-scripts run up to this point ...
------
-# create a Rowan v3 development environment: 
-#  1. git repositories with required GitHub projects
-#  2. a Rowan v3 development stone
-#  3. a Pharo11 image with JadeiteForPharo installed
-
-# create a directory where the git projects and stones will reside
-cd $STONES_HOME
-mkdir rowanV3
-cd rowanV3
-# common_projects is the directory that contains the git projects that are
-# shared between the Rowan v3 stone and the JadeitForPharo image
-#
-# gs_projects is the directory that contains the git projects that are specific 
-# to GemStone
-#
-# pharo_projects is the directory that contains the git projects that are specific
-# to Pharo
-mkdir common_projects projects gs_projects pharo_projects stones
-
-# The following commands clone the git projects into each of the 3 directories 
-cloneProjectsFromProjectSet.solo --registry=rogue --projectSet=rowanV3_common --projectDirectory=$STONES_HOME/rowanV3/common_projects
-cloneProjectsFromProjectSet.solo --registry=rogue --projectSet=rowanV3_gs --projectDirectory=$STONES_HOME/rowanV3/gs_projects
-cloneProjectsFromProjectSet.solo --registry=rogue --projectSet=rowanV3_pharo --projectDirectory=$STONES_HOME/rowanV3/pharo_projects
-
-```
-### Rowan v3 git repositories
-### Jadeit for Pharo
-### Rowan v3 stones
