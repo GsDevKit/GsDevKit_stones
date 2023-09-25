@@ -4,7 +4,7 @@ options
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectDirectory'.
-SuperDoitOptionalOptionWithNoArg long: 'strict'.
+SuperDoitOptionalOptionWithNoArg long: 'update'.
 }
 %
 usage
@@ -27,7 +27,7 @@ OPTIONS
   --projectDirectory=<project-directory>
                     Path to directory where the projects will be cloned. If not
                     specified the projectDirectory in the registry will be used.
-  --strict          If present, a pull request will be issued for the origin remote
+  --update          If present, a pull request will be issued for the origin remote
                     to update the repository to the latest version of the branch 
                     available.
   <project-name>...
@@ -41,7 +41,7 @@ EXAMPLES
   $basename 
   $basename --registry=bosch --projectSet=dev Rowan \
             --projectDirectory=/home/dhenrich/bosch1/_exp_git
-  $basename --registry=bosch --projectSet=test Rowan --strict 
+  $basename --registry=bosch --projectSet=test Rowan --update
 -----
 %
 specs
@@ -86,9 +86,9 @@ doit
 	projectDir asFileReference ensureCreateDirectory. 
 	Rowan projectTools trace startTracing.
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self strict ]
+		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self update]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneOrUpdateProject: projectName in: projectDir pull: self strict ] ].
+				projectSet cloneOrUpdateProject: projectName in: projectDir pull: self update] ].
 	true
 %
