@@ -38,10 +38,10 @@ if [ "$STONES_DATA_HOME" = "" ] ; then
 fi
 ```
 
+## Create a registry called \_stones for managing the superDoit and GsDevKit_stones repositories in $STONES_HOME/git
 ``` bash
 cd $STONES_HOME
 
-## Create a registry called _stones for managing the superDoit and GsDevKit_stones repositories in $STONES_HOME/git
 # create registry
 createRegistry.solo _stones
 
@@ -51,9 +51,11 @@ createProjectSet.solo --registry=_stones --projectSet=_stones \
 
 # use cloneProjectsFromProjectSet.solo to update the projects to match the specification in _stones.ston
 cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones \
-  --projectDirectory=$STONES_HOME/git
+  --projectDirectory=$STONES_HOME/git --update
+```
 
 ## Create registry called rowanV3 and set up a Rowan v3 development environment
+```bash
 # create registry
 createRegistry.solo rowanV3
 

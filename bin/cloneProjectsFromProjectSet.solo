@@ -26,7 +26,8 @@ OPTIONS
                     Name of the project set to use.
   --projectDirectory=<project-directory>
                     Path to directory where the projects will be cloned. If not
-                    specified the projectDirectory in the registry will be used.
+                    specified the projectDirectory associated with the project set 
+                    is used.
   --update          If present, a pull request will be issued for the origin remote
                     to update the repository to the latest version of the branch 
                     available.
