@@ -16,6 +16,7 @@ GDKProjectSet {
 				'gs' : 'git@git.gemtalksystems.com:superDoit',
 				'origin' : 'git@github.com:dalehenrich/superDoit.git'
 			}
-		},
+		}
+	},
 	#comment : 'This set of repositories are used to manage the superDoit and GsDevKit_stones repositories, originally cloned by hand to install GsDevKit_stones'
 }
