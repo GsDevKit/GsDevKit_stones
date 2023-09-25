@@ -50,8 +50,7 @@ createProjectSet.solo --registry=_stones --projectSet=_stones \
   --from=$STONES_HOME/git/GsDevKit_stones/projectSets/_stones.ston
 
 # use cloneProjectsFromProjectSet.solo to update the projects to match the specification in _stones.ston
-cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones \
-  --projectDirectory=$STONES_HOME/git --update
+cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --update
 ```
 
 ## Create registry called rowanV3 and set up a Rowan v3 development environment
