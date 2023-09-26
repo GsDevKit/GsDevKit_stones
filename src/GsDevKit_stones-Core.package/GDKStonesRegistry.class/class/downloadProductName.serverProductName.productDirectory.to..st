@@ -1,36 +1,38 @@
 product management
-downloadProductName: productName productDirectory: downloadDirName to: downloadPath
-	"curl  -L -O -s -S 'https://ftp.gemtalksystems.com/GemStone64/3.6.5/GemStone64Bit3.6.5-x86_64.Linux.zip'"
+downloadProductName: productName serverName: serverName productDirectory: downloadDirName to: downloadPath
+	"curl  -L -o GemStone64Bit3.7.0_rowanv3-Alpha1-x86_64.Linux.zip -s -S 'https://ftp.gemtalksystems.com/GemStone64/370_rowanv3-Alpha1/GemStone64Bit3.7.0-x86_64.Linux.zip'"
 
-	| osName cwd downloadDir stdout |
+	| osName cwd downloadDir stdout fmt|
 	stdout := GsFile stdout.
 	osName := System gemVersionReport at: 'osName'.
+	fmt := osName = 'Darwin'
+		ifTrue: [ 'dmg' ]
+		ifFalse: [ 'zip' ].
 	downloadDir := downloadPath asFileReference.
 	[ 
 	cwd := GsFile serverCurrentDirectory.
 	self chdir: downloadPath.
 	stdout
 		nextPutAll:
-				'Downloading ' , downloadDirName , ' to ' , downloadDir fullName , ' for '
+				'Downloading ' , productName, '/', downloadDirName , '.' , fmt , ' to ' , (downloadDir / serverName) fullName , ' for '
 						, osName;
 		lf.
-	(downloadDir / downloadDirName) exists
+	(downloadDir / serverName) exists
 		ifFalse: [ 
-			| fmt downloadFileName |
-			fmt := osName = 'Darwin'
-				ifTrue: [ 'dmg' ]
-				ifFalse: [ 'zip' ].
-			downloadFileName := downloadDirName , '.' , fmt.
+			| downloadFileName |
+			downloadFileName := serverName , '.' , fmt.
 			(downloadDir / downloadFileName) exists
 				ifFalse: [ 
 					self
 						executeCommandLine:
-							'/usr/bin/curl  -L -O -s -S "https://ftp.gemtalksystems.com/GemStone64/'
-								, productName , '/' , downloadFileName , '"' ].
+							'/usr/bin/curl  -L -o ', downloadFileName, ' -s -S "https://ftp.gemtalksystems.com/GemStone64/'
+								, productName , '/' , downloadDirName, '.', fmt , '"' ].
 			fmt = 'zip'
 				ifTrue: [ 
-					self executeCommandLine: '/usr/bin/unzip ' , downloadFileName .
-					downloadDir / downloadFileName delete ]
+					self executeCommandLine: '/usr/bin/unzip ' , downloadFileName, ' -d tmp'.
+					self executeCommandLine: '/usr/bin/mv tmp/', downloadDirName, ' ' , serverName.
+					self executeCommandLine: '/usr/bin/rm -rf tmp'.
+					(downloadDir / downloadFileName) delete ]
 				ifFalse: [ 
 					| volumeList stream line volume |
 					"
@@ -88,4 +90,5 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 						ensure: [ 
 							volume
 								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach ' , volume fullName ] ] ] ] ]
-		ensure: [ self chdir: cwd ]
+		ensure: [ self chdir: cwd ].
+	^ (downloadDir / serverName) fullName

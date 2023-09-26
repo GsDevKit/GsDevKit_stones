@@ -2,7 +2,7 @@
 
 ``` bash
 # create a root directory where the stones and git repository directories that 
-#   you create will be located ... using STONES_HOME for convencience
+#   you create will be located ... using STONES_HOME for convenience
 mkdir /home/dhenrich/_stones
 cd /home/dhenrich/_stones
 export STONES_HOME=`pwd`
@@ -51,12 +51,27 @@ createProjectSet.solo --registry=_stones --projectSet=_stones \
 
 # use cloneProjectsFromProjectSet.solo to update the projects to match the specification in _stones.ston
 cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --update
+
+# create and register a product directory where GemStone product trees are kept.
+# This product download directory will be shared by all registries
+mkdir $STONES_HOME/gemstone
+registerProductDirectory.solo --registry=_stones --productDirectory=$STONES_HOME/gemstone
+# download 3.7.0
+downloadGemStone.solo --registry=_stones 3.7.0
+# update product list from shared product directory when a download is done by shared registry
+registerProduct.solo --registry=rowanV3 --fromDirectory=$STONES_HOME/gemstone
 ```
 
 ## Create registry called rowanV3 and set up a Rowan v3 development environment
 ```bash
 # create registry
 createRegistry.solo rowanV3
+# register the shared product directory
+registerProductDirectory.solo --registry=rowanV3 --productDirectory=$STONES_HOME/gemstone
+# update product list from shared product directory (since 3.7.0 is already downloaded)
+registerProduct.solo --registry=rowanV3 --fromDirectory=$STONES_HOME/gemstone
+# download 3.7.0_rowanv3-Alpha1
+downloadGemStone.solo --registry=rowanV3 3.7.0_rowanv3-Alpha1
 
 # create directory structure for rowanV3-specific artifacts: projects and stones
 mkdir $STONES_HOME/rowanV3

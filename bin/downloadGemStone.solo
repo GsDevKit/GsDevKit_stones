@@ -9,7 +9,7 @@ Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
       [--directory=<products-directory> | --registry=<registry-name>] \
-      <gemstone-version> 
+      <gemstone-version> [ <server-dir-name> ]
 
 DESCRIPTION
   Download and unzip the product tree for the given <gemstone-version> to the
@@ -35,7 +35,9 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename --registry=bosch 3.6.4
-  $basename --directory=$GS_HOME/shared/downloads/products 3.6.4
+  $basename --registry=bosch 3.7.0 3.7.0_rowanv3-Alpha1
+  $basename --directory=$GS_HOME/shared/downloads/products 3.6.4 
+_rowanv3-Alpha1
 -----
 %
 specs
@@ -59,40 +61,59 @@ RwLoadSpecificationV2 {
 ]
 %
 method
-downloadToRegistry: registryName version: version 
+downloadToRegistry: registryName version: version serverDirName: serverDirName
 	| registryClass stonesRegistry |
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: registryName.
-	stonesRegistry productNamed: version.
+	version = serverDirName
+		ifTrue: [ stonesRegistry productNamed: version ]
+		ifFalse: [ 
+			stonesRegistry
+				productNamed: serverDirName
+				ifAbsent: [ 
+					| productPath |
+					productPath := self 
+						downloadToDirectory: stonesRegistry productDirectory 
+						version: version 
+						serverDirName: serverDirName.
+					stonesRegistry products at: serverDirName put: productPath ].
+					stonesRegistry export ].
 	^	self noResult
 %
 method
-downloadToDirectory: directoryPath version: version
+downloadToDirectory: directoryPath version: version serverDirName: serverDirName
 	| registryClass |
 	registryClass := self globalNamed: 'GDKStonesRegistry'.
-	registryClass
-		downloadProductName: version 
+	^ registryClass
+		downloadProductName: serverDirName
+		serverName: (registryClass downloadDirectoryNameFor:serverDirName)
 		productDirectory: (registryClass downloadDirectoryNameFor: version)
 		to: directoryPath.	
-	^	self noResult
 %
 doit
-	| version |
+	| version serverDirName |
 	self preDoitSpecLoad: [:spec | 
 		spec projectsHome: self dirname asFileReference parent parent ].
 	self positionalArgs size < 1
 		ifTrue: [ self error: 'Missing required positional argument for GemStone version' ]
 		ifFalse: [ 
 			self positionalArgs size = 1
-				ifTrue: [ version := self positionalArgs at: 1 ]
-				ifFalse: [ self error: 'Only a single positional argument is allowed' ] ].
+				ifTrue: [ 
+					version := self positionalArgs at: 1.
+					serverDirName := version ]
+				ifFalse: [ 
+					self positionalArgs size = 2
+						ifTrue: [ 
+							version := self positionalArgs at: 1.
+							serverDirName := self positionalArgs at: 2 ] 
+						ifFalse: [ self error: 'Only 1 or 2 positional arguments are allowed' ] ] ].
 	^ self registry
 		ifNotNil: [:registryName |
-			self downloadToRegistry: registryName version: version ]
+			self downloadToRegistry: registryName version: version serverDirName: serverDirName ]
 		ifNil: [
 			self directory
 				ifNil: [ self error: 'either --directoryName or --registryName must be specified' ]
 				ifNotNil: [:directoryPath |
-					self downloadToDirectory: directoryPath version: version ] ].
+					self downloadToDirectory: directoryPath version: version serverDirName: serverDirName ] ].
 
 %
