@@ -31,12 +31,11 @@ createStoneStructure: stoneSpec
 						at: 'stone_dir' put: stoneRoot fullName;
 						at: 'GEMSTONE' put: gemstoneReference fullName;
 						yourself.
-					stoneSpec stonesRegistry projectDirectory 
-						ifNotNil: [:projectDir |
+					stoneSpec stonesRegistry projectDirectory
+						ifNotNil: [ :projectDir | 
 							exportDict
-								at: 'GDK_stones_projects'
-									put:  projectDir asFileReference fullName;
-							yourself ].
+								at: 'GDK_stones_projects' put: projectDir asFileReference fullName;
+								yourself ].
 					self customizeCustomEnv: exportDict stoneSpec: stoneSpec ].
 			key = #'bin'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
@@ -86,6 +85,7 @@ createStoneStructure: stoneSpec
 		userId: userId;
 		password: password;
 		yourself.
+	self populateStoneBinDirectory: stoneSpec.
 	useCustomEnv
 		ifTrue: [ 
 			stoneRoot / 'customenv'
