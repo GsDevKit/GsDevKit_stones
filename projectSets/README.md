@@ -66,10 +66,12 @@ registerProduct.solo --registry=rowanV3 --fromDirectory=$STONES_HOME/gemstone
 ```bash
 # create registry
 createRegistry.solo rowanV3
+
 # register the shared product directory
 registerProductDirectory.solo --registry=rowanV3 --productDirectory=$STONES_HOME/gemstone
 # update product list from shared product directory (since 3.7.0 is already downloaded)
 registerProduct.solo --registry=rowanV3 --fromDirectory=$STONES_HOME/gemstone
+
 # download 3.7.0_rowanv3-Alpha1
 downloadGemStone.solo --registry=rowanV3 3.7.0_rowanv3-Alpha1
 
@@ -103,4 +105,4 @@ cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
   --projectDirectory=$STONES_HOME/rowanV3/gs_projects
 cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_pharo \
   --projectDirectory=$STONES_HOME/rowanV3/pharo_projects
-
+```

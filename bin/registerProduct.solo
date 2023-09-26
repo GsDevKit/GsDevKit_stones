@@ -90,15 +90,15 @@ doit
 					(directory asFileReference children select: [:entity | entity isDirectory ])
 						do: [:dir | 
 							| productPrefix dirName |
-							productPrefix := 'GemStone64Bit3.'.
+							productPrefix := 'GemStone64Bit3'.
 							dirName := dir basename.
 							(dirName beginsWith: productPrefix)
 								ifTrue: [
 									| gemstoneVersion dashIndex |
-									dashIndex := dirName indexOf: $- ifAbsent: [].
+									dashIndex := dirName findLastSubString: '-' startingAt: dirName size.
 									(dashIndex notNil and: [ dashIndex > 0 ])
 										ifTrue: [
-											gemstoneVersion := dirName copyFrom: productPrefix size - 1 to: dashIndex - 1.
+											gemstoneVersion := dirName copyFrom: productPrefix size to: dashIndex - 1.
 											(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 												ifNil: [ self register: gemstoneVersion path: dir fullName for: stonesRegistry ] ] ] ] ]
 				ifNil: [ self error: 'one of --productPath or --fromDirectory is required' ] ].
