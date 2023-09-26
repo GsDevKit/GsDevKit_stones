@@ -148,7 +148,7 @@ doit
 				ifFalse: [ 
 					self error: 
 						'A stone named ', stoneName, ' already exists. Use --force to clean up.'].
-			stoneSpec destroyStoneStructure ].
+			stonesRegistry destroyStoneStructureFor: stoneName ].
 	stoneSpec createStoneStructureUsing: stonesRegistry.
 	stoneSpec registryDir ensureCreateDirectory.
 	stoneSpec export.

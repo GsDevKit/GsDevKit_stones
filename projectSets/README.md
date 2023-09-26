@@ -59,7 +59,13 @@ registerProductDirectory.solo --registry=_stones --productDirectory=$STONES_HOME
 # download 3.7.0
 downloadGemStone.solo --registry=_stones 3.7.0
 # update product list from shared product directory when a download is done by shared registry
-registerProduct.solo --registry=rowanV3 --fromDirectory=$STONES_HOME/gemstone
+registerProduct.solo --registry=_stones --fromDirectory=$STONES_HOME/gemstone
+
+# create and register default stones directory for rowanV3
+mkdir $STONES_HOME/_stones
+mkdir $STONES_HOME/_stones/stones
+registerStonesDirectory.solo --registry=_stones \
+                             --stonesDirectory=$STONES_HOME/_stones/stones
 ```
 
 ## Create registry called rowanV3 and set up a Rowan v3 development environment
@@ -77,7 +83,6 @@ downloadGemStone.solo --registry=rowanV3 3.7.0_rowanv3-Alpha1
 
 # create directory structure for rowanV3-specific artifacts: projects and stones
 mkdir $STONES_HOME/rowanV3
-mkdir $STONES_HOME/rowanV3/stones
 
 # create project sets using existing templates: rowanV3_common, rowanV3_gs, and rowanV3_pharo
 createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_common \
@@ -105,4 +110,24 @@ cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
   --projectDirectory=$STONES_HOME/rowanV3/gs_projects
 cloneProjectsFromProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_pharo \
   --projectDirectory=$STONES_HOME/rowanV3/pharo_projects
+
+# create and register default stones directory for rowanV3
+mkdir $STONES_HOME/rowanV3/stones
+registerStonesDirectory.solo --registry=rowanV3 \
+                             --stonesDirectory=$STONES_HOME/rowanV3/stones
+
+# create a Rowan v3 stone
+createStone.solo --registry=rowanV3 --template=minimal_rowan --start rowanv3_370 370_rowanv3-Alpha1
+
+# run set up scripts against the rowanv3_370 stone:
+#   attachRowanDevClones.stone script attaches the Rowan, RowanClientServices, STON, and Cypress git
+#     projects in $STONES_HOME/rowanV3/gs_projects to the image and reloads the projects from disk
+cd $STONES_HOME/rowanV3/stones/rowanv3_370
+bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/rowanV3/gs_projects
+#   installProject.stone installs a project into the stone ... here, we'll install GsDevKit_stones 
+#     and GsCommands as an example
+bin/installProject.stone file:$STONES_HOME/git/GsDevKit_stones/rowan/specs/GsDevKit_stones.ston \
+  --projectsHome=$STONES_HOME/git
+bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
+  --projectsHome=product/examples/GsCommands/projectsHome
 ```

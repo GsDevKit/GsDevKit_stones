@@ -1,4 +1,4 @@
-GDKstonesStoneDirectorySpec {
+GDKrowanStoneDirectorySpec {
 	#name : 'minimal_rowan',
 	#customenv : 'customenv',
 	#dbfSource : '$GEMSTONE/bin/extent0.rowan.dbf',
