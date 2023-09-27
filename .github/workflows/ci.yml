@@ -1,0 +1,46 @@
+name: main
+
+on: 
+  push:
+  pull_request:
+  schedule:
+    - cron: "15 2 23 * *" #run job on the 23rd day of every month on the 15th minute of the 2nd hour
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-20.04 ]
+        smalltalk: [ GemStone64-3.7.0 ]
+    runs-on: ${{ matrix.os }}
+    env:
+      GS_VERS: ${{ matrix.smalltalk }}
+      PLATFORM: ${{ matrix.os }}
+    continue-on-error: false
+    name: ${{ matrix.smalltalk }}
+    steps:
+      - uses: actions/checkout@v2
+        id: test GsDevKit_stones
+        uses: dalehenrich/setup-superDoit@v2
+        with:
+          gemstone-version: ${{ matrix.smalltalk }}
+          superDoit-branch: 'v4.1'        
+      - name: test
+        run: |
+          export STONES_HOME="$(pwd)"
+          echo $STONES_HOME
+        shell: bash
+  slack-workflow-status:
+    if: always()
+    name: Post Workflow Status To Slack
+    needs:
+      - build
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Slack Workflow Notification
+         uses: Gamesight/slack-workflow-status@master
+         with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          slack_webhook_url: ${{secrets.SLACK_DALEHENRICH}}
+          name: 'action run' 
