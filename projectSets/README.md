@@ -125,9 +125,12 @@ createStone.solo --registry=rowanV3 --template=minimal_rowan --start rowanv3_370
 cd $STONES_HOME/rowanV3/stones/rowanv3_370
 bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/rowanV3/gs_projects
 #   installProject.stone installs a project into the stone ... here, we'll install GsDevKit_stones 
-#     and GsCommands as an example
+#     and GsCommands as examples
 bin/installProject.stone file:$STONES_HOME/git/GsDevKit_stones/rowan/specs/GsDevKit_stones.ston \
   --projectsHome=$STONES_HOME/git
 bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
   --projectsHome=product/examples/GsCommands/projectsHome
+# Add EXTERNALS_ST_BASE env var to customenv and restart netldi
+updateCustomEnv.solo --registry=rowanV3 rowanv3_370 \
+  --addKey=EXTERNALS_ST_BASE --value=$STONES_HOME/git --restart
 ```

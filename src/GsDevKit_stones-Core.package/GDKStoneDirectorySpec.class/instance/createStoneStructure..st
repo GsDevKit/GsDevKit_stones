@@ -88,13 +88,7 @@ createStoneStructure: stoneSpec
 	self populateStoneBinDirectory: stoneSpec.
 	useCustomEnv
 		ifTrue: [ 
-			stoneRoot / 'customenv'
-				writeStreamDo: [ :fileStream | 
-					exportDict
-						keysAndValuesDo: [ :key :value | 
-							fileStream
-								nextPutAll: 'export ' , key , '=' , value;
-								lf ] ].
+			self exportCustomEnvTo: stoneRoot / 'customenv'.
 			systemConfStream
 				lf;
 				nextPutAll: 'DBF_EXTENT_NAMES = $stone_dir' , useExtentDir , 'extent0.dbf;';
