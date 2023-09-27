@@ -17,11 +17,9 @@ jobs:
     env:
       GS_VERS: ${{ matrix.smalltalk }}
       PLATFORM: ${{ matrix.os }}
-    continue-on-error: false
-    name: ${{ matrix.smalltalk }}
     steps:
       - uses: actions/checkout@v2
-        id: test GsDevKit_stones
+      - id: test GsDevKit_stones
         uses: dalehenrich/setup-superDoit@v2
         with:
           gemstone-version: ${{ matrix.smalltalk }}
