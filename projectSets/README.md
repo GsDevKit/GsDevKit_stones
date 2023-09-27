@@ -50,7 +50,7 @@ createProjectSet.solo --registry=_stones --projectSet=_stones \
   --from=$STONES_HOME/git/GsDevKit_stones/projectSets/_stones.ston
 
 # use cloneProjectsFromProjectSet.solo to update the projects to match the specification in _stones.ston
-cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --update
+cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_HOME/git --update
 
 # create and register a product directory where GemStone product trees are kept.
 # This product download directory will be shared by all registries
