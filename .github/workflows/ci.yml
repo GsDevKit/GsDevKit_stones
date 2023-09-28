@@ -18,13 +18,13 @@ jobs:
       GS_VERS: ${{ matrix.smalltalk }}
       PLATFORM: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - id: test_GsDevKit_stones
-        uses: dalehenrich/setup-superDoit@v2
+        uses: dalehenrich/setup-superDoit@v4
         with:
           gemstone-version: ${{ matrix.smalltalk }}
           superDoit-branch: 'v4.1'        
-      - name: test
+      - name: initial test
         run: |
           export STONES_HOME="$(pwd)"
           echo $STONES_HOME
