@@ -24,12 +24,20 @@ jobs:
         with:
           gemstone-version: ${{ matrix.smalltalk }}
           superDoit-branch: 'v4.1'        
-      - name: initial test
+      - name: initial setup
         run: |
           export STONES_HOME="$(pwd)"
+          export GEMSTONE_ROOT=${{ steps.setup-superDoit.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-superDoit.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
           echo "STONES_HOME=$STONES_HOME"
-          echo "GEMSTONE=$GEMSTONE"
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "$GEMSTONE_NAME"
+          echo "WORK_ROOT"
+          ls -altr $WORK_ROOT
+          echo "$GITHUB_WORKSPACE"
           ls -altr $GITHUB_WORKSPACE
         shell: bash
   slack-workflow-status:
