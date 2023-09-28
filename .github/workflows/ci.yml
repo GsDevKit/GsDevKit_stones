@@ -27,7 +27,10 @@ jobs:
       - name: initial test
         run: |
           export STONES_HOME="$(pwd)"
-          echo $STONES_HOME
+          echo "STONES_HOME=$STONES_HOME"
+          echo "GEMSTONE=$GEMSTONE"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          ls -altr $GITHUB_WORKSPACE
         shell: bash
   slack-workflow-status:
     if: always()
