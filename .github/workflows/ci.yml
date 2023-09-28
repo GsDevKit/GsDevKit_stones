@@ -37,6 +37,8 @@ jobs:
           echo "$GEMSTONE_NAME"
           echo "WORK_ROOT"
           ls -altr $WORK_ROOT
+          echo "WORK_ROOT/.."
+          ls -altr $WORK_ROOT/..
           echo "$GITHUB_WORKSPACE"
           ls -altr $GITHUB_WORKSPACE
         shell: bash
