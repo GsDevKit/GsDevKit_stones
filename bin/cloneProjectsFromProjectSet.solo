@@ -91,7 +91,7 @@ doit
 	projectDir asFileReference ensureCreateDirectory. 
 	Rowan projectTools trace startTracing.
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self update]
+		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir remoteName: self remote pull: self update]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
 				projectSet cloneOrUpdateProject: projectName remoteName: self remote in: projectDir pull: self update] ].
