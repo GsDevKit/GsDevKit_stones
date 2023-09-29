@@ -47,7 +47,7 @@ createRegistry.solo _stones
 
 # create project set using existing template: _stones
 createProjectSet.solo --registry=_stones --projectSet=_stones \
-  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/_stones.ston
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/ssh/_stones.ston
 
 # use cloneProjectsFromProjectSet.solo to update the projects to match the specification in _stones.ston
 cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_HOME/git --update
@@ -86,11 +86,11 @@ mkdir $STONES_HOME/rowanV3
 
 # create project sets using existing templates: rowanV3_common, rowanV3_gs, and rowanV3_pharo
 createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_common \
-  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/ssh/rowanV3_common.ston
 createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_gs \
-  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_gs.ston
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/ssh/rowanV3_gs.ston
 createProjectSet.solo --registry=rowanV3 --projectSet=rowanV3_pharo \
-  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_pharo.ston
+  --from=$STONES_HOME/git/GsDevKit_stones/projectSets/ssh/rowanV3_pharo.ston
 
 # There are three project sets involved, because different versions of the same projects may
 #    be required by GemStone and Pharo:
