@@ -7,7 +7,6 @@ GDKProjectSet {
 			'revision' : 'v1.1.1',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:GsDevKit_stones',
-				'https' : 'https://github.com/GsDevKit/GsDevKit_stones.git',
 				'origin' : 'git@github.com:GsDevKit/GsDevKit_stones.git'
 			}
 		},
@@ -15,7 +14,6 @@ GDKProjectSet {
 			'revision' : 'v4.1',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:superDoit',
-				'https' : 'https://github.com/dalehenrich/superDoit.git',
 				'origin' : 'git@github.com:dalehenrich/superDoit.git'
 			}
 		}

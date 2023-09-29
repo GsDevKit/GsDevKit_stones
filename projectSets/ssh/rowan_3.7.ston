@@ -1,0 +1,56 @@
+GDKProjectSet {
+	#name : 'rowan_3.7',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#loadSpecs : {
+		'GsDevKit_stones' : {
+			'revision' : 'v1.1.1',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GsDevKit/GsDevKit_stones.git'
+			}
+		},
+		'GsTestStats' : {
+			'revision' : 'v1',
+			'gitUrls' : {
+				'origin' : 'git@github.com:dalehenrich/GsTestStats.git'
+			}
+		},
+		'superDoit' : {
+			'revision' : 'v3.1',
+			'gitUrls' : {
+				'origin' : 'git@github.com:dalehenrich/superDoit.git'
+			}
+		},
+		'generateGs' : {
+			'revision' : 'v1',
+			'gitUrls' : {
+				'origin' : 'git@git.gemtalksystems.com:generateGs'
+			}
+		},
+		'FileSystemGs' : {
+			'revision' : 'gs-3.7.x',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/FileSystemGs.git'
+			}
+		},
+		'GsDevKit_upgrade' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GsDevKit/GsDevKit_upgrade.git'
+			}
+		},
+		'RowanClientServices' : {
+			'revision' : 'masterV2.2',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+			}
+		},
+		'Rowan' : {
+			'revision' : 'masterV2.5',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/Rowan.git'
+			}
+		}
+	},
+	#comment : 'This set of repositories are for use with 3.7.0/RowanV3'
+}

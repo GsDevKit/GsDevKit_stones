@@ -1,0 +1,32 @@
+GDKProjectSet {
+	#name : 'rowanV3_pharo',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#loadSpecs : {
+		'Sparkle' : {
+			'revision' : 'main',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/Sparkle.git'
+			}
+		},
+		'PharoGemStoneFFI' : {
+			'revision' : 'main',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/PharoGemStoneFFI.git'
+			}
+		},
+		'JadeiteForPharo' : {
+			'revision' : 'main',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/JadeiteForPharo.git'
+			}
+		},
+		'RowanClientServices' : {
+				'revision' : 'ericV3.0_pharo',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+			}
+		}
+	},
+	#comment : 'The pharo repositores for Rowan v3 are used strictly by the RowanV3 pharo client. The server needs a special version of RowanClientServices (ericV3.0_pharo) to be used with a pharo client.'
+}

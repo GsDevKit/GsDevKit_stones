@@ -1,0 +1,56 @@
+GDKProjectSet {
+	#name : 'rowanV3_gs',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#loadSpecs : {
+		'GsDevKit_stones' : {
+			'revision' : 'v1.1.1',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/GsDevKit_stones.git'
+			}
+		},
+		'GsTestStats' : {
+			'revision' : 'v1',
+			'gitUrls' : {
+				'origin' : 'https://github.com/dalehenrich/GsTestStats.git'
+			}
+		},
+		'superDoit' : {
+			'revision' : 'v4.1',
+			'gitUrls' : {
+				'origin' : 'https://github.com/dalehenrich/superDoit.git'
+			}
+		},
+		'FileSystemGs' : {
+			'revision' : 'gs-3.7.x',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GemTalk/FileSystemGs.git'
+			}
+		},
+		'GsDevKit_upgrade' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/GsDevKit_upgrade.git'
+			}
+		},
+		'Rowan' : {
+			'revision' : 'masterV3.0',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GemTalk/Rowan.git'
+			}
+		},
+		'Announcements' : {
+			'revision' : 'main',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GemTalk/Announcements.git'
+			}
+		},
+		'RowanClientServices' : {
+			'revision' : 'eric_component_V3.0',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GemTalk/RowanClientServices.git'
+			}
+		}
+ },
+	#comment : 'The gs repositories for Rowan v3 are used strictly by the 3.7.0/RowanV3 gs server.'
+}
