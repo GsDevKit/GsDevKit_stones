@@ -50,7 +50,17 @@ jobs:
           mkdir $STONES_HOME/gemstone
           export STONES_gemstone=$STONES_HOME/gemstone
 
-          export PATH=$GSDEVKIT_STONES_ROOT/bin:$PATH
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          echo "PATH=$PATH"
+          echo "WORK_ROOT"
+          ls -altr $WORK_ROOT
+          echo "GITHUB_WORKSPACE"
+          ls -altr $GITHUB_WORKSPACE
+          echo "STONES_DATA_HOME"
+          ls -altr $STONES_DATA_HOME
+          echo "STONES_HOME"
+          ls -altr $STONES_HOME
 
           echo "versionReport.solo" 
           versionReport.solo
@@ -60,15 +70,6 @@ jobs:
           createProjectSet.solo --registry=_stones --projectSet=_stones --from=$GSDEVKIT_STONES_ROOT/projectSets/_stones.ston
           echo "cloneProjectsFromProjectSet.solo"
           cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_git --update
-
-          echo "WORK_ROOT"
-          ls -altr $WORK_ROOT
-          echo "GITHUB_WORKSPACE"
-          ls -altr $GITHUB_WORKSPACE
-          echo "STONES_DATA_HOME"
-          ls -altr $STONES_DATA_HOME
-          echo "STONES_HOME"
-          ls -altr $STONES_HOME
 
           gslist.solo -l
           
