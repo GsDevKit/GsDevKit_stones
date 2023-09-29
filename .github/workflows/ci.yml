@@ -26,21 +26,53 @@ jobs:
           superDoit-branch: 'v4.1'        
       - name: initial setup
         run: |
-          export STONES_HOME="$(pwd)"
           export GEMSTONE_ROOT=${{ steps.setup-superDoit.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-superDoit.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
-          echo "STONES_HOME=$STONES_HOME"
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_NAME=$GEMSTONE_NAME"
           echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          echo "$GEMSTONE_NAME"
+          echo "WORK_ROOT=$WORK_ROOT"
+
+          mkdir $WORK_ROOT/STONES_DATA_HOME
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          mkdir $WORK_ROOT/STONES_HOME
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          mkdir $STONES_HOME/git
+          export STONES_git=$STONES_HOME/git
+          mkdir $STONES_HOME/gemstone
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          echo "versionReport.solo" 
+          versionReport.solo
+          echo "createRegistry.solo"
+          createRegistry.solo
+          echo "createProjectSet.solo"
+          createProjectSet.solo --registry=_stones --projectSet=_stones --from=$GSDEVKIT_STONES_ROOT/projectSets/_stones.ston
+          echo "cloneProjectsFromProjectSet.solo"
+          cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_git --update
+
           echo "WORK_ROOT"
           ls -altr $WORK_ROOT
-          echo "WORK_ROOT/.."
-          ls -altr $WORK_ROOT/..
-          echo "$GITHUB_WORKSPACE"
+          echo "GITHUB_WORKSPACE"
           ls -altr $GITHUB_WORKSPACE
+          echo "STONES_DATA_HOME"
+          ls -altr $STONES_DATA_HOME
+          echo "STONES_HOME"
+          ls -altr $STONES_HOME
+
+          gslist.solo -l
+          
         shell: bash
   slack-workflow-status:
     if: always()
