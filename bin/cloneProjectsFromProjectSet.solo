@@ -2,6 +2,7 @@
 options
 {
 SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'remote' default: 'origin'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectDirectory'.
 SuperDoitOptionalOptionWithNoArg long: 'update'.
@@ -40,9 +41,9 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename 
-  $basename --registry=bosch --projectSet=dev Rowan \
+  $basename --registry=bosch --projectSet=dev --remote=https Rowan \
             --projectDirectory=/home/dhenrich/bosch1/_exp_git
-  $basename --registry=bosch --projectSet=test Rowan --update
+  $basename --registry=bosch --projectSet=_stones Rowan --update
 -----
 %
 specs
@@ -93,6 +94,6 @@ doit
 		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self update]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneOrUpdateProject: projectName in: projectDir pull: self update] ].
+				projectSet cloneOrUpdateProject: projectName remoteName: self remote in: projectDir pull: self update] ].
 	true
 %

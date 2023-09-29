@@ -69,7 +69,7 @@ jobs:
           echo "createProjectSet.solo"
           createProjectSet.solo --registry=_stones --projectSet=_stones --from=$GSDEVKIT_STONES_ROOT/projectSets/_stones.ston
           echo "cloneProjectsFromProjectSet.solo"
-          cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_git --update
+          cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_git --remote=https --update
 
           gslist.solo -l
           
