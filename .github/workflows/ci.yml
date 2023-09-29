@@ -19,19 +19,18 @@ jobs:
       PLATFORM: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - id: test_GsDevKit_stones
+      - id: setup-GsDevKit_stones
         uses: dalehenrich/setup-superDoit@v4
         with:
           gemstone-version: ${{ matrix.smalltalk }}
           superDoit-branch: 'v4.1'        
       - name: initial setup
         run: |
-          export GEMSTONE_ROOT=${{ steps.setup-superDoit.outputs.gemstone-product-path }}
-          export SUPERDOIT_ROOT=${{ steps.setup-superDoit.outputs.superDoit-root }}
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
-          echo "GEMSTONE_NAME=$GEMSTONE_NAME"
           echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
