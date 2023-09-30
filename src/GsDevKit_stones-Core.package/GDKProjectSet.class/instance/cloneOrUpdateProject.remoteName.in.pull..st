@@ -28,15 +28,18 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 			Transcript
 				cr;
 				show: '  Set ' , projectName , ' revision to ' , revision.
-			gitTool
-				gitcheckoutIn: gitProjectRef
-				with: ' -B ' , remoteName , '/' , revision.
+			cloned
+				ifTrue: [ gitTool gitcheckoutIn: gitProjectRef with: ' -B ' , remoteName , '/' , revision ]
+				ifFalse: [ 
+					gitTool
+						gitcheckoutIn: gitProjectRef
+						with: ' -b ' , revision , ' ' , remoteName , '/' , revision ].
 			pull
 				ifTrue: [ 
 					Transcript
 						cr;
 						show:
-								'  Pull ' , projectName , ' revision ' , revision , ' from remote ' , origin.
+								'  Pull ' , projectName , ' revision ' , revision , ' from remote ' , remoteName.
 					gitTool
 						gitpullIn: gitProjectRef fullName
 						remote: remoteName
@@ -48,4 +51,8 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 					self
 						gitAddRemoteIn: gitProjectRef fullName
 						remote: theRemote
-						gitUrl: (gitUrls at: theRemote) ] ]
+						gitUrl: (gitUrls at: theRemote) ].
+			Transcript
+				cr;
+				show: '  Fetch  --all '.
+			gitTool gitfetchIn: gitProjectRef with: ' --all' ]
