@@ -21,6 +21,7 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 							'There are unsaved changes in ' , gitProjectRef fullName printString
 								, '. We cannot clone or update a repository with unsaved chnages' ] ]
 		ifFalse: [ 
+			"GIT CLONE"
 			gitTool gitcloneIn: gitRootPath with: origin logging: true.
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
@@ -29,13 +30,27 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 				cr;
 				show: '  Set ' , projectName , ' revision to ' , revision.
 			cloned
-				ifTrue: [ gitTool gitcheckoutIn: gitProjectRef with: ' -B ' , remoteName , '/' , revision ]
-				ifFalse: [ 
+				ifTrue: [ 
+					"GIT CHECKOUT -B"
 					gitTool
 						gitcheckoutIn: gitProjectRef
-						with: ' -b ' , revision , ' ' , remoteName , '/' , revision ].
+						with: ' -B ' , remoteName , '/' , revision ]
+				ifFalse: [ 
+					"GIT CHECKOUT -b"
+					[ 
+					gitTool
+						gitcheckoutIn: gitProjectRef
+						with: ' -b ' , revision , ' ' , remoteName , '/' , revision ]
+						on: Error
+						do: [ :ex | 
+							"assume that the branch already exists, and try again without -b option"
+							Transcript
+								cr;
+								show: 'assume branch ' , revision , ' already exists. Tryig again'.
+							gitTool gitcheckoutIn: gitProjectRef with: revision ] ].
 			pull
 				ifTrue: [ 
+					"GIT PULL"
 					Transcript
 						cr;
 						show:
@@ -46,12 +61,13 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 						branch: revision ] ].
 	cloned
 		ifTrue: [ 
+			"GIT REMOTE ADD"
 			(gitUrls keys reject: [ :each | each = remoteName ])
 				do: [ :theRemote | 
 					self
 						gitAddRemoteIn: gitProjectRef fullName
 						remote: theRemote
-						gitUrl: (gitUrls at: theRemote) ].
+						gitUrl: (gitUrls at: theRemote) ].	"GIT FETCH --all"
 			Transcript
 				cr;
 				show: '  Fetch  --all '.

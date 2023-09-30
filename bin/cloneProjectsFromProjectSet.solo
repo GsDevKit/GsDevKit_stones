@@ -15,6 +15,17 @@ USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-na
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 
 
+CLONE git commands for each project
+  git clone <project-url>
+  git checkout -B remote/revision
+  git remote add remote <additional-project-project-urls>
+  git fetch --all
+
+UPDATE git commands for each project
+  git checkout remote/revision
+  git pull remote revision
+
+
 OPTIONS
   -h, --help        display usage message
   -D, --debug       bring up topaz debugger in the event of a script error
