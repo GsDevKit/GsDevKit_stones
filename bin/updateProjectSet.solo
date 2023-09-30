@@ -44,7 +44,7 @@ EXAMPLES
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
             --gitUrl=git@github.com:GemTalk/Rowan.git
-  # simplest definition using a file: url to specify spec location
+  # simplest definition using a git url to specify spec location
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
             --gitUrl=git@github.com:GemTalk/Rowan.git

@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-	SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+	SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'projectSet'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'stone'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'template'.

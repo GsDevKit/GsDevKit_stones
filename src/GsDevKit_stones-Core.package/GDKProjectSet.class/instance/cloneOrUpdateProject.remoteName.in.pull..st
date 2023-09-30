@@ -30,14 +30,17 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 				show: '  Set ' , projectName , ' revision to ' , revision.
 			gitTool
 				gitcheckoutIn: gitProjectRef
-				with: ' -B ' , revision , ' ' , remoteName , '/' , revision.
+				with: ' -B ' , remoteName , '/' , revision.
 			pull
 				ifTrue: [ 
 					Transcript
 						cr;
 						show:
 								'  Pull ' , projectName , ' revision ' , revision , ' from remote ' , origin.
-					gitTool gitpullIn: gitProjectRef fullName remote: remoteName branch: revision ] ].
+					gitTool
+						gitpullIn: gitProjectRef fullName
+						remote: remoteName
+						branch: revision ] ].
 	cloned
 		ifTrue: [ 
 			(gitUrls keys reject: [ :each | each = remoteName ])
