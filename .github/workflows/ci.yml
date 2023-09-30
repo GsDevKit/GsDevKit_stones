@@ -73,11 +73,6 @@ jobs:
 
           gslist.solo -l
 
-          mkdir $WORK_ROOT/STONES_DATA_HOME
-          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
-          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
-
-          
         shell: bash
       - name: run test_1.sh
         run: |
@@ -86,6 +81,7 @@ jobs:
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
           echo "WORK_ROOT=$WORK_ROOT"          
+
           $GSDEVKIT_STONES_ROOT/tests/test_1.sh
         shell: bash
   slack-workflow-status:
