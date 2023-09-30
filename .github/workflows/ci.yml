@@ -24,7 +24,7 @@ jobs:
         with:
           gemstone-version: ${{ matrix.smalltalk }}
           superDoit-branch: 'v4.1'        
-      - name: initial setup
+      - name: initial setup and smoke test
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
@@ -72,7 +72,21 @@ jobs:
           cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_git --update
 
           gslist.solo -l
+
+          mkdir $WORK_ROOT/STONES_DATA_HOME
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
           
+        shell: bash
+      - name: run test_1.sh
+        run: |
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"          
+          $GSDEVKIT_STONES_ROOT/tests/test_1.sh
         shell: bash
   slack-workflow-status:
     if: always()
