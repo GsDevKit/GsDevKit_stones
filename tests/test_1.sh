@@ -9,6 +9,10 @@ else
 fi
 registry=test
 projectSet=xxx
+export urlType=ssh
+if [ "$CI" = "true" ]; then
+	export urlType=https
+fi
 
 set +e
 registryReport.solo --registry=$registry

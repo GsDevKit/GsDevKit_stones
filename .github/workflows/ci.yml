@@ -98,6 +98,7 @@ jobs:
 
           export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
 
+          export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_1.sh
         shell: bash
   slack-workflow-status:
