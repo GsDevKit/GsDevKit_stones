@@ -8,7 +8,7 @@ SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-      [--directory=<products-directory>] [registry=<registry-name> | -r <registry-name>] \
+      [ --directory=<products-directory>  | [registry=<registry-name> | -r <registry-name>] ]\
       <gemstone-version> [ <server-dir-name> ]
 
 DESCRIPTION
@@ -25,19 +25,19 @@ OPTIONS
   -v, --verbose Verbose logging enabled.
   --directory=<products-directory>
                 The directory where the product tree will be downloaded to.
+                Either --directory or --registry must be specified.
   --registry=<registry-name> | -r <registry-name>]
                 The product will be downloaded to the product 
                 directory defined by the <registry-name> and it's location will
-                be registered. Default <registry-name> is hostname.
+                be registered.  Either --directory or --registry must be specified.
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
   $basename --registry=bosch 3.6.4
-  $basename --registry=bosch 3.7.0 3.7.0_rowanv3-Alpha1
+  $basename -rbosch 3.7.0 3.7.0_rowanv3-Alpha1
   $basename --directory=$GS_HOME/shared/downloads/products 3.6.4 
-_rowanv3-Alpha1
 -----
 %
 specs
@@ -59,12 +59,6 @@ RwLoadSpecificationV2 {
 	#comment : ''
 }
 ]
-%
-method
-registryName
-	^ self registry
-		ifNil: [ (self globalNamed: 'System') hostname ]
-		ifNotNil: [:value | value ].
 %
 method
 downloadToRegistry: registryName version: version serverDirName: serverDirName
@@ -115,10 +109,12 @@ doit
 						ifFalse: [ self error: 'Only 1 or 2 positional arguments are allowed' ] ] ].
 	^ self registry
 		ifNotNil: [:registryName |
-			self downloadToRegistry: registryName version: version serverDirName: serverDirName ]
+			self downloadToRegistry: registryName version: version serverDirName: serverDirName.
+			self directory
+				ifNotNil: [ self error: 'either --directoryName or --registryName must be specified, not both ] ]
 		ifNil: [
 			self directory
-				ifNil: [ self error: 'either --directoryName or --registryName must be specified' ]
+				ifNil: [ self error: 'either --directoryName or --registryName must be specified, not both.' ]
 				ifNotNil: [:directoryPath |
 					self downloadToDirectory: directoryPath version: version serverDirName: serverDirName ] ].
 

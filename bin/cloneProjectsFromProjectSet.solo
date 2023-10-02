@@ -10,7 +10,9 @@ SuperDoitOptionalOptionWithNoArg long: 'update'.
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] --registry=<registry-name> --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                [--registry=<registry-name> | -r <registry-name>] \
+                --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
 
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 

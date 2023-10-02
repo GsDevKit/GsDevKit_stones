@@ -1,16 +1,13 @@
 #!/usr/bin/env superdoit_stone
 options
 {
-	SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'todeHome'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'stoneName'.
 	SuperDoitOptionalOptionWithNoArg long: 'files'.
 	SuperDoitOptionalOptionWithNoArg long: 'repair'.
 }
 %
-usage
-NAME
-  validateStoneSysNodes - validateStoneSysNodes sript utility template
+Usage
 SYNOPSIS
   validateStoneSysNodes [-h|--help] [--stone=<stone-name>] [--force] [--files] [--repair]
 

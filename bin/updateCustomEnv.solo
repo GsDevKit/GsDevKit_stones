@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'addKey'.
 SuperDoitOptionalOptionWithRequiredArg long: 'value'.
 SuperDoitOptionalOptionWithRequiredArg long: 'removeKey'.
@@ -11,7 +11,8 @@ SuperDoitOptionalOptionWithNoArg long: 'restart'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
-                --registry=<registry-name> <stone-name> [--restart] \
+                [--registry=<registry-name> | -r <registry-name>] <stone-name> \
+                [--restart] \
                 [
                   [--addKey=<env-name> --value=<env-value>] |
                   [--removeKey=<env-name> ]
@@ -27,7 +28,8 @@ OPTIONS
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
   -v, --verbose Verbose logging enabled.
-  --registry    Name of registry that stone is defined in (Required).
+  --registry=<registry-name> | -r <registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
   --addKey=<env-name> --value=<env-value>
                 Add or update an <env-name> with the given <env-value>
   --removeKey=<env-name>
@@ -37,7 +39,7 @@ OPTIONS
 EXAMPLES
   $basename --help
   $basename --registry=bosch bosch_370 --addKey=ROWAN_PROJECTS_HOME --value=$STONES_HOME/git rowan_366
-  $basename --registry=bosch bosch_370 --removeKey=ROWAN_PROJECTS_HOME rowan_366
+  $basename -r bosch bosch_370 --removeKey=ROWAN_PROJECTS_HOME rowan_366
 -----
 %
 specs
@@ -77,6 +79,12 @@ RwLoadSpecificationV2 {
 ]
 %
 method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+method
 debugLogging
 	"expected by startNetldi"
 	^ false
@@ -97,9 +105,7 @@ doit
 			self positionalArgs size > 1 
 				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
 			stoneName := self positionalArgs at: 1.
-			self registry
-				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
-			stonesRegistry := registryClass stonesRegistryNamed: self registry.
+			stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	stoneDirectorySpec := stoneSpec stoneDirectorySpec.
 	self addKey

@@ -10,10 +10,12 @@ options
 usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-  [--registry=<registry-name> \
+  [ \
+     [ --registry=<registry-name>  | -r <registry-name>] \
      [--projectSet=<projectSet-name> | \
       --template=<template-name> | \
-      --stone=<stone-name> ] ]
+      --stone=<stone-name> ] ] \
+  ]
 
 DESCRIPTION
   With no options, list the names of the existing registries.
@@ -24,8 +26,8 @@ OPTIONS
   --debugGem        If terminal is connected to stdout, bring up debugger. If not,
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
-  --registry=<registry-name>
-                    list the contents of the registry
+  --registry=<registry-name> | -r <registry-name> 
+                    <registry-name> is the name of the registry.
   --projectSet=<projectSet-name>
                     list the contents of the named project set in the given registry
   --stone=<stone-name>
@@ -41,7 +43,7 @@ EXAMPLES
   $basename --registry=bosch
   $basename --registry=bosch --projectSet=dev
   $basename --registry=bosch --template=minimal
-  $basename --registry=bosch --stone=bosch_370
+  $basename -r bosch --stone=bosch_370
 -----
 %
 specs
@@ -98,25 +100,25 @@ registryReport: registry
 	^ report
 %
 doit
-	| registry |
-	self preDoitSpecLoad: [:spec |
-		spec projectsHome: self dirname asFileReference parent parent].
-	registry := (self globalNamed: 'GDKRegistry') instance.
-	self registry
-		ifNotNil: [:registryName |
-			| stonesRegistry |
-			stonesRegistry := registry stonesRegistryNamed: registryName.
-			self projectSet 
-				ifNil: [ 
-					self template
-						ifNil: [ 
-							self stone
-								ifNil: [ ^ stonesRegistry ]
-								ifNotNil: [:stoneName | ^ stonesRegistry stoneNamed: stoneName ] ]
-						ifNotNil: [:templateName | ^ self templateReport: templateName in: stonesRegistry ] ]
-				ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: stonesRegistry ] ].
-	self stone ifNotNil: [ self error: 'a --registry is required to list the stone' ].
-	self template ifNotNil: [ self error: 'a --registry is required to list the template' ].
-	self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
+  | registry stonesRegistry |
+  self preDoitSpecLoad: [:spec |
+    spec projectsHome: self dirname asFileReference parent parent].
+  registry := (self globalNamed: 'GDKRegistry') instance.
+  self registry
+    ifNotNil: [:registryName |
+      | stonesRegistry |
+      stonesRegistry := registry stonesRegistryNamed: registryName.
+      self projectSet 
+		    ifNil: [ 
+			    self template
+            ifNil: [ 
+              self stone
+                ifNil: [ ^ stonesRegistry ]
+                ifNotNil: [:stoneName | ^ stonesRegistry stoneNamed: stoneName ] ]
+            ifNotNil: [:templateName | ^ self templateReport: templateName in: stonesRegistry ] ]
+        ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: stonesRegistry ] ].
+  self stone ifNotNil: [ self error: 'a --registry is required to list the stone' ].
+  self template ifNotNil: [ self error: 'a --registry is required to list the template' ].
+  self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
 	^ self registryReport: registry
 %

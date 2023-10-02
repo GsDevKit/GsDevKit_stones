@@ -1,20 +1,21 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-                --registry=<registry-name> --projectDirectory=<path-to-project-directory>
+                [--registry=<registry-name> | -r <registry-name>] \
+                --projectDirectory=<path-to-project-directory>
 
 DESCRIPTION
   Register a project directory for the named registry. If the directory does not
   exist the directory is created. It is a good practice to create a single project
-  directory for a given host or environement and share the projects across a number
-  of registries.
+  directory for a given host or environment and share the projects across a number
+  of registries, if there are no version conflicts between the set of projects.
 
 OPTIONS
   -h, --help      display usage message
@@ -22,6 +23,14 @@ OPTIONS
   --debugGem      If terminal is connected to stdout, bring up debugger. If not,
                   dump stack to stdout and wait for topaz to attach using topaz
                   DEBUGGEM command.
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                  <registry-name> is the name of the registry. Default is hostname.
+  --projectDirectory=<path-to-project-directory>
+									<path-to-project-directory> will be used as the directory where
+                  git repositories are cloned.
 
 EXAMPLES
   $basename --help
@@ -49,12 +58,18 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry projectDir projectDirPath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	projectDir := self projectDirectory asFileReference.
 	projectDir ensureCreateDirectory.
 	projectDirPath := GsFile serverRealPath: projectDir fullName.

@@ -8,6 +8,7 @@ usage
 USAGE $basename [--help | -h] [--debug | -D] [--debugGem]
 
 DESCRIPTION
+  **NOT YET IMPLEMENTED**
   Register an existing stone location.
 
 OPTIONS
@@ -25,9 +26,6 @@ EXAMPLES
 -----
 %
 doit
-	"write your code here"
-	"return value will be written in STON format to stdout. 
-		Return `self noResult` to suppress writing STON 
-		to stdout"
+	"NOT YET IMPLEMENTED"
 	^ self noResult
 %

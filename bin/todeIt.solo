@@ -2,7 +2,7 @@
 options
 {
 SuperDoitOptionalOptionWithRequiredArg long: 'file'.
-SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'stoneName'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 }
@@ -10,7 +10,10 @@ SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
-                [--registry=<registry-name> --stoneName=<stone-name>] \
+                [
+                  [--registry=<registry-name> | -r <registry-name>] \ 
+                  --stoneName=<stone-name> \
+                ]
                 [ <tode-command> | --file=<tode-commands-file> ]
 
 DESCRIPTION
@@ -24,8 +27,8 @@ OPTIONS
   --debugGem    If terminal is connected to stdout, bring up debugger. If not,
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
-  --registry=<registry-name>
-                Name of registry used to look up stoneName.
+  --registry=<registry-name> | -r <registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
   --stoneName=<stone-name>
                 Name of stone to run script against.
   --file=<tode-commands-file>
@@ -51,6 +54,7 @@ EOF
   $basename --file=testing
 
   $basename 'eval `3+4`' --registry=issue_4 --stoneName=gs_370
+  $basename 'eval `3+4`' -r issue_4 --stoneName=gs_370
   $basename "eval `3+4`"
 -----
 %
@@ -90,6 +94,12 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stoneSpec sessionDescription commands result |
 	self preDoitSpecLoad: [:spec | 
@@ -99,13 +109,11 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
-	self registry
-		ifNotNil: [:registryName |
+	self stoneName
+		ifNotNil: [:stoneName |
 			| stonesRegistry |
-			self stoneName
-				ifNil: [ self error: 'A --stoneName must be specified with --registry' ].
-			stonesRegistry := registryClass stonesRegistryNamed: self registry.
-			stoneSpec := stonesRegistry stoneNamed: self stoneName ] 
+			stonesRegistry := registryClass stonesRegistryNamed: self registryName.
+			stoneSpec := stonesRegistry stoneNamed: stoneName ] 
 		ifNil: [
 			| specFile |
 			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.

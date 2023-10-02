@@ -2,20 +2,21 @@
 options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'productPath'.
 SuperDoitOptionalOptionWithRequiredArg long: 'fromDirectory'.
 }
 %
 Usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] --registry=<registry-name> \
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                [--registry=<registry-name> | -r <registry-name>] \
                 [ [ --productPath=<path-to-product-tree> <gemstone-version> ] \
                   | \
-                [ --fromDirectory=<path-to-directory-of-productTrees> ] ]
+                  [ --fromDirectory=<path-to-directory-of-productTrees> ] ]
 
 DESCRIPTION
-  Register a GemStone product tree that is already downloaded/create with <registry-name>.
+  Register a GemStone product tree with <registry-name> that is already on disk.
 
 OPTIONS
   -h, --help      display usage message
@@ -23,12 +24,21 @@ OPTIONS
   --debugGem      If terminal is connected to stdout, bring up debugger. If not,
                   dump stack to stdout and wait for topaz to attach using topaz
                   DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                  <registry-name> is the name of the registry. Default is hostname.
+  --productPath=<source-product-directory>
+                  A directory reference to <source-product-directory> will be stored
+                  in the registry, using <gemstone-version> as the key.
+  --fromDirectory=<path-to-directory-of-productTrees>
+                  Directory where the subdirectories are GemStone product trees.
+                  A reference to each of the product trees in the directory will be
+                  added to <registry-name>.
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename --registry=bosch --productPath=/export/bosch1/users/dhenrich/_work/c_37x/fast50/gs/product 3.7.0 
-  $basename --registry=bosch --fromDirectory=$GS_HOME/shared/downloads/products 
+  $basename -r bosch --fromDirectory=$GS_HOME/shared/downloads/products 
 -----
 %
 specs
@@ -52,6 +62,12 @@ RwLoadSpecificationV2 {
 ]
 %
 method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+method
 register: gemstoneVersion path: gemstonePath for: stonesRegistry
 	(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 		ifNotNil: [:existingPath | 
@@ -69,7 +85,7 @@ doit
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	self productPath
 		ifNotNil: [:productPath |
 			gemstonePath := GsFile serverRealPath: self productPath.

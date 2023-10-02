@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'todeHome'.
 SuperDoitOptionalOptionWithNoArg long: 'populate'.
 }
@@ -9,7 +9,7 @@ SuperDoitOptionalOptionWithNoArg long: 'populate'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-                --registry=<registry-name> \
+                [--registry=<registry-name> | -r <registry-name>] \
                 --todeHome=<path-to-shared-tode-directory>
                 [--populate]
 
@@ -29,7 +29,8 @@ OPTIONS
   --debugGem      If terminal is connected to stdout, bring up debugger. If not,
                   dump stack to stdout and wait for topaz to attach using topaz
                   DEBUGGEM command.
-  --registry      Name of registry that stone is defined in (Required).
+  --registry=<registry-name> | -r <registry-name> 
+                  <registry-name> is the name of the registry. Default is hostname.
   --todeHome=<path-to-shared-tode-directory>
 									Path to directory where tODE meta data is to be stored (Required).
   --populate      If specified, the minimum directory structure required by tODE
@@ -40,7 +41,7 @@ EXAMPLES
   $basename -D
   $basename --registry=bosch \
             --todeHome=/home/dhenrich/gemstone/tode_home
-  $basename --registry=bosch --populate \
+  $basename -r bosch --populate \
             --todeHome=/home/dhenrich/gemstone/tode_home
 -----
 %
@@ -64,13 +65,19 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry todeHomeDir todeHomeDirPath projectDir |
 	projectDir := self dirname asFileReference parent.
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: projectDir  parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	todeHomeDir := self todeHome asFileReference.
 	todeHomeDirPath := GsFile serverRealPath: todeHomeDir fullName.
 	stonesRegistry 
