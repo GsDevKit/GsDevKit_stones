@@ -3,7 +3,7 @@ options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitOptionalOptionWithNoArg long: 'start'.
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'root'.
 SuperDoitRequiredOptionWithRequiredArg long: 'template'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
@@ -12,7 +12,7 @@ SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-f | --force] [-v | --verbose] \
-                --root=<stone-directory> --registry=<registry-name> \
+                --root=<stone-directory> [--registry=<registry-name> | -r <registry-name>] \
                 --template=<template-name> <stone-name> <gemstone-version>
 
 DESCRIPTION
@@ -26,6 +26,8 @@ OPTIONS
                 DEBUGGEM command.
   -f, --force   Delete the stone directory if it exists.
   -v, --verbose Verbose logging enabled.
+  --registry=<registry-name> | -r <registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
 
 EXAMPLES
   $basename --help
@@ -38,7 +40,7 @@ EXAMPLES
   # extent0.seaside.dbf, tODE installed, DataCurator
   $basename --force --registry=gsdevkit --template=default_seaside tode_366 3.6.6
   # extent0.seaside.dbf,  no tODE installed, DataCurator
-  $basename --force --registry=gsdevkit --template=minimal_seaside seaside_366 3.6.6
+  $basename --force -r gsdevkit --template=minimal_seaside seaside_366 3.6.6
 -----
 %
 specs
@@ -76,6 +78,12 @@ RwLoadSpecificationV2 {
 	#comment : ''
 }
 ]
+%
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
 %
 method
 restart
@@ -116,7 +124,7 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	rootDir := self root
 		ifNotNil: [:rootPath | rootPath asFileReference ]
 		ifNil: [ stonesRegistry stonesDirectory asFileReference ].
@@ -134,7 +142,7 @@ doit
 		directorySpecName: self template 
 		gemstoneVersionString: gemstoneVersion.
 	stoneSpec
-		parentRegistryName: self registry;
+		parentRegistryName: self registryName;
 		parentRegistryPath: 
 			'$', 
 			(self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, 

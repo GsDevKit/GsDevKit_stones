@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'remote' default: 'origin'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectDirectory'.
@@ -10,7 +10,7 @@ SuperDoitOptionalOptionWithNoArg long: 'update'.
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] --registry=<registry-name> --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
 
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 
@@ -32,8 +32,8 @@ OPTIONS
   --debugGem        If terminal is connected to stdout, bring up debugger. If not,
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
-  --registry=<registry-name>   
-                    name of the registry. Default is /usr/bin/hostname
+  --registry=<registry-name> | -r <registry-name> 
+                    <registry-name> is the name of the registry. Default is hostname.
   --projectSet=<projectSet-name>
                     Name of the project set to use.
   --projectDirectory=<project-directory>
@@ -54,7 +54,7 @@ EXAMPLES
   $basename 
   $basename --registry=bosch --projectSet=dev --remote=https Rowan \
             --projectDirectory=/home/dhenrich/bosch1/_exp_git
-  $basename --registry=bosch --projectSet=_stones Rowan --update
+  $basename -r=bosch --projectSet=_stones Rowan --update
 -----
 %
 specs
@@ -77,13 +77,19 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry name projectSet projectSetPath projectDir |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	name := self projectSet.
 	projectSetPath := stonesRegistry projectSets 
 		at: name 

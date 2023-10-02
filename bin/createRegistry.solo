@@ -1,18 +1,4 @@
 #!/usr/bin/env superdoit_solo
-#options
-#{
-#	SuperDoitOptionalOptionWithNoArg long: 'noarg'.
-#	SuperDoitOptionalOptionWithNoArg long: 'noarg' short: 'n'.
-#
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional'.
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' default: 'default'.
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o'.
-#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o' default: 'default'.
-#
-#	SuperDoitRequiredOptionWithRequiredArg long: 'required'.
-#	SuperDoitRequiredOptionWithRequiredArg long: 'required' short: 'r'.
-#}
-#%
 usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [ <registry-name> ]
@@ -79,7 +65,7 @@ doit
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	registryName := self positionalArgs size = 0
-		ifTrue: [ registryClass hostName ]
+		ifTrue: [ (self globalNamed: 'System) hostname ]
 	  ifFalse: [ self positionalArgs at: 1 ].
 	^ registryClass newRegistryNamed: registryName
 %

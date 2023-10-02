@@ -2,13 +2,13 @@
 options
 {
 SuperDoitOptionalOptionWithRequiredArg long: 'directory'.
-SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-      [--directory=<products-directory> | --registry=<registry-name>] \
+      [--directory=<products-directory>] [registry=<registry-name> | -r <registry-name>] \
       <gemstone-version> [ <server-dir-name> ]
 
 DESCRIPTION
@@ -25,10 +25,10 @@ OPTIONS
   -v, --verbose Verbose logging enabled.
   --directory=<products-directory>
                 The directory where the product tree will be downloaded to.
-  --registry=<registry-name>
+  --registry=<registry-name> | -r <registry-name>]
                 The product will be downloaded to the product 
                 directory defined by the <registry-name> and it's location will
-                be registered.
+                be registered. Default <registry-name> is hostname.
 
 EXAMPLES
   $basename --help
@@ -59,6 +59,12 @@ RwLoadSpecificationV2 {
 	#comment : ''
 }
 ]
+%
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
 %
 method
 downloadToRegistry: registryName version: version serverDirName: serverDirName

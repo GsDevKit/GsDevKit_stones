@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'from'.
 SuperDoitOptionalOptionWithRequiredArg long: 'key'.
@@ -31,8 +31,8 @@ OPTIONS
   --debugGem        If terminal is connected to stdout, bring up debugger. If not,
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
-  --registry=<registry-name>   
-                    name of the registry. Default is host name.
+  --registry=<registry-name> | -r <registry-name> 
+                  <registry-name> is the name of the registry. Default is hostname.
   --projectSet=<projectSet-name>
                     Name of the project set.
 
@@ -44,7 +44,7 @@ EXAMPLES
   # create projectSet to be populated using updateProjectSet.solo
   $basename --registry=bosch --projectSet=shared --empty
   # populate using a pre-defined project set 
-  $basename --registry=bosch --projectSet=rowanV3_common \
+  $basename -r bosch --projectSet=rowanV3_common \
     --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
 -----
 %
@@ -69,6 +69,12 @@ RwLoadSpecificationV2 {
 ]
 %
 method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+method
 populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath
 	| specDictionary |
 	specDictionary := stonSpecDictionaryFilePath asFileReference 
@@ -84,7 +90,7 @@ doit
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	name := self projectSet.
 	self from
 		ifNotNil: [:fromPath | 
