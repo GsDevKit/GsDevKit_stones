@@ -118,5 +118,4 @@ createStoneStructure: stoneSpec
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
 				nextPutAll: 'set u ' , userId , ' p ' , password;
-				lf ].
-	self class chmod: (stoneRoot / '.topazini') fullName fileMode: 'u+w,og-rw'
+				lf ]
