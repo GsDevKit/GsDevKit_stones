@@ -9,6 +9,8 @@
 #		
 set -e
 
+echo "***** test_1.sh *****"
+
 if [ ! -d $STONES_HOME/test_git ]; then
 	mkdir $STONES_HOME/test_git
 else
