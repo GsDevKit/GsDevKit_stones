@@ -65,7 +65,7 @@ doit
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	registryName := self positionalArgs size = 0
-		ifTrue: [ (self globalNamed: 'System) hostname ]
+		ifTrue: [ (self globalNamed: 'System') hostname ]
 	  ifFalse: [ self positionalArgs at: 1 ].
 	^ registryClass newRegistryNamed: registryName
 %
