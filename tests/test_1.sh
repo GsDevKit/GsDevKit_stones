@@ -1,5 +1,12 @@
 #! /usr/bin/env bash
-
+#
+# test coverage for:
+#		registryReport.sol
+#		createRegistry.solo
+#		createProjectSet.solo
+#		updateProjectSet.solo
+#		cloneProjectsFromProjectSet.solo
+#		
 set -e
 
 if [ ! -d $STONES_HOME/test_git ]; then

@@ -1,4 +1,10 @@
 #! /usr/bin/env bash
+#
+# test coverage for:
+#		registryReport.sol
+#		createRegistry.solo
+#		createProjectSet.solo
+#		updateProjectSet.solo
 
 set -e
 
