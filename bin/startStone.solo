@@ -115,7 +115,7 @@ doit
 			self positionalArgs size > 1 
 				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
 			stoneName := self positionalArgs at: 1.
-			stonesRegistry := registryClass stonesRegistryNamed: self registryNme.
+			stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	stoneSpec startStone: self withSuperDoitOptions: true.
 	self wait
