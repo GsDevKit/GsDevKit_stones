@@ -21,9 +21,9 @@ registerStonesDirectory.solo -h
 registerStone.solo -h
 registerTodeSharedDir.solo -h
 registryReport.solo --help
-startNetldi.solo -h
+startNetldi.solo --help
 startStone.solo -h
-stopNetldi.solo -h
+stopNetldi.solo --help
 stopStone.solo --help
 template.solo -h
 todeIt.solo -h

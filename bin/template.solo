@@ -2,6 +2,7 @@
 options
 {
 SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
+"
 #
 #	SuperDoitOptionalOptionWithNoArg long: 'noarg'.
 #	SuperDoitOptionalOptionWithNoArg long: 'noarg' short: 'n'.
@@ -14,6 +15,7 @@ SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
 #	SuperDoitRequiredOptionWithRequiredArg long: 'required'.
 #	SuperDoitRequiredOptionWithRequiredArg long: 'required' short: 'r'.
 #
+"
 }
 %
 usage
