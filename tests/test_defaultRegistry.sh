@@ -19,7 +19,11 @@ fi
 projectSet=xxx
 export urlType=ssh
 if [ "$CI" = "true" ]; then
+	# GSDEVKIT_STONES_ROOT defined in ci.yml
 	export urlType=https
+else
+	# GSDEVKIT_STONES_ROOT is $STONES_HOME/test_git
+	export GSDEVKIT_STONES_ROOT=$STONES_HOME/test_git/GsDevKit_stones
 fi
 
 set +e
@@ -123,8 +127,8 @@ gslist.solo -l
 cd $STONES_HOME/test_stones/stones/gs_370
 
 # install GsDevKit_stones using Rowan installProject.stone script
-bin/installProject.stone file:$ROWAN_PROJECTS_HOME/GsDevKit_stones/rowan/specs/GsDevKit_stones.ston \
-  --projectsHome=$ROWAN_PROJECTS_HOME $*
+bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
+  --projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 
 # delete the stone
 cd $STONES_HOME
