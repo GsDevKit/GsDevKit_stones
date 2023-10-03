@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectName'.
 

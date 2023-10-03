@@ -99,8 +99,9 @@ jobs:
           export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
 
           export CI="true"
-          $GSDEVKIT_STONES_ROOT/tests/test_1.sh
           $GSDEVKIT_STONES_ROOT/tests/test_help.sh
+          $GSDEVKIT_STONES_ROOT/tests/test_projectSets.sh
+          $GSDEVKIT_STONES_ROOT/tests/test_defaultRegistry.sh
         shell: bash
   slack-workflow-status:
     if: always()

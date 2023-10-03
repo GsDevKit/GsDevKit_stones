@@ -111,7 +111,7 @@ doit
 		ifNotNil: [:registryName |
 			self downloadToRegistry: registryName version: version serverDirName: serverDirName.
 			self directory
-				ifNotNil: [ self error: 'either --directoryName or --registryName must be specified, not both ] ]
+				ifNotNil: [ self error: 'either --directoryName or --registryName must be specified, not both.' ] ]
 		ifNil: [
 			self directory
 				ifNil: [ self error: 'either --directoryName or --registryName must be specified, not both.' ]
