@@ -100,6 +100,8 @@ registerStonesDirectory.solo --stonesDirectory=$STONES_HOME/test_stones/stones $
 # create a 3.7.0 Rowan stone and install GsDevKit_home
 createStone.solo --template=minimal_rowan gs_370 3.7.0 $*
 
+echo $PLATFORM
+set -x
 if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
 	echo "NATIVE CODE*************************************"
@@ -112,6 +114,7 @@ EOF
 	cat $STONES_HOME/test_stones/stones/gs_370/gem.conf
 	echo "NATIVE CODE*************************************"
 fi
+set +x
 
 #start stone
 startStone.solo gs_370 $*
