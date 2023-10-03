@@ -81,8 +81,8 @@ else
 	# rm -rf  $STONES_HOME/test_gemstone/*
 fi
 registerProductDirectory.solo --productDirectory=$STONES_HOME/test_gemstone $*
-# download 3.7.0
-downloadGemStone.solo 3.7.0 $*
+# download $GS_VERS
+downloadGemStone.solo $GS_VERS $*
 # update product list from shared product directory when a download is done by shared registry
 registerProduct.solo --fromDirectory=$STONES_HOME/test_gemstone $*
 
@@ -97,37 +97,37 @@ fi
 
 registerStonesDirectory.solo --stonesDirectory=$STONES_HOME/test_stones/stones $*
 
-# create a 3.7.0 Rowan stone and install GsDevKit_home
-createStone.solo --template=minimal_rowan gs_370 3.7.0 $*
+# create a $GS_VERS Rowan stone and install GsDevKit_home
+createStone.solo --template=minimal_rowan gs_rowan $GS_VERS $*
 
 echo $PLATFORM
 set -x
 if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
 	echo "NATIVE CODE*************************************"
-	cat $STONES_HOME/test_stones/stones/gs_370/gem.conf
+	cat $STONES_HOME/test_stones/stones/gs_rowan/gem.conf
 	if [[ "$PLATFORM" = "macos"* ]]; then
-		cat - >> $STONES_HOME/test_stones/stones/gs_370/gem.conf << EOF
+		cat - >> $STONES_HOME/test_stones/stones/gs_rowan/gem.conf << EOF
 GEM_NATIVE_CODE_ENABLED=0;
 EOF
 	fi
-	cat $STONES_HOME/test_stones/stones/gs_370/gem.conf
+	cat $STONES_HOME/test_stones/stones/gs_rowan/gem.conf
 	echo "NATIVE CODE*************************************"
 fi
 set +x
 
 #start stone
-startStone.solo gs_370 $*
+startStone.solo gs_rowan $*
 
 # Add ROWAN_PROJECTS_HOME env var to point to the git directory where git repositories
 #  used by this stone reside
 # restart netldi, so env var available to JadeiteForPharo
 export ROWAN_PROJECTS_HOME=$STONES_HOME/test_git
-updateCustomEnv.solo  gs_370 --addKey=ROWAN_PROJECTS_HOME --value=$ROWAN_PROJECTS_HOME --restart $*
+updateCustomEnv.solo  gs_rowan --addKey=ROWAN_PROJECTS_HOME --value=$ROWAN_PROJECTS_HOME --restart $*
 
 gslist.solo -l
 
-cd $STONES_HOME/test_stones/stones/gs_370
+cd $STONES_HOME/test_stones/stones/gs_rowan
 
 # install GsDevKit_stones using Rowan installProject.stone script
 bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
@@ -135,6 +135,6 @@ bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.
 
 # delete the stone
 cd $STONES_HOME
-deleteStone.solo gs_370 $*
+deleteStone.solo gs_rowan $*
 gslist.solo -l
 
