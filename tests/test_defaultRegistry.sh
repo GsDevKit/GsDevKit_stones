@@ -104,7 +104,7 @@ if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
 	echo "NATIVE CODE*************************************"
 	cat $STONES_HOME/test_stones/stones/gs_370/gem.conf
-	if [ "$PLATFORM"x = "macos"* ]; then
+	if [ "$PLATFORM" = "macos"* ]; then
 		cat - >> $STONES_HOME/test_stones/stones/gs_370/gem.conf << EOF
 GEM_NATIVE_CODE_ENABLED=0;
 EOF
