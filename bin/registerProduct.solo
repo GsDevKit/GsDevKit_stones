@@ -2,7 +2,7 @@
 options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
-SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'productPath'.
 SuperDoitOptionalOptionWithRequiredArg long: 'fromDirectory'.
 }
@@ -77,7 +77,7 @@ register: gemstoneVersion path: gemstonePath for: stonesRegistry
 						existingPath, 
 						') for the GemStone version ', 
 						gemstoneVersion, 
-						'. Use the --force option to override.' ] ].
+						'. Use the --force option to override.', ' (', self basename, ')' ] ].
 	stonesRegistry products at: gemstoneVersion put: gemstonePath.
 %
 doit
@@ -98,7 +98,7 @@ doit
 								existingPath,
 								') for the GemStone version ', 
 								gemstoneVersion, 
-								'. Use the --force option to override.' ] ].
+								'. Use the --force option to override.', ' (', self basename, ')' ] ].
 			self register: gemstoneVersion path: gemstonePath for: stonesRegistry ]
 		ifNil: [
 			self fromDirectory
@@ -117,7 +117,7 @@ doit
 											gemstoneVersion := dirName copyFrom: productPrefix size to: dashIndex - 1.
 											(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 												ifNil: [ self register: gemstoneVersion path: dir fullName for: stonesRegistry ] ] ] ] ]
-				ifNil: [ self error: 'one of --productPath or --fromDirectory is required' ] ].
+				ifNil: [ self error: 'one of --productPath or --fromDirectory is required', ' (', self basename, ')' ] ].
 	stonesRegistry export.
 
 %

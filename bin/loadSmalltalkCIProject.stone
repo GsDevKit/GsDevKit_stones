@@ -40,7 +40,7 @@ checkAndConsumeStatusFile
 			| buildStatus |
 			buildStatus := GsFile getContentsOfServerFile: statusFile.
 			buildStatus = '[test failure]'
-				ifTrue: [ self error: 'SmalltalkCI load failed' ].
+				ifTrue: [ self error: 'SmalltalkCI load failed', ' (', self basename, ')' ].
 			GsFile removeServerFile: buildStatus  ]
 %
 doit

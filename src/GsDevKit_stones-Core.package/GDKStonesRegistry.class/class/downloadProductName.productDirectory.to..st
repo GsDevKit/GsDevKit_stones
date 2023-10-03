@@ -30,7 +30,7 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 			fmt = 'zip'
 				ifTrue: [ 
 					self executeCommandLine: '/usr/bin/unzip ' , downloadFileName .
-					downloadDir / downloadFileName delete ]
+					(downloadDir / downloadFileName) delete ]
 				ifFalse: [ 
 					| volumeList stream line volume |
 					"

@@ -3,7 +3,7 @@ options
 {
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitOptionalOptionWithNoArg long: 'start'.
-SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'root'.
 SuperDoitRequiredOptionWithRequiredArg long: 'template'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
@@ -132,7 +132,7 @@ doit
 		ifTrue: [ 
 			self error: 
 				'Expected 2 positional arguments: <stone-name> <gemstone-version>, only got ', 
-				self positionalArgs size printString ].
+				self positionalArgs size printString, ' (', self basename, ')' ].
 	stoneName := self positionalArgs at: 1.
 	gemstoneVersion := self positionalArgs at: 2.
 	stoneSpecClass := self globalNamed: 'GDKStoneSpec'.
@@ -155,7 +155,7 @@ doit
 			self force
 				ifFalse: [ 
 					self error: 
-						'A stone named ', stoneName, ' already exists. Use --force to clean up.'].
+						'A stone named ', stoneName, ' already exists. Use --force to clean up.', ' (', self basename, ')'].
 			stonesRegistry destroyStoneStructureFor: stoneName ].
 	stoneSpec createStoneStructureUsing: stonesRegistry.
 	stoneSpec registryDir ensureCreateDirectory.

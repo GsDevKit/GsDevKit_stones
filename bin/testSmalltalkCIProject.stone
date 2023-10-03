@@ -46,7 +46,7 @@ checkAndConsumeStatusFile
 			buildStatus := GsFile getContentsOfServerFile: statusFile.
 			GsFile removeServerFile: statusFile.
 			buildStatus = '[test failure]'
-				ifTrue: [ self error: 'SmalltalkCI test failed' ] ]
+				ifTrue: [ self error: 'SmalltalkCI test failed', ' (', self basename, ')' ] ]
 %
 method
 lauchSmalltalkCITest

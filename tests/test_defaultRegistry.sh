@@ -24,6 +24,7 @@ fi
 
 set +e
 defaultRegistryName=`hostname`
+echo "...ignore registryReport.solo error message, if one shows up ... error is anticipated part of registryReport.solo processing"
 registryReport.solo --registry=`hostname`
 status=$?
 set -e
@@ -71,8 +72,9 @@ cloneProjectsFromProjectSet.solo --projectSet=$projectSet \
 if [ ! -d $STONES_HOME/test_gemstone ]; then
 	mkdir $STONES_HOME/test_gemstone
 else
-	chmod -R +w $STONES_HOME/test_gemstone *
-	rm -rf  $STONES_HOME/test_gemstone/*
+	echo "reuse $STONES_HOME/test_gemstone for now"
+	# chmod -R +w $STONES_HOME/test_gemstone *
+	# rm -rf  $STONES_HOME/test_gemstone/*
 fi
 registerProductDirectory.solo --productDirectory=$STONES_HOME/test_gemstone $*
 # download 3.7.0
@@ -90,4 +92,26 @@ else
 fi
 
 registerStonesDirectory.solo --stonesDirectory=$STONES_HOME/test_stones/stones $*
+
+# create a 3.7.0 Rowan stone and install GsDevKit_home
+createStone.solo --template=minimal_rowan --start gs_370 3.7.0 $*
+
+# Add ROWAN_PROJECTS_HOME env var to point to the git directory where git repositories
+#  used by this stone reside
+# restart netldi, so env var available to JadeiteForPharo
+export ROWAN_PROJECTS_HOME=$STONES_HOME/test_git
+updateCustomEnv.solo  gs_370 --addKey=ROWAN_PROJECTS_HOME --value=$ROWAN_PROJECTS_HOME --restart $*
+
+gslist.solo -l
+
+cd $STONES_HOME/test_stones/stones/gs_370
+
+# install GsDevKit_stones using Rowan installProject.stone script
+bin/installProject.stone file:$ROWAN_PROJECTS_HOME/GsDevKit_stones/rowan/specs/GsDevKit_stones.ston \
+  --projectsHome=$ROWAN_PROJECTS_HOME $*
+
+# delete the stone
+cd $STONES_HOME
+deleteStone.solo gs_370 $*
+gslist.solo -l
 

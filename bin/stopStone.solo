@@ -102,10 +102,10 @@ doit
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ]
 		ifFalse: [
 			self positionalArgs size > 1 
-				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
+				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
 			stoneName := self positionalArgs at: 1.
 			self registry
-				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
+				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified', ' (', self basename, ')' ].
 			stonesRegistry := registryClass stonesRegistryNamed: self registry.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	stoneSpec stopStone: self withSuperDoitOptions: true.

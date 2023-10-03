@@ -77,7 +77,7 @@ doit
 	          do: [ :file | 
 	            "just create empty to satisfy git"
 	             ] ]
-	      ifFalse: [ nil error: 'Missing directory: ' , dir pathName printString ] ] ].
+	      ifFalse: [ nil error: 'Missing directory: ' , dir pathName printString, ' (', self basename, ')' ] ] ].
 	validateDirBlock value: stoneRootDir.
 	validateDirBlock value: homeDir.
 	validateDirBlock value: projectsDir.
@@ -100,7 +100,7 @@ doit
 	            nil
 	              error:
 	                'Missing file: ' , filename printString , ' in path: '
-	                  , dir pathName printString ] ] ].
+	                  , dir pathName printString, ' (', self basename, ')' ] ] ].
 	    validateFileBlock
 	      value: stoneRootDir
 	      value: 'homeComposition.ston'

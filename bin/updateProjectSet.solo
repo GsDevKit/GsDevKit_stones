@@ -105,7 +105,7 @@ createProjectSet: name in: registry
 		parentRegistryPath: '$', (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (registry registryFile relativeTo: registry class base_data_home) fullName;
 		yourself.
 	projectSet registryFile exists
-		ifTrue: [ self error: 'project set ', projectSet registryfile fullName printString, ' already exists'].
+		ifTrue: [ self error: 'project set ', projectSet registryfile fullName printString, ' already exists', ' (', self basename, ')'].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	registry projectSets at: name put: projectSet registryPath.
@@ -132,7 +132,7 @@ doit
 		ifNotNil: [ 
 			(self globalNamed: 'GDKProjectSet') 
 				fromPath: projectSetPath 
-				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ]]
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString, ' (', self basename, ')' ]]
 		ifNil: [
 			self createProjectSet: name ].
 
@@ -144,11 +144,11 @@ doit
 			(specDict at: 'gitUrls' ifAbsentPut: [ Dictionary new ]) at: self remote put: url ]
 		ifNil: [
 			self diskUrl 
-				ifNotNil: [ self error: 'diskUrl option not yet implemented' ]
+				ifNotNil: [ self error: 'diskUrl option not yet implemented', ' (', self basename, ')' ]
 				ifNil: [
 					self readonlyDiskUrl 
-						ifNotNil: [  self error: 'readonlyDiskUrl not yet implemented' ]
-						ifNil: [ self error: 'one of ''gitUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' must be defined.' ] ] ].
+						ifNotNil: [  self error: 'readonlyDiskUrl not yet implemented', ' (', self basename, ')' ]
+						ifNil: [ self error: 'one of ''gitUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' must be defined.', ' (', self basename, ')' ] ] ].
 	self revision
 		ifNotNil: [:value | self updateField: 'revision' with: value ].
 	self componentName

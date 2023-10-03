@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 }
 %
@@ -89,11 +89,11 @@ doit
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
 	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	self positionalArgs size ~= 1
-		ifTrue: [ self error: 'Expected a positional argument: <stone-name>' ].
+		ifTrue: [ self error: 'Expected a positional argument: <stone-name>', ' (', self basename, ')' ].
 	stoneName := self positionalArgs at: 1.
 	stoneSpec := stonesRegistry 
 		stoneNamed: stoneName 
-		ifAbsent: [ self error: 'The stone ', stoneName printString, ' does not exist' ].
+		ifAbsent: [ self error: 'The stone ', stoneName printString, ' does not exist', ' (', self basename, ')' ].
 	stonesRegistry destroyStoneStructureFor: stoneName.
 	^ self noResult
 %

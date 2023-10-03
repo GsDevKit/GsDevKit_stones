@@ -58,6 +58,7 @@ mkdir $STONES_HOME/gemstone
 registerProductDirectory.solo --registry=_stones --productDirectory=$STONES_HOME/gemstone
 # download 3.7.0
 downloadGemStone.solo --registry=_stones 3.7.0
+
 # update product list from shared product directory when a download is done by shared registry
 registerProduct.solo --registry=_stones --fromDirectory=$STONES_HOME/gemstone
 
@@ -66,6 +67,24 @@ mkdir $STONES_HOME/_stones
 mkdir $STONES_HOME/_stones/stones
 registerStonesDirectory.solo --registry=_stones \
                              --stonesDirectory=$STONES_HOME/_stones/stones
+
+# create a 3.7.0 Rowan v2 stone
+createStone.solo --template=minimal_rowan --start gs_370 3.7.0
+
+# Add ROWAN_PROJECTS_HOME env var to customenv for stone.
+#  ROWAN_PROJECTS_HOME points to the git directory where git repositories
+#  used by this stone reside
+# restart netldi, so env var available to JadeiteForDolphin
+#
+export ROWAN_PROJECTS_HOME=$STONES_HOME/test_git
+updateCustomEnv.solo  gs_370 --addKey=ROWAN_PROJECTS_HOME --value=$ROWAN_PROJECTS_HOME --restart
+
+
+# install GsDevKit_stones using Rowan installProject.stone script
+cd _stones/stones/gs_370
+bin/installProject.stone file:$ROWAN_PROJECTS_HOME/GsDevKit_stones/rowan/specs/GsDevKit_stones.ston \
+  --projectsHome=$ROWAN_PROJECTS_HOME
+
 ```
 
 ## Create registry called rowanV3 and set up a Rowan v3 development environment

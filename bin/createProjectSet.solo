@@ -83,7 +83,7 @@ populateProjectSet: projectSet type: type from: stonSpecDictionaryFilePath
 	(specDictionary at: 'type') = 'gitUrlSpec'
 		ifTrue: [ 
 			projectSet populateProjectSetGitUrl: type from: (specDictionary at: self key) ]
-		ifFalse: [self error: 'The dictionary of type ', type printString , ' is not supported.'].
+		ifFalse: [self error: 'The dictionary of type ', type printString , ' is not supported.', ' (', self basename, ')'].
 %
 doit
 	| registryClass stonesRegistry name projectSet stonSpecDictionaryFilePath type |
@@ -94,14 +94,14 @@ doit
 	name := self projectSet.
 	self from
 		ifNotNil: [:fromPath | 
-			projectSet := (self globalNamed: 'GDKProjectSet') fromPath: fromPath ifAbsent: [ self error: 'No project set found at ', fromPath printString ].
+			projectSet := (self globalNamed: 'GDKProjectSet') fromPath: fromPath ifAbsent: [ self error: 'No project set found at ', fromPath printString, ' (', self basename, ')' ].
 			projectSet
 				name: name;
 				parentRegistryName: stonesRegistry parentRegistryName;
 				parentRegistryPath: stonesRegistry parentRegistryPath ]
 		ifNil: [
 				self empty
-					ifFalse: [ self error: 'Must specify a --from or --empty argument to indicate that the project set will be pipulated using updateProjectSet.solo' ].
+					ifFalse: [ self error: 'Must specify a --from or --empty argument to indicate that the project set will be pipulated using updateProjectSet.solo', ' (', self basename, ')' ].
 				projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.

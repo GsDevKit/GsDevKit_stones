@@ -61,6 +61,12 @@ RwLoadSpecificationV2 {
 ]
 %
 method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+method
 downloadToRegistry: registryName version: version serverDirName: serverDirName
 	| registryClass stonesRegistry |
 	registryClass := (self globalNamed: 'GDKRegistry').	
@@ -95,7 +101,7 @@ doit
 	self preDoitSpecLoad: [:spec | 
 		spec projectsHome: self dirname asFileReference parent parent ].
 	self positionalArgs size < 1
-		ifTrue: [ self error: 'Missing required positional argument for GemStone version' ]
+		ifTrue: [ self error: 'Missing required positional argument for GemStone version', ' (', self basename, ')' ]
 		ifFalse: [ 
 			self positionalArgs size = 1
 				ifTrue: [ 
@@ -106,15 +112,17 @@ doit
 						ifTrue: [ 
 							version := self positionalArgs at: 1.
 							serverDirName := self positionalArgs at: 2 ] 
-						ifFalse: [ self error: 'Only 1 or 2 positional arguments are allowed' ] ] ].
+						ifFalse: [ self error: 'Only 1 or 2 positional arguments are allowed', ' (', self basename, ')' ] ] ].
 	^ self registry
 		ifNotNil: [:registryName |
-			self downloadToRegistry: registryName version: version serverDirName: serverDirName.
 			self directory
-				ifNotNil: [ self error: 'either --directoryName or --registryName must be specified, not both.' ] ]
+				ifNotNil: [ self error: 'one of --directoryName or --registryName must be specified, not both.', ' (', self basename, ')' ].
+			self downloadToRegistry: registryName version: version serverDirName: serverDirName.  ]
 		ifNil: [
 			self directory
-				ifNil: [ self error: 'either --directoryName or --registryName must be specified, not both.' ]
+				ifNil: [ 
+					self registry ifNotNil: [ self error: 'one of --directoryName or --registryName must be specified, not both.', ' (', self basename, ')' ].
+					self downloadToRegistry: self registryName version: version serverDirName: serverDirName. ]
 				ifNotNil: [:directoryPath |
 					self downloadToDirectory: directoryPath version: version serverDirName: serverDirName ] ].
 

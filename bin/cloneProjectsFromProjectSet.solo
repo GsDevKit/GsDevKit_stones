@@ -95,10 +95,10 @@ doit
 	name := self projectSet.
 	projectSetPath := stonesRegistry projectSets 
 		at: name 
-		ifAbsent: [ self error: 'Cannot find project set named ', name printString ].
+		ifAbsent: [ self error: 'Cannot find project set named ', name printString, ' (', self basename, ')' ].
 	projectSet := (self globalNamed: 'GDKProjectSet') 
 				fromPath: projectSetPath 
-				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ].
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString, ' (', self basename, ')' ].
 	projectDir := self projectDirectory
 		ifNotNil: [:dir | 
 			projectSet projectDirectory: dir.
@@ -106,7 +106,7 @@ doit
 			dir asFileReference fullName ]
 		ifNil: [ 
 			projectSet projectDirectory
-				ifNil: [ self error: '--projectDirectory option must be used if no project directory defined in project set' ] ].
+				ifNil: [ self error: '--projectDirectory option must be used if no project directory defined in project set', ' (', self basename, ')' ] ].
 	projectDir asFileReference ensureCreateDirectory. 
 	Rowan projectTools trace startTracing.
 	self positionalArgs size = 0

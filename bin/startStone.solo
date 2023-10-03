@@ -113,7 +113,7 @@ doit
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ]
 		ifFalse: [
 			self positionalArgs size > 1 
-				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
+				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
 			stoneName := self positionalArgs at: 1.
 			stonesRegistry := registryClass stonesRegistryNamed: self registryNme.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
@@ -123,7 +123,7 @@ doit
 			| status |
 			status := stoneSpec waitStone: waitTime asNumber.
 			status != 0
-				ifTrue: [ self error: 'The stone did not start within ', waitTime, ' seconds.' ] ].
+				ifTrue: [ self error: 'The stone did not start within ', waitTime, ' seconds.', ' (', self basename, ')' ] ].
 	self startNetldi 
 		ifTrue: [ stoneSpec startNetldi ].
 	^ self noResult

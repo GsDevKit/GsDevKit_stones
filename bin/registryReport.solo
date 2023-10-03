@@ -74,10 +74,10 @@ projectSetReport: projectSetName in: registry
 		ifAbsent: [ 
 			self error: ' No project set named: ', 
 					projectSetName, ' found in the registry ', 
-					registry name].
+					registry name, ' (', self basename, ')'].
 	^ (self globalNamed: 'GDKAbstractRegistryStore') 
 			fromPath: projectSetPath
-			ifAbsent: [ self error: 'No file named', projectSetPath , ' found.' ] 
+			ifAbsent: [ self error: 'No file named', projectSetPath , ' found.', ' (', self basename, ')' ] 
 %
 method
 templateReport: templateName in: registry
@@ -87,10 +87,10 @@ templateReport: templateName in: registry
 		ifAbsent: [ 
 			self error: ' No template named: ', 
 					templateName, ' found in the registry ', 
-					registry name].
+					registry name, ' (', self basename, ')'].
 	^ (self globalNamed: 'GDKAbstractRegistryStore') 
 			fromPath: templatePath
-			ifAbsent: [ self error: 'No file named', templatePath , ' found.' ] 
+			ifAbsent: [ self error: 'No file named', templatePath , ' found.', ' (', self basename, ')' ] 
 %
 method
 registryReport: registry
@@ -117,8 +117,8 @@ doit
                 ifNotNil: [:stoneName | ^ stonesRegistry stoneNamed: stoneName ] ]
             ifNotNil: [:templateName | ^ self templateReport: templateName in: stonesRegistry ] ]
         ifNotNil: [:projectSetName | ^ self projectSetReport: projectSetName in: stonesRegistry ] ].
-  self stone ifNotNil: [ self error: 'a --registry is required to list the stone' ].
-  self template ifNotNil: [ self error: 'a --registry is required to list the template' ].
-  self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet' ].
+  self stone ifNotNil: [ self error: 'a --registry is required to list the stone', ' (', self basename, ')' ].
+  self template ifNotNil: [ self error: 'a --registry is required to list the template', ' (', self basename, ')' ].
+  self projectSet ifNotNil: [ self error: 'a --registry is required to list the projectSet', ' (', self basename, ')' ].
 	^ self registryReport: registry
 %
