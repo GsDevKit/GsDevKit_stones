@@ -14,8 +14,6 @@ deleteStone.solo -h
 downloadGemStone.solo -h
 generateGsDevKitProjectSet.solo -h
 gslist.solo --help
-loadSmalltalkCIProject.stone -h
-loadTode.stone -h
 registerProductDirectory.solo -h
 registerProduct.solo -h
 registerProjectDirectory.solo -h
