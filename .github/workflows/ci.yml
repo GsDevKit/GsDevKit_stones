@@ -11,8 +11,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04, macos-latest ]
-        smalltalk: [ 3.6.4, 3.6.5, 3.6.6, 3.7.0 ]
+        # os: [ ubuntu-20.04, macos-latest ]
+        os: [ ubuntu-20.04 ]
+        smalltalk: [ 3.5.3, 3.6.4, 3.6.5, 3.6.6, 3.7.0 ]
     runs-on: ${{ matrix.os }}
     env:
       GS_VERS: ${{ matrix.smalltalk }}
@@ -22,7 +23,7 @@ jobs:
       - id: setup-GsDevKit_stones
         uses: dalehenrich/setup-superDoit@v4
         with:
-          gemstone-version: ${{ matrix.smalltalk }}
+          gemstone-version: '3.7.0'
           superDoit-branch: 'v4.1'        
       - name: setup GsDevKit_stones
         run: |
