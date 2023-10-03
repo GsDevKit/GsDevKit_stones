@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04 ]
+        os: [ ubuntu-20.04, macos-latest ]
         smalltalk: [ 3.7.0 ]
     runs-on: ${{ matrix.os }}
     env:
@@ -24,7 +24,7 @@ jobs:
         with:
           gemstone-version: ${{ matrix.smalltalk }}
           superDoit-branch: 'v4.1'        
-      - name: initial setup
+      - name: setup GsDevKit_stones
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
