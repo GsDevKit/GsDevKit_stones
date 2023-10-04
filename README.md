@@ -5,7 +5,10 @@ BRANCH | STATUS
 
 ## Versions
 ### v1.1.1
-Development version intended for use with superDoit:v4.1 and GemStone 3.7.0.
+Development version intended for use with superDoit:v4.1 and GemStone 3.7.0 for .solo scripts. 
+Supported Rowan v2 stone versions 3.6.4 and newer, tested through 3.7.0.
+Supported Rowan v3 stone versions 3.7.0 and newer. tested through 3.7.0
+Supported non-Rowan stone versions 3.5.3 and older (with 20.04 the limiting factor)
 
 Greatly simplified version of GsDevKit_home
 1. bin directory of scripts implemented with superDoit and 3.6.5 for solo scripts and GsHostProcess ala the .solo battery test drivers used internally

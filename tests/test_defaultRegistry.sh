@@ -16,6 +16,11 @@ if [ ! -d $STONES_HOME/test_git ]; then
 else
 	rm -rf  $STONES_HOME/test_git/*
 fi
+
+if [ "$GS_VERS"x = "x" ]; then
+	export GS_VERS=3.7.0
+fi
+
 projectSet=xxx
 export urlType=ssh
 if [ "$CI" = "true" ]; then
@@ -97,44 +102,63 @@ fi
 
 registerStonesDirectory.solo --stonesDirectory=$STONES_HOME/test_stones/stones $*
 
+case "$GS_VERS" in
+   3.7.*|3.6.[4-9])
+		template="minimal_rowan"
+		;;
+   3.5.[3-8]|3.6.[0-3])
+		template="minimal"
+    ;;
+	 3.4.*|3.5.[0-2])
+		if [ "$CI" = "true" ] ; then
+			echo "only GemStone version 3.5.3 and older may be used on GitHub (Ubuntu 20.04)"
+			exit 1
+		else
+			template="minimal"
+		fi
+    ;;
+esac
 # create a $GS_VERS Rowan stone and install GsDevKit_home
-createStone.solo --template=minimal_rowan gs_rowan $GS_VERS $*
+export stoneName=gs_$GS_VERS
+createStone.solo --template=$template $stoneName $GS_VERS $*
 
 echo $PLATFORM
 set -x
 if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
 	echo "NATIVE CODE*************************************"
-	cat $STONES_HOME/test_stones/stones/gs_rowan/gem.conf
+	cat $STONES_HOME/test_stones/stones/$stoneName/gem.conf
 	if [[ "$PLATFORM" = "macos"* ]]; then
-		cat - >> $STONES_HOME/test_stones/stones/gs_rowan/gem.conf << EOF
+		cat - >> $STONES_HOME/test_stones/stones/$stoneName/gem.conf << EOF
 GEM_NATIVE_CODE_ENABLED=0;
 EOF
 	fi
-	cat $STONES_HOME/test_stones/stones/gs_rowan/gem.conf
+	cat $STONES_HOME/test_stones/stones/$stoneName/gem.conf
 	echo "NATIVE CODE*************************************"
 fi
 set +x
 
 #start stone
-startStone.solo gs_rowan $*
+startStone.solo $stoneName $*
 
 # Add ROWAN_PROJECTS_HOME env var to point to the git directory where git repositories
 #  used by this stone reside
 # restart netldi, so env var available to JadeiteForPharo
 export ROWAN_PROJECTS_HOME=$STONES_HOME/test_git
-updateCustomEnv.solo  gs_rowan --addKey=ROWAN_PROJECTS_HOME --value=$ROWAN_PROJECTS_HOME --restart $*
+updateCustomEnv.solo  $stoneName --addKey=ROWAN_PROJECTS_HOME --value=$ROWAN_PROJECTS_HOME --restart $*
 
 gslist.solo -l
 
-cd $STONES_HOME/test_stones/stones/gs_rowan
+if [ "$template" = "minimal_rowan" ] ; then
+	cd $STONES_HOME/test_stones/stones/$stoneName
 
-# install GsDevKit_stones using Rowan installProject.stone script
-bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
-  --projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
+	# install GsDevKit_stones using Rowan installProject.stone script
+	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
+  	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
+fi
 
 # delete the stone
 cd $STONES_HOME
-deleteStone.solo gs_rowan $*
+deleteStone.solo $stoneName $*
 gslist.solo -l
 
