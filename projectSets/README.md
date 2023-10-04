@@ -98,7 +98,7 @@ registerProductDirectory.solo --registry=rowanV3 --productDirectory=$STONES_HOME
 registerProduct.solo --registry=rowanV3 --fromDirectory=$STONES_HOME/gemstone
 
 # download 3.7.0_rowanv3-Alpha1
-downloadGemStone.solo --registry=rowanV3 3.7.0_rowanv3-Alpha1
+downloadGemStone.solo --registry=rowanV3 3.7.0 370_rowanv3-Alpha1
 
 # create directory structure for rowanV3-specific artifacts: projects and stones
 mkdir $STONES_HOME/rowanV3

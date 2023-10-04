@@ -36,7 +36,7 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename --registry=bosch 3.6.4
-  $basename -rbosch 3.7.0 3.7.0_rowanv3-Alpha1
+  $basename -r bosch 3.7.0 3.7.0_rowanv3-Alpha1
   $basename --directory=$GS_HOME/shared/downloads/products 3.6.4 
 -----
 %
@@ -67,37 +67,38 @@ registryName
 		ifNotNil: [:value | value ].
 %
 method
-downloadToRegistry: registryName version: version serverDirName: serverDirName
+downloadToRegistry: registryName version: productVersion productName: productName
 	| registryClass stonesRegistry |
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: registryName.
-	version = serverDirName
-		ifTrue: [ stonesRegistry productNamed: version ]
+	productVersion = productName
+		ifTrue: [ stonesRegistry productNamed: productVersion ]
 		ifFalse: [ 
 			stonesRegistry
-				productNamed: serverDirName
+				productNamed: productName
 				ifAbsent: [ 
 					| productPath |
 					productPath := self 
 						downloadToDirectory: stonesRegistry productDirectory 
-						version: version 
-						serverDirName: serverDirName.
-					stonesRegistry products at: serverDirName put: productPath ].
+						version: productVersion 
+						productName: productName.
+					stonesRegistry products at: productName put: productPath ].
 					stonesRegistry export ].
 	^	self noResult
 %
 method
-downloadToDirectory: directoryPath version: version serverDirName: serverDirName
+downloadToDirectory: directoryPath version: productVersion productName: productName
 	| registryClass |
 	registryClass := self globalNamed: 'GDKStonesRegistry'.
 	^ registryClass
-		downloadProductName: serverDirName
-		serverName: (registryClass downloadDirectoryNameFor:serverDirName)
-		productDirectory: (registryClass downloadDirectoryNameFor: version)
+		downloadProductName: productName
+		productVersion: productVersion
 		to: directoryPath.	
 %
 doit
-	| version serverDirName |
+	| productVersion productName |
+	"productName is name of product (alias), while productVersion is the actual 
+		version of the project (base name of download file on ftp server)"
 	self preDoitSpecLoad: [:spec | 
 		spec projectsHome: self dirname asFileReference parent parent ].
 	self positionalArgs size < 1
@@ -105,25 +106,25 @@ doit
 		ifFalse: [ 
 			self positionalArgs size = 1
 				ifTrue: [ 
-					version := self positionalArgs at: 1.
-					serverDirName := version ]
+					productVersion := self positionalArgs at: 1.
+					productName := productVersion ]
 				ifFalse: [ 
 					self positionalArgs size = 2
 						ifTrue: [ 
-							version := self positionalArgs at: 1.
-							serverDirName := self positionalArgs at: 2 ] 
+							productVersion := self positionalArgs at: 1.
+							productName := self positionalArgs at: 2 ] 
 						ifFalse: [ self error: 'Only 1 or 2 positional arguments are allowed', ' (', self basename, ')' ] ] ].
 	^ self registry
 		ifNotNil: [:registryName |
 			self directory
 				ifNotNil: [ self error: 'one of --directoryName or --registryName must be specified, not both.', ' (', self basename, ')' ].
-			self downloadToRegistry: registryName version: version serverDirName: serverDirName.  ]
+			self downloadToRegistry: registryName version: productVersion productName: productName.  ]
 		ifNil: [
 			self directory
 				ifNil: [ 
 					self registry ifNotNil: [ self error: 'one of --directoryName or --registryName must be specified, not both.', ' (', self basename, ')' ].
-					self downloadToRegistry: self registryName version: version serverDirName: serverDirName. ]
+					self downloadToRegistry: self registryName version: productVersion productName: productName. ]
 				ifNotNil: [:directoryPath |
-					self downloadToDirectory: directoryPath version: version serverDirName: serverDirName ] ].
+					self downloadToDirectory: directoryPath version: productVersion productName: productName ] ].
 
 %

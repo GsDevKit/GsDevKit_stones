@@ -125,6 +125,7 @@ jobs:
           $GSDEVKIT_STONES_ROOT/tests/test_help.sh
           $GSDEVKIT_STONES_ROOT/tests/test_projectSets.sh
           $GSDEVKIT_STONES_ROOT/tests/test_defaultRegistry.sh
+          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
         shell: bash
   slack-workflow-status:
     if: always()
