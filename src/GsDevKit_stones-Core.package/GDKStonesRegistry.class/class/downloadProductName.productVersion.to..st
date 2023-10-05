@@ -18,8 +18,8 @@ downloadProductName: productName productVersion: productVersion to: downloadPath
 	self chdir: downloadDir fullName.
 	stdout
 		nextPutAll:
-				'Downloading ' , productTreeHTTPServerDirName , ' to ' , downloadDir fullName
-						, ' as ' , productTreeDirName , ' for ' , osName;
+				'Downloading ' , productName , '/' , productTreeHTTPServerDirName , ' to '
+						, downloadDir fullName , ' as ' , productTreeDirName , ' for ' , osName;
 		lf.
 	(downloadDir / productTreeDirName) exists
 		ifFalse: [ 
@@ -103,4 +103,5 @@ downloadProductName: productName productVersion: productVersion to: downloadPath
 						ensure: [ 
 							volume
 								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach ' , volume fullName ] ] ] ] ]
-		ensure: [ self chdir: cwd ]
+		ensure: [ self chdir: cwd ].
+	^ (downloadDir / productTreeDirName) fullName

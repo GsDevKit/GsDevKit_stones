@@ -46,7 +46,7 @@ GDKProjectSet {
 			}
 		},
 		'RowanClientServices' : {
-			'revision' : 'eric_component_V3.0',
+			'revision' : 'masterV3.0',
 			'gitUrls' : {
 				'origin' : 'https://github.com/GemTalk/RowanClientServices.git'
 			}

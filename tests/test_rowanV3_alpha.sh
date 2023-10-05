@@ -54,13 +54,27 @@ createProjectSet.solo --registry=$registry --projectSet=$projectSet_gs \
 createProjectSet.solo --registry=$registry --projectSet=$projectSet_pharo \
   --from=$GSDEVKIT_STONES_ROOT/projectSets/$urlType/rowanV3_pharo.ston $*
 
+if [ -d $STONES_HOME/$registry/common_projects ]; then
+	rm -rf  $STONES_HOME/$registry/common_projects
+fi
+if [ -d $STONES_HOME/$registry/gs_projects ]; then
+	rm -rf  $STONES_HOME/$registry/gs_projects
+fi
+if [ -d $STONES_HOME/$registry/pharo_projects ]; then
+	rm -rf  $STONES_HOME/$registry/pharo_projects
+fi
+
 # cloneProjectsFromProjectSet.solo will create the project directory if it does not already exist
-cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=rowanV3_common \
-  --projectDirectory=$STONES_HOME/$registry/common_projects
-cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=rowanV3_gs \
-  --projectDirectory=$STONES_HOME/$registry/gs_projects
-cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=rowanV3_pharo \
-  --projectDirectory=$STONES_HOME/$registry/pharo_projects
+# read -p "Stop before first cloneProjectsFromProjectSet"
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_common \
+  --projectDirectory=$STONES_HOME/$registry/common_projects $*
+# read -p "Stop before second cloneProjectsFromProjectSet"
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_gs \
+  --projectDirectory=$STONES_HOME/$registry/gs_projects $*
+# read -p "Stop before third cloneProjectsFromProjectSet"
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_pharo \
+  --projectDirectory=$STONES_HOME/$registry/pharo_projects $*
+# read -p "Stop after last cloneProjectsFromProjectSet"
 
 # create and register a product directory where GemStone product trees are kept.
 if [ ! -d $STONES_HOME/test_gemstone ]; then
@@ -78,11 +92,9 @@ registerProduct.solo --registry=$registry --fromDirectory=$STONES_HOME/test_gems
 
 # create and register stones directory for test_rowanV3
 if [ ! -d $STONES_HOME/$registry/stones ]; then
-	mkdir $STONES_HOME
-	# attach stone to the Rowan projects that are part of the base image/test_rowanV3
 	mkdir $STONES_HOME/$registry/stones
 else
-	rm -rf  $STONES_HOME/$registry/*
+	rm -rf $STONES_HOME/$registry/stones
 	mkdir $STONES_HOME/$registry/stones
 fi
 
@@ -125,18 +137,18 @@ if [ "$template" = "minimal_rowan" ] ; then
 	cd $STONES_HOME/$registry/stones/$stoneName
 
 	# attach stone to the Rowan projects that are part of the base image
-	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects
+	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
 	# install GsDevKit_stones using Rowan installProject.stone script
 	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 	bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
-  --projectsHome=product/examples/GsCommands/projectsHome
-	bin/installProject.stone file:$STONES_HOME/rowanV3_common/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  --projectsHome=$STONES_HOME/rowanV3_common
-	bin/installProject.stone file:$STONES_HOME/rowanV3_gs/RowanClientServices/rowan/specs/RowanClientServices.ston  --projectsHome=$STONES_HOME/rowanV3_gs
+  --projectsHome=product/examples/GsCommands/projectsHome $*
+	bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  --projectsHome=$STONES_HOME/common_projects $*
+	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServices/rowan/specs/RowanClientServices.ston  --projectsHome=$STONES_HOME/$registry/gs_projects $*
 fi
 
 # delete the stone
 cd $STONES_HOME
-deleteStone.solo $stoneName $*
+deleteStone.solo -r $registry $stoneName $*
 gslist.solo -l
 

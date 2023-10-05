@@ -3,11 +3,11 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 	"Clone the named project into the gitRootPath directory using the information in the load spec for project. If the project 
 		has already been cloned, then checkout the revision specified in the load spec"
 
-	| gitTool specDict gitUrls gitProjectRef origin cloned |
+	| gitTool specDict gitUrls gitProjectRef gitUrl cloned |
 	gitTool := Rowan gitTools.
 	specDict := self loadSpecs at: projectName.
 	gitUrls := specDict at: 'gitUrls'.
-	origin := gitUrls at: remoteName.
+	gitUrl := gitUrls at: remoteName.
 	gitProjectRef := gitRootPath asFileReference / projectName.
 	cloned := false.
 	gitProjectRef exists
@@ -22,7 +22,7 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 								, '. We cannot clone or update a repository with unsaved chnages' ] ]
 		ifFalse: [ 
 			"GIT CLONE"
-			gitTool gitcloneIn: gitRootPath with: origin logging: true.
+			gitTool gitcloneIn: gitRootPath with: gitUrl logging: true.
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
@@ -31,34 +31,25 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 				show: '  Set ' , projectName , ' revision to ' , revision.
 			cloned
 				ifTrue: [ 
-					"GIT CHECKOUT -B"
+					"git switch remote/revision -t -C revision"
 					gitTool
-						gitcheckoutIn: gitProjectRef
-						with: ' -B ' , remoteName , '/' , revision ]
+						performGitCommand: 'switch'
+						in: gitProjectRef fullName
+						with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision ]
 				ifFalse: [ 
-					"GIT CHECKOUT -b"
-					[ 
-					gitTool
-						gitcheckoutIn: gitProjectRef
-						with: ' -b ' , revision , ' ' , remoteName , '/' , revision ]
-						on: Error
-						do: [ :ex | 
-							"assume that the branch already exists, and try again without -b option"
+					pull
+						ifTrue: [ 
+							self
+								error:
+									'Not safely implemented ... yet. Have to do more checking before a pull is safe '.	"GIT PULL"
 							Transcript
 								cr;
-								show: 'assume branch ' , revision , ' already exists. Tryig again'.
-							gitTool gitcheckoutIn: gitProjectRef with: revision ] ].
-			pull
-				ifTrue: [ 
-					"GIT PULL"
-					Transcript
-						cr;
-						show:
-								'  Pull ' , projectName , ' revision ' , revision , ' from remote ' , remoteName.
-					gitTool
-						gitpullIn: gitProjectRef fullName
-						remote: remoteName
-						branch: revision ] ].
+								show:
+										'  Pull ' , projectName , ' revision ' , revision , ' from remote ' , remoteName.
+							gitTool
+								gitpullIn: gitProjectRef fullName
+								remote: remoteName
+								branch: revision ] ] ].
 	cloned
 		ifTrue: [ 
 			"GIT REMOTE ADD"
