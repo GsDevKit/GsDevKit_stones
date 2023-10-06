@@ -45,12 +45,6 @@ GDKProjectSet {
 				'origin' : 'git@github.com:GemTalk/Rowan.git'
 			}
 		},
-		'Announcements' : {
-			'revision' : 'main',
-			'gitUrls' : {
-				'origin' : 'git@github.com:GemTalk/Announcements.git'
-			}
-		},
 		'RowanClientServices' : {
 			'revision' : 'masterV3.0',
 			'gitUrls' : {

@@ -144,13 +144,16 @@ if [ "$template" = "minimal_rowan" ] ; then
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 	echo "installing GsCommands"
 	bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
-  --projectsHome=product/examples/GsCommands/projectsHome $*
+    --projectsHome=product/examples/GsCommands/projectsHome $*
 	echo "installing Announcements"
-	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/Announcements/rowan/specs/Announcements.ston  --projectsHome=$STONES_HOME/$registry/gs_projects $*
-	echo "installing RemoteServiceReplication"
-	bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  --projectsHome=$STONES_HOME/$registry/common_projects $*
+	bin/installProject.stone file:$STONES_HOME/$registry/common_projects/Announcements/rowan/specs/Announcements.ston \
+	  --projectsHome=$STONES_HOME/$registry/common_projects $*
+	echo "installing RemoteServiceReplication -- partial workaround for https://github.com/GemTalk/Rowan/issues/905"
+	$GSDEVKIT_STONES_ROOT/bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
+		--projectsHome=$STONES_HOME/$registry/common_projects $*
 	echo "installing RowanClientServices"
-	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServices/rowan/specs/RowanClientServices.ston  --projectsHome=$STONES_HOME/$registry/gs_projects $*
+	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServices/rowan/specs/RowanClientServices.ston  \
+		--projectsHome=$STONES_HOME/$registry/gs_projects $*
 fi
 
 # delete the stone

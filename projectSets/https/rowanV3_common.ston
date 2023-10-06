@@ -8,6 +8,12 @@ GDKProjectSet {
 			'gitUrls' : {
 				'origin' : 'https://github.com/GemTalk/RemoteServiceReplication.git'
 			}
+		},
+		'Announcements' : {
+			'revision' : 'main',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GemTalk/Announcements.git'
+			}
 		}
 	},
 	#comment : 'The common repositories for Rowan v3 are used by both the 3.7.0/RowanV3 server and pharo clients.'
