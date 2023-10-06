@@ -35,7 +35,7 @@ jobs:
             os: macos-11
           - smalltalk: 3.6.4
             os: macos-11
-         - smalltalk: 3.5.8
+          - smalltalk: 3.5.8
             os: macos-11
     runs-on: ${{ matrix.os }}
     env:
