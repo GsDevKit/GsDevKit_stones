@@ -139,16 +139,22 @@ if [ "$template" = "minimal_rowan" ] ; then
 	# attach stone to the Rowan projects that are part of the base image
 	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
 	# install GsDevKit_stones using Rowan installProject.stone script
+	echo "installing GsDevKit_stones"
 	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
+	echo "installing GsCommands"
 	bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
   --projectsHome=product/examples/GsCommands/projectsHome $*
-	bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  --projectsHome=$STONES_HOME/common_projects $*
+	echo "installing Announcements"
+	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/Announcements/rowan/specs/Announcements.ston  --projectsHome=$STONES_HOME/$registry/gs_projects $*
+	echo "installing RemoteServiceReplication"
+	bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  --projectsHome=$STONES_HOME/$registry/common_projects $*
+	echo "installing RowanClientServices"
 	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServices/rowan/specs/RowanClientServices.ston  --projectsHome=$STONES_HOME/$registry/gs_projects $*
 fi
 
 # delete the stone
 cd $STONES_HOME
-deleteStone.solo -r $registry $stoneName $*
+# deleteStone.solo -r $registry $stoneName $*
 gslist.solo -l
 
