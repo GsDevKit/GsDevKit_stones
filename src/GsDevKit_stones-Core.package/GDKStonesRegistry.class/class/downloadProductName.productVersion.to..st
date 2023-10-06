@@ -91,12 +91,12 @@ downloadProductName: productName productVersion: productVersion to: downloadPath
 					[ 
 					stdout
 						nextPutAll:
-								'copying ' , (volume / productTreeDirName) fullName , ' to '
+								'copying ' , (volume / productTreeHTTPServerDirName) fullName , ' to '
 										, (downloadDir / productTreeDirName) fullName;
 						lf.
 					self
 						executeCommandLine:
-							'/bin/cp -R ' , (volume / productTreeDirName) fullName , ' '
+							'/bin/cp -R ' , (volume / productTreeHTTPServerDirName) fullName , ' '
 								, (downloadDir / productTreeDirName) fullName
 						stdout: nil
 						andInput: nil ]
