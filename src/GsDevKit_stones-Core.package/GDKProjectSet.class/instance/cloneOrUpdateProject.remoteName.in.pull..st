@@ -31,7 +31,7 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 				show: '  Set ' , projectName , ' revision to ' , revision.
 			cloned
 				ifTrue: [ 
-					"git switch remote/revision -t -C revision"
+					"GIT SWITCH"
 					gitTool
 						performGitCommand: 'switch'
 						in: gitProjectRef fullName
@@ -39,9 +39,12 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 				ifFalse: [ 
 					pull
 						ifTrue: [ 
-							self
-								error:
-									'Not safely implemented ... yet. Have to do more checking before a pull is safe '.	"GIT PULL"
+							"GIT SWITCH
+								GIT PULL"
+							gitTool
+								performGitCommand: 'switch'
+								in: gitProjectRef fullName
+								with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision.
 							Transcript
 								cr;
 								show:
