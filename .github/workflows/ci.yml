@@ -150,7 +150,7 @@ jobs:
 
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_projectSets.sh
-         shell: bash
+        shell: bash
       - name: run default registry
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
