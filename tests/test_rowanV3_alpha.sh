@@ -158,6 +158,6 @@ fi
 
 # delete the stone
 cd $STONES_HOME
-# deleteStone.solo -r $registry $stoneName $*
+deleteStone.solo -r $registry $stoneName $*
 gslist.solo -l
 
