@@ -165,15 +165,9 @@ doit
 	stoneSpec class 
 		symbolicLink: stoneSpec registryPath 
 		linkName: stoneSpec rootDir / '.GDKStoneSpec.ston'.
-	(self start or: [ stoneSpec isTodeEnabled ])
+	self start
 		ifTrue: [ 
 			stoneSpec startStone: self withSuperDoitOptions: false.
-			stoneSpec startNetldi: self withSuperDoitOptions: true.
-			stoneSpec isTodeEnabled 
-				ifTrue: [
-					"not currently functioning GsHostProcess issue? ... see https://github.com/GsDevKit/GsDevKit_stones/issues/5"
-					self loadTode: stoneSpec
-					].
- ].
+			stoneSpec startNetldi: self withSuperDoitOptions: true ].
 	^ stoneSpec
 %

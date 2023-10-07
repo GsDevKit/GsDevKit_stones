@@ -106,7 +106,9 @@ doit
 			dir asFileReference fullName ]
 		ifNil: [ 
 			projectSet projectDirectory
-				ifNil: [ self error: '--projectDirectory option must be used if no project directory defined in project set', ' (', self basename, ')' ] ].
+				ifNil: [ 
+					stonesRegistry projectDirectory
+						ifNil: [ self error: '--projectDirectory option must be used if no project directory defined in project set', ' (', self basename, ')' ] ] ].
 	projectDir asFileReference ensureCreateDirectory. 
 	Rowan projectTools trace startTracing.
 	self positionalArgs size = 0

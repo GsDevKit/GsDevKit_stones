@@ -1,5 +1,5 @@
 GDKhomeStoneDirectorySpec {
-	#name : 'default_seaside',
+	#name : 'default_tode',
 	#backups : 'backups',
 	#bin : 'bin',
 	#customenv : 'customenv',
@@ -11,5 +11,6 @@ GDKhomeStoneDirectorySpec {
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',
 	#product : 'product',
+	#tode : 'enabled',
 	#userId : 'DataCurator'
 }

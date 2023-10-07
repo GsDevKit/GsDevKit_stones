@@ -90,8 +90,8 @@ createStone.solo --registry=$registryName --template=default --start gs_366 3.6.
 # create stone in custom stones directory
 createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --registry=$registryName --template=default --start cust_3.6.6 3.6.6 
 
-# create a seaside stone in default stones directory (tODE loaded)
-createStone.solo --registry=rogue --force --template=default_seaside --start seaside_370 3.7.0
+# create a tode stone in default stones directory (tODE loaded)
+createStone.solo --registry=rogue --force --template=default_tode --start seaside_370 3.7.0
 
 # create a rowan_v3 stone in default stones directory
 createStone.solo --registry=rogue --template=minimal_rowan --start rowan_370_v3 3.7.0_rowanv3
@@ -155,7 +155,7 @@ GDKStonesRegistry {
 		'devkit' : '$STONES_DATA_HOME/gsdevkit_stones/projectSets/rogue/devkit.ston'
 	},
 	#templates : {
-		'default_seaside' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_seaside.ston',
+		'default_tode' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_tode.ston',
 		'minimal_rowan' : '$STONES_DATA_HOME/gsdevkit_stones/templates/minimal_rowan.ston',
 		'default_rowan' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_rowan.ston',
 		'default' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default.ston',
