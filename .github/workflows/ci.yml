@@ -207,6 +207,33 @@ jobs:
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
         shell: bash
+      - name: run tODE
+        run: |
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"          
+
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          export STONES_git=$STONES_HOME/git
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          export CI="true"
+          $GSDEVKIT_STONES_ROOT/tests/test_tode.sh
+        shell: bash
   slack-workflow-status:
     if: always()
     name: Post Workflow Status To Slack
