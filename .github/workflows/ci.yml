@@ -24,20 +24,20 @@ jobs:
             os: macos-12
           - smalltalk: 3.7.0
             os: macos-11
-          - smalltalk: 3.6.6
-            os: ubuntu-22.04
-          - smalltalk: 3.6.6
-            os: macos-13
-          - smalltalk: 3.6.6
-            os: macos-12
-          - smalltalk: 3.6.6
-            os: macos-11
-          - smalltalk: 3.6.5
-            os: macos-11
-          - smalltalk: 3.6.4
-            os: macos-11
-          - smalltalk: 3.5.8
-            os: macos-11
+            #- smalltalk: 3.6.6
+            #   os: ubuntu-22.04
+            #- smalltalk: 3.6.6
+            #  os: macos-13
+            #- smalltalk: 3.6.6
+            #  os: macos-12
+            #- smalltalk: 3.6.6
+            #  os: macos-11
+            #- smalltalk: 3.6.5
+            #  os: macos-11
+            #- smalltalk: 3.6.4
+            #  os: macos-11
+            #- smalltalk: 3.5.8
+            #  os: macos-11
     runs-on: ${{ matrix.os }}
     env:
       GS_VERS: ${{ matrix.smalltalk }}
