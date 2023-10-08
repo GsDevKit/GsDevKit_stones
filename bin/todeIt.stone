@@ -1,0 +1,73 @@
+#!/usr/bin/env superdoit_stone
+options
+{
+SuperDoitOptionalOptionWithRequiredArg long: 'file'.
+SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
+                [ <tode-command> | --file=<tode-commands-file> ]
+
+DESCRIPTION
+  Execute tODE commands in the stone and print the result. With no --registry
+  and no --stoneName specified, the script must be executed in the target stone
+  directory. 
+
+OPTIONS
+  -h, --help    display usage message
+  -D, --debug   bring up topaz debugger in the event of a script error
+  --debugGem    If terminal is connected to stdout, bring up debugger. If not,
+                dump stack to stdout and wait for topaz to attach using topaz
+                DEBUGGEM command.
+  --file=<tode-commands-file>
+                Name of file containing one or more tODE commands
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+# passing tests
+  cat - > testing << EOF
+eval \`TDTestToolTests enableTests: false\`
+test --batch class TDTestToolTests
+eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
+EOF
+  $basename --file=testing
+#failing tests
+  cat - > testing << EOF
+eval \`TDTestToolTests enableTests: true\`
+test --batch class TDTestToolTests
+eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
+EOF
+  $basename --file=testing
+
+  $basename "eval `3+4`"
+-----
+%
+doit
+	| commandStream result topez |
+	self positionalArgs size > 0
+		ifTrue: [ 
+			| command|
+			command := String new.
+			"workaround for https://github.com/dalehenrich/superDoit/issues/56"
+			self positionalArgs do: [:arg | command add: arg; add: ' ' ].
+			command lf.
+			commandStream := ReadStream on: command ]
+		ifFalse: [
+			self file 
+				ifNil: [ self error: 'a tODE command must be entered on command line as a positional argument or via --file option', ' (', self basename, ')' ]
+				ifNotNil: [ :commandsFile |
+					commandStream := GsFile openReadOnServer: commandsFile ] ].
+   topez := (TDTopezServer for: 1000)
+     displayOops: false;
+     characterLimit: 160;
+     listLimit: 120;
+     topezClientForwarder: TDTestClientForwarder new;
+     yourself.
+
+	result := topez evaluateCommandStream: commandStream.
+	^ result asString
+%

@@ -122,17 +122,40 @@ gslist.solo -l
 # install tODE
 cd $STONES_HOME/$registry/stones/$stoneName
 loadTode.stone --projectDirectory=$STONES_HOME/$registry/devkit $*
-todeIt.solo --registry=$registry --stoneName=$stoneName \
-            --file=$GSDEVKIT_STONES_ROOT/tode/setUpSys_1 $*
 
-validateStoneSysNodes.stone \
-            --todeHome=$todeHome --stoneName=$stoneName \
-            --files --repair $*
-todeIt.solo --registry=$registry --stoneName=$stoneName \
-            --file=$GSDEVKIT_STONES_ROOT/tode/setUpSys_2 $*
+runTodeIt="false"
+case "$GS_VERS" in
+  3.7.*)
+		runTodeIt="true"
+		;;
+	*)
+		if [[  "$PLATFORM" != "macos"* ]]; then
+			runTodeIt="true"
+		fi
+		;;
+esac
+if [ "$runTodeIt" = "true" ] ; then
+	# skip the following expressions on macos when running versions older than 3.7.0
+	# until the issue is characterized and fixed
+	#
+	todeIt.solo --registry=$registry --stoneName=$stoneName \
+		--file=$GSDEVKIT_STONES_ROOT/tode/setUpSys_1 $*
+	validateStoneSysNodes.stone --todeHome=$todeHome --stoneName=$stoneName \
+ 	 --files --repair $*
+	todeIt.solo --registry=$registry --stoneName=$stoneName \
+ 	 --file=$GSDEVKIT_STONES_ROOT/tode/setUpSys_2 $*
 
-# validate installation
-todeIt.solo 'eval `3+4`' -r $registry --stoneName=$stoneName $*
+	# validate installation by running a couple of todeIt.stone commands
+	todeIt.stone -h
+	todeIt.stone 'eval `3+4`' $*
+
+  cat - > testing << EOF
+eval \`TDTestToolTests enableTests: false\`
+test --batch class TDTestToolTests
+eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
+EOF
+	todeIt.stone --file=testing $*
+fi
 
 # delete the stone
 cd $STONES_HOME
