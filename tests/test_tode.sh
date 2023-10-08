@@ -17,7 +17,11 @@ else
 	rm -rf  $STONES_HOME/test_git/*
 fi
 
-export GS_VERS=3.7.0
+if [ "$CI" != "true" ]; then
+	if [ "$GS_VERS"x = "x" ] ; then
+		export GS_VERS=3.7.0
+	fi
+fi
 
 registry=devkit
 projectSet=devkit
@@ -123,21 +127,21 @@ gslist.solo -l
 cd $STONES_HOME/$registry/stones/$stoneName
 loadTode.stone --projectDirectory=$STONES_HOME/$registry/devkit $*
 
-runTodeIt="false"
 case "$GS_VERS" in
   3.7.*)
 		runTodeIt="true"
 		;;
 	*)
-		if [[  "$PLATFORM" != "macos"* ]]; then
+		if [[  "$PLATFORM" = "macos"* ]]; then
+			# skip the following expressions on macos when running versions older than 3.7.0
+			# until the issue is characterized and fixed
+			runTodeIt="false"
+		else
 			runTodeIt="true"
 		fi
 		;;
 esac
 if [ "$runTodeIt" = "true" ] ; then
-	# skip the following expressions on macos when running versions older than 3.7.0
-	# until the issue is characterized and fixed
-	#
 	todeIt.solo --registry=$registry --stoneName=$stoneName \
 		--file=$GSDEVKIT_STONES_ROOT/tode/setUpSys_1 $*
 	validateStoneSysNodes.stone --todeHome=$todeHome --stoneName=$stoneName \
