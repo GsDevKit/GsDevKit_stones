@@ -4,6 +4,7 @@ options
 SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'from'.
+SuperDoitOptionalOptionWithRequiredArg long: 'json'.
 SuperDoitOptionalOptionWithRequiredArg long: 'key'.
 SuperDoitOptionalOptionWithNoArg long: 'empty'.
 SuperDoitOptionalOptionWithNoArg long: 'ssh'.
@@ -35,6 +36,10 @@ OPTIONS
                   <registry-name> is the name of the registry. Default is hostname.
   --projectSet=<projectSet-name>
                     Name of the project set.
+  --json
+                    Populate projectSet for gemstone development (using 
+                    git@git.gemtalksystems.com:gemstone.git) as the remote git
+                    host. The json file is read from stdin.
 
 EXAMPLES
   $basename --help
@@ -46,6 +51,9 @@ EXAMPLES
   # populate using a pre-defined project set 
   $basename -r bosch --projectSet=rowanV3_common \
     --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
+  # populate for GemStone internal development 
+  ext2json.pl /bosch1/users/dhenrich/_stones/bosch_36x/g_36x/externals_st.config.default > ext.json
+  $basename -r bosch_36x --projectSet=gs_36x --json=ext.json
 -----
 %
 specs
@@ -101,8 +109,26 @@ doit
 				parentRegistryPath: stonesRegistry parentRegistryPath ]
 		ifNil: [
 				self empty
-					ifFalse: [ self error: 'Must specify a --from or --empty argument to indicate that the project set will be pipulated using updateProjectSet.solo', ' (', self basename, ')' ].
-				projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ].
+					ifFalse: [
+						| dict | 
+						self json
+							ifNil: [ self error: 'Must specify one of --from, --empty or --json options', ' (', self basename, ')' ]
+							ifNotNil: [:fileName | 
+						projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry.
+						fileName asFileReference readStreamDo: [:stream |
+							dict := STON fromStream: stream ].
+						dict keysAndValuesDo: [:projectName :branch |
+							| specDict  |
+							specDict := Dictionary new
+								at: 'revision'
+									put: branch;
+								at: 'gitUrls' 
+									put: (Dictionary new 
+										at: 'gs' 
+											put: 'git@github.com:/', projectName;
+										yourself);
+								yourself.
+							projectSet loadSpecs at: projectName put: specDict ] ] ] ].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	stonesRegistry projectSets at: name put: projectSet registryPath.
