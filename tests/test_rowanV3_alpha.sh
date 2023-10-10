@@ -136,6 +136,8 @@ gslist.solo -l
 if [ "$template" = "minimal_rowan" ] ; then
 	cd $STONES_HOME/$registry/stones/$stoneName
 
+	# turn on unicodeComparisonMode required by Jadeite
+	enableUnicodeCompares.topaz -lq
 	# attach stone to the Rowan projects that are part of the base image
 	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
 	# install GsDevKit_stones using Rowan installProject.stone script
