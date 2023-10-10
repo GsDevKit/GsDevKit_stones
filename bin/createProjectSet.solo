@@ -125,7 +125,7 @@ doit
 								at: 'gitUrls' 
 									put: (Dictionary new 
 										at: 'gs' 
-											put: 'git@github.com:/', projectName;
+											put: 'git@git.gemtalksystems.com:', projectName;
 										yourself);
 								yourself.
 							projectSet loadSpecs at: projectName put: specDict ] ] ] ].

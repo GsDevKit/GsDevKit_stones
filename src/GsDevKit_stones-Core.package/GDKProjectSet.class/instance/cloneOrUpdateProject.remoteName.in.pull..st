@@ -21,8 +21,12 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 							'There are unsaved changes in ' , gitProjectRef fullName printString
 								, '. We cannot clone or update a repository with unsaved chnages' ] ]
 		ifFalse: [ 
+			| originArg |
 			"GIT CLONE"
-			gitTool gitcloneIn: gitRootPath with: gitUrl logging: true.
+			originArg := ''.
+			remoteName ~= 'origin'
+				ifTrue: [ originArg := ' --origin ' , remoteName , ' ' ].
+			gitTool gitcloneIn: gitRootPath with: originArg , gitUrl logging: true.
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
