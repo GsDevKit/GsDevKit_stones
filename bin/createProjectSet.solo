@@ -128,7 +128,7 @@ doit
 				self empty
 					ifTrue: [ 
 						"create a new project set to replace the original"
-						self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ]
+						(self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ]
 					ifFalse: [
 						| dict | 
 						self json
