@@ -102,33 +102,37 @@ doit
 	name := self projectSet.
 	self from
 		ifNotNil: [:fromPath | 
-			projectSet := (self globalNamed: 'GDKProjectSet') fromPath: fromPath ifAbsent: [ self error: 'No project set found at ', fromPath printString, ' (', self basename, ')' ].
+			(self json isNil and: [ self json isNil])
+				ifFalse: [ self error: 'Must one and only one of --from, --empty or --json options', ' (', self basename, ')' ].
+			projectSet := (self globalNamed: 'GDKProjectSet') 
+				fromPath: fromPath 
+				ifAbsent: [ self error: 'No project set found at ', fromPath printString, ' (', self basename, ')' ].
 			projectSet
 				name: name;
 				parentRegistryName: stonesRegistry parentRegistryName;
 				parentRegistryPath: stonesRegistry parentRegistryPath ]
 		ifNil: [
+				projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry.
 				self empty
 					ifFalse: [
 						| dict | 
 						self json
-							ifNil: [ self error: 'Must specify one of --from, --empty or --json options', ' (', self basename, ')' ]
+							ifNil: [ self error: 'Must specify one and only one of --from, --empty or --json options', ' (', self basename, ')' ]
 							ifNotNil: [:fileName | 
-						projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry.
-						fileName asFileReference readStreamDo: [:stream |
-							dict := STON fromStream: stream ].
-						dict keysAndValuesDo: [:projectName :branch |
-							| specDict  |
-							specDict := Dictionary new
-								at: 'revision'
-									put: branch;
-								at: 'gitUrls' 
-									put: (Dictionary new 
-										at: 'gs' 
-											put: 'git@git.gemtalksystems.com:', projectName;
-										yourself);
-								yourself.
-							projectSet loadSpecs at: projectName put: specDict ] ] ] ].
+								fileName asFileReference readStreamDo: [:stream |
+									dict := STON fromStream: stream ].
+								dict keysAndValuesDo: [:projectName :branch |
+									| specDict  |
+									specDict := Dictionary new
+										at: 'revision'
+											put: branch;
+										at: 'gitUrls' 
+											put: (Dictionary new 
+												at: 'gs' 
+													put: 'git@git.gemtalksystems.com:', projectName;
+												yourself);
+										yourself.
+									projectSet loadSpecs at: projectName put: specDict ] ] ] ].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	stonesRegistry projectSets at: name put: projectSet registryPath.

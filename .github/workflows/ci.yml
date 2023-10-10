@@ -126,7 +126,7 @@ jobs:
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_help.sh
         shell: bash
-      - name: run projet sets
+      - name: run project sets
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
