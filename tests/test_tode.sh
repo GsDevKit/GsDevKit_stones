@@ -7,6 +7,8 @@
 #		updateProjectSet.solo
 #		cloneProjectsFromProjectSet.solo
 #		
+
+# define GSDEVKIT_STONES_ROOT to point at the root directory of your GsDevKit_stones checkout
 set -xe
 
 echo "***** test_tode.sh *****"
@@ -34,7 +36,9 @@ if [ "$CI" = "true" ]; then
 else
 	# GSDEVKIT_STONES_ROOT is $STONES_HOME/git ... the location that GsDevKit_stones 
 	#	was cloned when superDoit was installed
-	export GSDEVKIT_STONES_ROOT=$STONES_HOME/git/GsDevKit_stones
+  if [ "$GSDEVKIT_STONES_ROOT"x = "x" ]; then
+	  export GSDEVKIT_STONES_ROOT=$STONES_HOME/git/GsDevKit_stones
+  fi
 fi
 
 set +e
