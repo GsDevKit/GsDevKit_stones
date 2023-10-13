@@ -4,6 +4,7 @@ options
 SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'from'.
+SuperDoitOptionalOptionWithRequiredArg long: 'json'.
 SuperDoitOptionalOptionWithRequiredArg long: 'key'.
 SuperDoitOptionalOptionWithNoArg long: 'empty'.
 SuperDoitOptionalOptionWithNoArg long: 'ssh'.
@@ -23,7 +24,7 @@ USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
                 --from=gsdevkitProjectSpecs.ston --key=clientServer --spec
 
 DESCRIPTION
-  A project set is a list of load specs that specify a group of git repositories that are managed together. 
+  A project set is a list of load specs that specify a group of git repositories that are managed together.
 
 OPTIONS
   -h, --help        display usage message
@@ -35,6 +36,14 @@ OPTIONS
                   <registry-name> is the name of the registry. Default is hostname.
   --projectSet=<projectSet-name>
                     Name of the project set.
+  --empty           Creates a new empty project set to replace the original, if 
+                    one exists.
+  --json
+                    Populate projectSet for gemstone development (using 
+                    git@git.gemtalksystems.com:gemstone.git) as the remote git
+                    host. The json file is read from stdin. If a project set 
+                    with the same name exists, the info from the JSON file will
+                    be added to the existing project set.
 
 EXAMPLES
   $basename --help
@@ -46,6 +55,9 @@ EXAMPLES
   # populate using a pre-defined project set 
   $basename -r bosch --projectSet=rowanV3_common \
     --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
+  # populate for GemStone internal development 
+  ext2json.pl /bosch1/users/dhenrich/_stones/bosch_36x/g_36x/externals_st.config.default > ext.json
+  $basename -r bosch_36x --projectSet=gs_36x --json=ext.json
 -----
 %
 specs
@@ -94,15 +106,48 @@ doit
 	name := self projectSet.
 	self from
 		ifNotNil: [:fromPath | 
-			projectSet := (self globalNamed: 'GDKProjectSet') fromPath: fromPath ifAbsent: [ self error: 'No project set found at ', fromPath printString, ' (', self basename, ')' ].
+			(self json isNil and: [ self json isNil])
+				ifFalse: [ self error: 'Must one and only one of --from, --empty or --json options', ' (', self basename, ')' ].
+			projectSet := (self globalNamed: 'GDKProjectSet') 
+				fromPath: fromPath 
+				ifAbsent: [ self error: 'No project set found at ', fromPath printString, ' (', self basename, ')' ].
 			projectSet
 				name: name;
 				parentRegistryName: stonesRegistry parentRegistryName;
 				parentRegistryPath: stonesRegistry parentRegistryPath ]
 		ifNil: [
+				| projectSetClass projectSetPath |
+				projectSetClass := self globalNamed: 'GDKProjectSet'.
+				projectSetPath := (System gemEnvironmentVariable: 'STONES_DATA_HOME') asFileReference / 
+					(self globalNamed: 'GDKGsDevKit_stonesBase') _applicationName / projectSetClass _registryName / self registryName / name, 'ston'.
+				projectSet := projectSetClass
+					fromPath: projectSetPath
+					ifAbsent: [
+						"create new project set, if one does not already exist" 
+						(self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ].
 				self empty
-					ifFalse: [ self error: 'Must specify a --from or --empty argument to indicate that the project set will be pipulated using updateProjectSet.solo', ' (', self basename, ')' ].
-				projectSet := (self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ].
+					ifTrue: [ 
+						"create a new project set to replace the original"
+						(self globalNamed: 'GDKProjectSet') newNamed: name inStonesRegistry: stonesRegistry ]
+					ifFalse: [
+						| dict | 
+						self json
+							ifNil: [ self error: 'Must specify one and only one of --from, --empty or --json options', ' (', self basename, ')' ]
+							ifNotNil: [:fileName | 
+								fileName asFileReference readStreamDo: [:stream |
+									dict := STON fromStream: stream ].
+								dict keysAndValuesDo: [:projectName :branch |
+									| specDict  |
+									specDict := projectSet loadSpecs at: projectName ifAbsentPut: [Dictionary new].
+									specDict
+										at: 'revision'
+										put: branch.
+									(specDict
+										at: 'gitUrls' 
+										ifAbsentPut: [Dictionary new])
+											at: 'gs' 
+											put: 'git@git.gemtalksystems.com:', projectName.
+									projectSet loadSpecs at: projectName put: specDict ] ] ] ].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	stonesRegistry projectSets at: name put: projectSet registryPath.

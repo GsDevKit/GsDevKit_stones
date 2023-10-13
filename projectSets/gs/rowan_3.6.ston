@@ -1,0 +1,43 @@
+GDKProjectSet {
+	#name : 'rowan_3.6',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#loadSpecs : {
+		'GsDevKit_upgrade' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:GsDevKit_upgrade',
+				'origin' : 'git@github.com:GsDevKit/GsDevKit_upgrade.git'
+			}
+		},
+		'Rowan' : {
+			'revision' : 'masterV2.3.1',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:Rowan',
+				'origin' : 'git@github.com:GemTalk/Rowan.git'
+			}
+		},
+		'superDoit' : {
+			'revision' : 'v2',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:superDoit',
+				'origin' : 'git@github.com:dalehenrich/superDoit.git'
+			}
+		},
+		'RowanClientServices' : {
+			'revision' : 'masterV2.2',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:RowanClientServices',
+				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+			}
+		},
+		'GsTestStats' : {
+			'revision' : 'v1',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:GsTestStats',
+				'origin' : 'git@github.com:dalehenrich/GsTestStats.git'
+			}
+		}
+	},
+	#comment : 'This set of repositories are for use with 3.6.7/RowanV2'
+}
