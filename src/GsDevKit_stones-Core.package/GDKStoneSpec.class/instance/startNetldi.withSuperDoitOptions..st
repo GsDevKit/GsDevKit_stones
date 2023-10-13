@@ -4,7 +4,7 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		debugLogging
 		restart"
 
-	| scriptPath stdout exitStatus commandLine output debugLogging restart |
+	| scriptPath stdout exitStatus commandLine output debugLogging restart gemConfPath |
 	scriptPath := ''.
 	restart := debugLogging := false.
 	stdout := superDoitScriptOrNil
@@ -28,6 +28,7 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		add: ' -a ' , (System gemEnvironmentVariable: 'USER');
 		add: ' -P ' , self stoneDirectorySpec netldiPort asString;
 		add: ' -l ' , (self logsDir / 'netldi.log') fullName;
+		add: ' -D ' , self logsDir fullName;
 		yourself.
 	debugLogging
 		ifTrue: [ commandLine add: ' -d' ].
@@ -36,6 +37,13 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 	commandLine
 		add: ' ' , self stoneName , '_ldi';
 		yourself.
+	gemConfPath := (self rootDir / 'gem.conf') fullName.
+	self gemstoneVersion >= '3.7.0' asRwGemStoneVersionNumber
+		ifTrue: [ commandLine add: ' -E ' , gemConfPath ]
+		ifFalse: [ 
+			"have to defined GEMSTONE_EXE_CONF to define location of gem.conf, if not already defined"
+			(System gemEnvironmentVariable: 'GEMSTONE_EXE_CONF')
+				ifNil: [ System gemEnvironmentVariable: 'GEMSTONE_EXE_CONF' put: gemConfPath ] ].
 	GDKGsDevKit_stonesBase verbose
 		ifTrue: [ 
 			stdout
