@@ -132,7 +132,7 @@ export ROWAN_PROJECTS_HOME=$STONES_HOME/test_git
 updateCustomEnv.solo --registry=$registry $stoneName --addKey=ROWAN_PROJECTS_HOME --value=$ROWAN_PROJECTS_HOME --restart $*
 
 # start netldi
-startNetldi.solo
+startNetldi.solo --registry=$registry $stoneName $*
 
 # run glist.solo for record of running stone and netldi
 gslist.solo -l

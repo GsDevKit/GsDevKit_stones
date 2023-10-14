@@ -107,7 +107,10 @@ doit
 		ifTrue: [
 			| specFile |
 			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.
-			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ]
+			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') 
+				fromPath: specFile 
+				ifAbsent: [ 
+					self error: self basename, ' must be run in a stone directory when run without a <stone-name>'] ]
 		ifFalse: [
 			self positionalArgs size > 1 
 				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
