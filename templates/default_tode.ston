@@ -1,0 +1,16 @@
+GDKhomeStoneDirectorySpec {
+	#name : 'default_tode',
+	#backups : 'backups',
+	#bin : 'bin',
+	#customenv : 'customenv',
+	#dbfSource : '$GEMSTONE/bin/extent0.seaside.dbf',
+	#extents : 'extents',
+	#logs : 'logs',
+	#netldiPort : 0,
+	#stats : 'stats',
+	#tranlogs : 'tranlogs',
+	#snapshots : 'snapshots',
+	#product : 'product',
+	#tode : 'enabled',
+	#userId : 'DataCurator'
+}

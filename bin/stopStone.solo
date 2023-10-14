@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithNoArg long: 'immediate' short: 'i'.
 SuperDoitOptionalOptionWithNoArg long: 'stopNetldi' short: 'b'.
 SuperDoitOptionalOptionWithRequiredArg long: 'timeout' short: 't'.
@@ -11,7 +11,10 @@ SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
-                --registry=<registry-name> <stone-name>
+                [
+                  [--registry=<registry-name> | -r <registry-name>] \
+                  <stone-name>
+                ]
 
 DESCRIPTION
   Stop named stone.
@@ -23,7 +26,8 @@ OPTIONS
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
   -v, --verbose Verbose logging enabled.
-  --registry    Name of registry that stone is defined in (Required).
+  --registry=<registry-name> | -r <registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
   -b, --netldi  Stop netldi associated with the stone.
 	-i, --immediate
                 Stop stone immediately even if others are logged in.
@@ -37,8 +41,8 @@ EXAMPLES
   $basename --debugGem
   $basename --registry=bosch bosch_370 
   $basename --registry=bosch bosch_370 -t 60
-  $basename --registry=bosch bosch_370 --immediate
-  $basename --registry=bosch bosch_370 -b
+  $basename -r bosch bosch_370 --immediate
+  $basename -r bosch bosch_370 -b
   # if launched from stone directory where .GDKStoneSpec.ston is present
   $basename 
   $basename -t 60
@@ -98,10 +102,10 @@ doit
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ]
 		ifFalse: [
 			self positionalArgs size > 1 
-				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
+				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
 			stoneName := self positionalArgs at: 1.
 			self registry
-				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
+				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified', ' (', self basename, ')' ].
 			stonesRegistry := registryClass stonesRegistryNamed: self registry.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	stoneSpec stopStone: self withSuperDoitOptions: true.

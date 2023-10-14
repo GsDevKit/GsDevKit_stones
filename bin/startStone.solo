@@ -91,6 +91,12 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry stoneName stoneSpec |
 	self preDoitSpecLoad: [:spec | 
@@ -107,11 +113,9 @@ doit
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ]
 		ifFalse: [
 			self positionalArgs size > 1 
-				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
+				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
 			stoneName := self positionalArgs at: 1.
-			self registry
-				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
-			stonesRegistry := registryClass stonesRegistryNamed: self registry.
+			stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	stoneSpec startStone: self withSuperDoitOptions: true.
 	self wait
@@ -119,7 +123,7 @@ doit
 			| status |
 			status := stoneSpec waitStone: waitTime asNumber.
 			status != 0
-				ifTrue: [ self error: 'The stone did not start within ', waitTime, ' seconds.' ] ].
+				ifTrue: [ self error: 'The stone did not start within ', waitTime, ' seconds.', ' (', self basename, ')' ] ].
 	self startNetldi 
 		ifTrue: [ stoneSpec startNetldi ].
 	^ self noResult

@@ -1,0 +1,20 @@
+GDKProjectSet {
+	#name : '_stones',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#loadSpecs : {
+		'GsDevKit_stones' : {
+			'revision' : 'v1.1.1',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/GsDevKit_stones.git'
+			}
+		},
+		'superDoit' : {
+			'revision' : 'v4.1',
+			'gitUrls' : {
+				'origin' : 'https://github.com/dalehenrich/superDoit.git'
+			}
+		}
+	},
+	#comment : 'This set of repositories are used to manage the superDoit and GsDevKit_stones repositories, originally cloned by hand to install GsDevKit_stones'
+}

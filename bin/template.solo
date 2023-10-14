@@ -1,0 +1,80 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitRequiredOptionWithRequiredArg long: 'registry' short: 'r'.
+"
+#
+#	SuperDoitOptionalOptionWithNoArg long: 'noarg'.
+#	SuperDoitOptionalOptionWithNoArg long: 'noarg' short: 'n'.
+#
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional'.
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' default: 'default'.
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o'.
+#	SuperDoitOptionalOptionWithRequiredArg long: 'optional' short: 'o' default: 'default'.
+#
+#	SuperDoitRequiredOptionWithRequiredArg long: 'required'.
+#	SuperDoitRequiredOptionWithRequiredArg long: 'required' short: 'r'.
+#
+"
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                [registry=<registry-name> | -r <registry-name>]
+
+DESCRIPTION
+  <put your description here>
+
+OPTIONS
+  -h, --help      display usage message
+  -D, --debug     bring up topaz debugger in the event of a script error
+  --debugGem      If terminal is connected to stdout, bring up debugger. If not,
+                  dump stack to stdout and wait for topaz to attach using topaz
+                  DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                  <registry-name> is the name of the registry. 
+                  Default <registry-name> is hostname.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+  $basename  
+  $basename --registry=<registry-name> 
+  $basename -r <registry-name>
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+doit
+	| registryName |
+	self preDoitSpecLoad: [:spec |
+		spec projectsHome: self dirname asFileReference parent parent].
+	registryName := self registryName.
+"... your code ..."
+%

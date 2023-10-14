@@ -1,14 +1,15 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'stonesDirectory'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-                --registry=<registry-name> --stonesDirectory=<path-to-stones-directory>
+                [--registry=<registry-name> | -r <registry-name>] \
+                --stonesDirectory=<path-to-stones-directory>
 
 DESCRIPTION
   Register a stones directory for the named registry. If the directory does not
@@ -21,6 +22,11 @@ OPTIONS
   --debugGem      If terminal is connected to stdout, bring up debugger. If not,
                   dump stack to stdout and wait for topaz to attach using topaz
                   DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                  <registry-name> is the name of the registry. Default is hostname.
+  --stonesDirectory=<path-to-stones-directory>
+									Define <path-to-stones-directory> as the directory where new stones
+                  for the given <registry-name> are created.
 
 EXAMPLES
   $basename --help
@@ -48,12 +54,18 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry stonesDir stonesDirPath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	stonesDir := self stonesDirectory asFileReference.
 	stonesDir ensureCreateDirectory.
 	stonesDirPath := GsFile serverRealPath: stonesDir fullName.

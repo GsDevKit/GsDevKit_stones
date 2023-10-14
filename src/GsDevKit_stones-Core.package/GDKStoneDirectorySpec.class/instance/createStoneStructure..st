@@ -30,9 +30,12 @@ createStoneStructure: stoneSpec
 					exportDict
 						at: 'stone_dir' put: stoneRoot fullName;
 						at: 'GEMSTONE' put: gemstoneReference fullName;
-						at: 'GDK_stones_projects'
-							put: stoneSpec stonesRegistry projectDirectory asFileReference fullName;
 						yourself.
+					stoneSpec stonesRegistry projectDirectory
+						ifNotNil: [ :projectDir | 
+							exportDict
+								at: 'GDK_stones_projects' put: projectDir asFileReference fullName;
+								yourself ].
 					self customizeCustomEnv: exportDict stoneSpec: stoneSpec ].
 			key = #'bin'
 				ifTrue: [ (stoneRoot / value) ensureCreateDirectory ].
@@ -82,15 +85,10 @@ createStoneStructure: stoneSpec
 		userId: userId;
 		password: password;
 		yourself.
+	self populateStoneBinDirectory: stoneSpec.
 	useCustomEnv
 		ifTrue: [ 
-			stoneRoot / 'customenv'
-				writeStreamDo: [ :fileStream | 
-					exportDict
-						keysAndValuesDo: [ :key :value | 
-							fileStream
-								nextPutAll: 'export ' , key , '=' , value;
-								lf ] ].
+			self exportCustomEnvTo: stoneRoot / 'customenv'.
 			systemConfStream
 				lf;
 				nextPutAll: 'DBF_EXTENT_NAMES = $stone_dir' , useExtentDir , 'extent0.dbf;';
@@ -120,5 +118,4 @@ createStoneStructure: stoneSpec
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
 				nextPutAll: 'set u ' , userId , ' p ' , password;
-				lf ].
-	self class chmod: (stoneRoot / '.topazini') fullName fileMode: 'u+w,og-rw'
+				lf ]

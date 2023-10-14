@@ -1,14 +1,15 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'productDirectory'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-                --registry=<registry-name> --productDirectory=<path-to-product-directory>
+                [--registry=<registry-name> | -r <registry-name>] \
+                --productDirectory=<path-to-product-directory>
 
 DESCRIPTION
   Register a product directory for the named registry. If the directory does not
@@ -22,11 +23,17 @@ OPTIONS
   --debugGem      If terminal is connected to stdout, bring up debugger. If not,
                   dump stack to stdout and wait for topaz to attach using topaz
                   DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                  <registry-name> is the name of the registry. Default is hostname.
+  --productDirectory=<path-to-product-directory>
+									<path-to-product-directory> will be used as the directory where
+                  GemStone product trees are downloaded.
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename --registry=bosch --productDirectory=/home/dhenrich/gemstone/products 
+  $basename -r bosch --productDirectory=/home/dhenrich/gemstone/products 
 -----
 %
 specs
@@ -49,12 +56,18 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry productDir productDirPath |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	productDir := self productDirectory asFileReference.
 	productDir ensureCreateDirectory.
 	productDirPath := GsFile serverRealPath: productDir fullName.

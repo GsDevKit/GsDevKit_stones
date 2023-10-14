@@ -28,7 +28,9 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 							'/usr/bin/curl  -L -O -s -S "https://ftp.gemtalksystems.com/GemStone64/'
 								, productName , '/' , downloadFileName , '"' ].
 			fmt = 'zip'
-				ifTrue: [ self executeCommandLine: '/usr/bin/unzip ' , downloadFileName ]
+				ifTrue: [ 
+					self executeCommandLine: '/usr/bin/unzip ' , downloadFileName .
+					(downloadDir / downloadFileName) delete ]
 				ifFalse: [ 
 					| volumeList stream line volume |
 					"

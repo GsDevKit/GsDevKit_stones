@@ -1,18 +1,32 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithRequiredArg long: 'remote' default: 'origin'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectDirectory'.
-SuperDoitOptionalOptionWithNoArg long: 'strict'.
+SuperDoitOptionalOptionWithNoArg long: 'update'.
 }
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                [--registry=<registry-name> | -r <registry-name>] \
+                --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
 
 DESCRIPTION
   A project set is a list of load specs  that specify a group of git repositories that are managed together. 
+
+CLONE git commands for each project
+  git clone <project-url>
+  git checkout -B remote/revision
+  git remote add remote <additional-project-project-urls>
+  git fetch --all
+
+UPDATE git commands for each project
+  git checkout remote/revision
+  git pull remote revision
+
 
 OPTIONS
   -h, --help        display usage message
@@ -20,14 +34,15 @@ OPTIONS
   --debugGem        If terminal is connected to stdout, bring up debugger. If not,
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
-  --registry=<registry-name>   
-                    name of the registry. Default is /usr/bin/hostname
+  --registry=<registry-name> | -r <registry-name> 
+                    <registry-name> is the name of the registry. Default is hostname.
   --projectSet=<projectSet-name>
                     Name of the project set to use.
   --projectDirectory=<project-directory>
                     Path to directory where the projects will be cloned. If not
-                    specified the projectDirectory in the registry will be used.
-  --strict          If present, a pull request will be issued for the origin remote
+                    specified the projectDirectory associated with the project set 
+                    is used.
+  --update          If present, a pull request will be issued for the origin remote
                     to update the repository to the latest version of the branch 
                     available.
   <project-name>...
@@ -39,9 +54,9 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename 
-  $basename --registry=bosch --projectSet=dev Rowan \
+  $basename --registry=bosch --projectSet=dev --remote=https Rowan \
             --projectDirectory=/home/dhenrich/bosch1/_exp_git
-  $basename --registry=bosch --projectSet=test Rowan --strict 
+  $basename -r=bosch --projectSet=_stones Rowan --update
 -----
 %
 specs
@@ -64,31 +79,42 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry name projectSet projectSetPath projectDir |
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	name := self projectSet.
 	projectSetPath := stonesRegistry projectSets 
 		at: name 
-		ifAbsent: [ self error: 'Cannot find project set named ', name printString ].
+		ifAbsent: [ self error: 'Cannot find project set named ', name printString, ' (', self basename, ')' ].
 	projectSet := (self globalNamed: 'GDKProjectSet') 
 				fromPath: projectSetPath 
-				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ].
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString, ' (', self basename, ')' ].
 	projectDir := self projectDirectory
-		ifNotNil: [:dir | dir asFileReference fullName ]
+		ifNotNil: [:dir | 
+			projectSet projectDirectory: dir.
+			projectSet export.
+			dir asFileReference fullName ]
 		ifNil: [ 
-			stonesRegistry projectDirectory
-				ifNil: [ self error: '--projectDirectory option must be used if no registry project directory defined' ] ].
+			projectSet projectDirectory
+				ifNil: [ 
+					stonesRegistry projectDirectory
+						ifNil: [ self error: '--projectDirectory option must be used if no project directory defined in project set', ' (', self basename, ')' ] ] ].
 	projectDir asFileReference ensureCreateDirectory. 
 	Rowan projectTools trace startTracing.
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir pull: self strict ]
+		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir remoteName: self remote pull: self update]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneOrUpdateProject: projectName in: projectDir pull: self strict ] ].
+				projectSet cloneOrUpdateProject: projectName remoteName: self remote in: projectDir pull: self update] ].
 	true
 %

@@ -1,0 +1,18 @@
+#!/usr/bin/env superdoit_topaz
+#
+# 
+
+set u SystemUser p swordfish
+
+login
+
+run
+"enable unicode comparison mode ... note that unicode comparison mode does
+  not take effect until the next login ... enableUnicodeComparisonMode is
+  preferred method, but may not be present in all versions of GemStone that
+  may use this script."
+Globals at: #StringConfiguration put: Unicode16.
+System commit.
+GsFile stdout nextPutAll: 'Unicode comparison mode enabled.'; lf
+%
+

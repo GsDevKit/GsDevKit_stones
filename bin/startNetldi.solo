@@ -13,13 +13,13 @@ SuperDoitOptionalOptionWithNoArg long: 'restart' short: 'r'.
 Usage
 -----
 USAGE $basename [--help] [--debug]  [--debugGem] [--verbose] \
-                --registry=<registry-name> <stone-name>
+                [--registry=<registry-name>] <stone-name>
 
 DESCRIPTION
   Start netldi for named stone.
 
 OPTIONS
-	Note that the standard shortcuts options are not supported, since we weant
+	Note that the standard shortcuts options are not supported, since we want
   to be faithful to the startnetldi options and they comprise a big chunk
   of the alphabet.
 
@@ -28,6 +28,8 @@ OPTIONS
   --debugGem    If terminal is connected to stdout, bring up debugger. If not,
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
+  --registry=<registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
   --verbose     Verbose logging enabled.
   #
   # standard startnetldi options (currently supported)
@@ -86,6 +88,12 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
 doit
 	| registryClass stonesRegistry stoneName stoneSpec |
 	self preDoitSpecLoad: [:spec | 
@@ -102,11 +110,9 @@ doit
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ]
 		ifFalse: [
 			self positionalArgs size > 1 
-				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments' ].
+				ifTrue: [ self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
 			stoneName := self positionalArgs at: 1.
-			self registry
-				ifNil: [ self error: '--registry option must be specified when <stone-name> is specified' ].
-			stonesRegistry := registryClass stonesRegistryNamed: self registry.
+			stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ].
 	stoneSpec startNetldi: self withSuperDoitOptions: true.
 	^ self noResult

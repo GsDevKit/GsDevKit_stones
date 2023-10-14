@@ -1,0 +1,249 @@
+name: main
+
+on: 
+  push:
+  pull_request:
+  schedule:
+    - cron: "15 2 23 * *" #run job on the 23rd day of every month on the 15th minute of the 2nd hour
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-20.04,  macos-13 ]
+        smalltalk: [ 3.7.0 ]
+        #        os: [ ubuntu-20.04,  macos-13 ]
+        #        smalltalk: [ 3.5.3, 3.5.8, 3.6.0, 3.6.4, 3.6.5, 3.6.6, 3.7.0 ]
+        include:
+          - smalltalk: 3.7.0
+            os: ubuntu-22.04
+            #- smalltalk: 3.7.0
+            #   os: macos-13
+            #- smalltalk: 3.7.0
+            #  os: macos-12
+            #- smalltalk: 3.7.0
+            # os: macos-11
+            #- smalltalk: 3.6.6
+            #   os: ubuntu-22.04
+            #- smalltalk: 3.6.6
+            #  os: macos-13
+            #- smalltalk: 3.6.6
+            #  os: macos-12
+            #- smalltalk: 3.6.6
+            #  os: macos-11
+            #- smalltalk: 3.6.5
+            #  os: macos-11
+            #- smalltalk: 3.6.4
+            #  os: macos-11
+            #- smalltalk: 3.5.8
+            #  os: macos-11
+    runs-on: ${{ matrix.os }}
+    env:
+      GS_VERS: ${{ matrix.smalltalk }}
+      PLATFORM: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - id: setup-GsDevKit_stones
+        uses: dalehenrich/setup-superDoit@v4
+        with:
+          gemstone-version: '3.7.0'
+          superDoit-branch: 'v4.1'        
+      - name: setup GsDevKit_stones
+        run: |
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"
+
+          mkdir $WORK_ROOT/STONES_DATA_HOME
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          mkdir $WORK_ROOT/STONES_HOME
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          mkdir $STONES_HOME/git
+          export STONES_git=$STONES_HOME/git
+          mkdir $STONES_HOME/gemstone
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          echo "PATH=$PATH"
+          echo "WORK_ROOT"
+          ls -altr $WORK_ROOT
+          echo "GITHUB_WORKSPACE"
+          ls -altr $GITHUB_WORKSPACE
+          echo "STONES_DATA_HOME"
+          ls -altr $STONES_DATA_HOME
+          echo "STONES_HOME"
+          ls -altr $STONES_HOME
+
+          echo "versionReport.solo" 
+          versionReport.solo
+          echo "createRegistry.solo"
+          createRegistry.solo _stones
+          echo "createProjectSet.solo"
+          createProjectSet.solo --registry=_stones --projectSet=_stones --from=$GSDEVKIT_STONES_ROOT/projectSets/https/_stones.ston
+          echo "cloneProjectsFromProjectSet.solo"
+          cloneProjectsFromProjectSet.solo --registry=_stones --projectSet=_stones --projectDirectory=$STONES_git --update
+
+          gslist.solo -l
+
+        shell: bash
+      - name: run help test
+        run: |
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"          
+
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          export STONES_git=$STONES_HOME/git
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          export CI="true"
+          $GSDEVKIT_STONES_ROOT/tests/test_help.sh
+        shell: bash
+      - name: run project sets
+        run: |
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"          
+
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          export STONES_git=$STONES_HOME/git
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          export CI="true"
+          $GSDEVKIT_STONES_ROOT/tests/test_projectSets.sh
+        shell: bash
+      - name: run default registry
+        run: |
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"          
+
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          export STONES_git=$STONES_HOME/git
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          export CI="true"
+          $GSDEVKIT_STONES_ROOT/tests/test_defaultRegistry.sh
+        shell: bash
+      - name: run rowanV3-alpha1
+        run: |
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"          
+
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          export STONES_git=$STONES_HOME/git
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          export CI="true"
+          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
+        shell: bash
+      - name: run tODE
+        run: |
+          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
+          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
+          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
+          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
+          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "WORK_ROOT=$WORK_ROOT"          
+
+          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
+
+          export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$STONES_HOME"
+
+          export STONES_git=$STONES_HOME/git
+          export STONES_gemstone=$STONES_HOME/gemstone
+
+          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+
+          export CI="true"
+          $GSDEVKIT_STONES_ROOT/tests/test_tode.sh
+        shell: bash
+  slack-workflow-status:
+    if: always()
+    name: Post Workflow Status To Slack
+    needs:
+      - build
+    runs-on: ubuntu-20.04
+    steps:
+       - name: Slack Workflow Notification
+         uses: Gamesight/slack-workflow-status@master
+         with:
+          repo_token: ${{secrets.GITHUB_TOKEN}}
+          slack_webhook_url: ${{secrets.SLACK_DALEHENRICH}}
+          name: 'action run' 

@@ -11,6 +11,5 @@ GDKhomeStoneDirectorySpec {
 	#tranlogs : 'tranlogs',
 	#snapshots : 'snapshots',
 	#product : 'product',
-	#tode : 'tode',
 	#userId : 'DataCurator'
 }

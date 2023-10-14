@@ -1,14 +1,14 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
-                --registry=<registry-name> <stone-name>
+                [registry=<registry-name> | -r <registry-name>] <stone-name>
 
 DESCRIPTION
   Shut down stone and netldi. Delete the directory structure and meta data associated
@@ -20,6 +20,8 @@ OPTIONS
   --debugGem    If terminal is connected to stdout, bring up debugger. If not,
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
   -v, --verbose Verbose logging enabled.
 
 EXAMPLES
@@ -66,6 +68,12 @@ RwLoadSpecificationV2 {
 ]
 %
 method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+method
 debugLogging
 	"startnetldi support"
 	^ false
@@ -79,13 +87,13 @@ doit
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	self verbose
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	self positionalArgs size ~= 1
-		ifTrue: [ self error: 'Expected a positional argument: <stone-name>' ].
+		ifTrue: [ self error: 'Expected a positional argument: <stone-name>', ' (', self basename, ')' ].
 	stoneName := self positionalArgs at: 1.
 	stoneSpec := stonesRegistry 
 		stoneNamed: stoneName 
-		ifAbsent: [ self error: 'The stone ', stoneName printString, ' does not exist' ].
+		ifAbsent: [ self error: 'The stone ', stoneName printString, ' does not exist', ' (', self basename, ')' ].
 	stonesRegistry destroyStoneStructureFor: stoneName.
 	^ self noResult
 %

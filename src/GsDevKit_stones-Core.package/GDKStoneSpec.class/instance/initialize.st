@@ -1,7 +1,7 @@
 initialization
 initialize
 	super initialize.
-	gemHost := GDKRegistry hostName.
+	gemHost := System hostname.
 	gemTask := 'gemnetobject'.
 	stoneDirectorySpecName := 'default'.
-	stoneHost := GDKRegistry hostName
+	stoneHost := System hostname

@@ -2,14 +2,14 @@
 options
 {
 SuperDoitOptionalOptionWithRequiredArg long: 'directory'.
-SuperDoitOptionalOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 }
 %
 Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
-      [--directory=<products-directory> | --registry=<registry-name>] \
-      <gemstone-version> 
+      [ --directory=<products-directory>  | [registry=<registry-name> | -r <registry-name>] ]\
+      <gemstone-version> [ <server-dir-name> ]
 
 DESCRIPTION
   Download and unzip the product tree for the given <gemstone-version> to the
@@ -25,17 +25,19 @@ OPTIONS
   -v, --verbose Verbose logging enabled.
   --directory=<products-directory>
                 The directory where the product tree will be downloaded to.
-  --registry=<registry-name>
+                Either --directory or --registry must be specified.
+  --registry=<registry-name> | -r <registry-name>]
                 The product will be downloaded to the product 
                 directory defined by the <registry-name> and it's location will
-                be registered.
+                be registered.  Either --directory or --registry must be specified.
 
 EXAMPLES
   $basename --help
   $basename -D
   $basename --debugGem
   $basename --registry=bosch 3.6.4
-  $basename --directory=$GS_HOME/shared/downloads/products 3.6.4
+  $basename -r bosch 3.7.0 3.7.0_rowanv3-Alpha1
+  $basename --directory=$GS_HOME/shared/downloads/products 3.6.4 
 -----
 %
 specs
@@ -59,40 +61,70 @@ RwLoadSpecificationV2 {
 ]
 %
 method
-downloadToRegistry: registryName version: version 
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+method
+downloadToRegistry: registryName version: productVersion productName: productName
 	| registryClass stonesRegistry |
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: registryName.
-	stonesRegistry productNamed: version.
+	productVersion = productName
+		ifTrue: [ stonesRegistry productNamed: productVersion ]
+		ifFalse: [ 
+			stonesRegistry
+				productNamed: productName
+				ifAbsent: [ 
+					| productPath |
+					productPath := self 
+						downloadToDirectory: stonesRegistry productDirectory 
+						version: productVersion 
+						productName: productName.
+					stonesRegistry products at: productName put: productPath ].
+					stonesRegistry export ].
 	^	self noResult
 %
 method
-downloadToDirectory: directoryPath version: version
+downloadToDirectory: directoryPath version: productVersion productName: productName
 	| registryClass |
 	registryClass := self globalNamed: 'GDKStonesRegistry'.
-	registryClass
-		downloadProductName: version 
-		productDirectory: (registryClass downloadDirectoryNameFor: version)
+	^ registryClass
+		downloadProductName: productName
+		productVersion: productVersion
 		to: directoryPath.	
-	^	self noResult
 %
 doit
-	| version |
+	| productVersion productName |
+	"productName is name of product (alias), while productVersion is the actual 
+		version of the project (base name of download file on ftp server)"
 	self preDoitSpecLoad: [:spec | 
 		spec projectsHome: self dirname asFileReference parent parent ].
 	self positionalArgs size < 1
-		ifTrue: [ self error: 'Missing required positional argument for GemStone version' ]
+		ifTrue: [ self error: 'Missing required positional argument for GemStone version', ' (', self basename, ')' ]
 		ifFalse: [ 
 			self positionalArgs size = 1
-				ifTrue: [ version := self positionalArgs at: 1 ]
-				ifFalse: [ self error: 'Only a single positional argument is allowed' ] ].
+				ifTrue: [ 
+					productVersion := self positionalArgs at: 1.
+					productName := productVersion ]
+				ifFalse: [ 
+					self positionalArgs size = 2
+						ifTrue: [ 
+							productVersion := self positionalArgs at: 1.
+							productName := self positionalArgs at: 2 ] 
+						ifFalse: [ self error: 'Only 1 or 2 positional arguments are allowed', ' (', self basename, ')' ] ] ].
 	^ self registry
 		ifNotNil: [:registryName |
-			self downloadToRegistry: registryName version: version ]
+			self directory
+				ifNotNil: [ self error: 'one of --directoryName or --registryName must be specified, not both.', ' (', self basename, ')' ].
+			self downloadToRegistry: registryName version: productVersion productName: productName.  ]
 		ifNil: [
 			self directory
-				ifNil: [ self error: 'either --directoryName or --registryName must be specified' ]
+				ifNil: [ 
+					self registry ifNotNil: [ self error: 'one of --directoryName or --registryName must be specified, not both.', ' (', self basename, ')' ].
+					self downloadToRegistry: self registryName version: productVersion productName: productName. ]
 				ifNotNil: [:directoryPath |
-					self downloadToDirectory: directoryPath version: version ] ].
+					self downloadToDirectory: directoryPath version: productVersion productName: productName ] ].
 
 %

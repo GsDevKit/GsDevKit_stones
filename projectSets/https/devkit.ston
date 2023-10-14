@@ -1,0 +1,68 @@
+GDKProjectSet {
+	#name : 'devkit',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#loadSpecs : {
+		'PharoCompatibility' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/PharoCompatibility.git'
+			}
+		},
+		'filetree' : {
+			'revision' : 'gemstone2.4',
+			'gitUrls' : {
+				'origin' : 'https://github.com/dalehenrich/filetree.git'
+			}
+		},
+		'ston' : {
+			'revision' : 'gemstone',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/ston.git'
+			}
+		},
+		'Grease' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/Grease.git'
+			}
+		},
+		'metacello-work' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/dalehenrich/metacello-work.git'
+			}
+		},
+		'tode' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/dalehenrich/tode.git'
+			}
+		},
+		'glass' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/glassdb/glass.git'
+			}
+		},
+		'rb' : {
+			'revision' : 'dev',
+			'gitUrls' : {
+				'origin' : 'https://github.com/dalehenrich/rb.git'
+			}
+		},
+		'zinc' : {
+			'revision' : 'gs_master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/zinc.git'
+			}
+		},
+		'zodiac' : {
+			'revision' : 'gs_master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GsDevKit/zodiac.git'
+			}
+		}
+	},
+	#comment : 'The standard set of repositories needed for GLASS'
+}

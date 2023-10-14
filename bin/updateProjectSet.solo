@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitRequiredOptionWithRequiredArg long: 'registry'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectName'.
 
@@ -15,7 +15,8 @@ SuperDoitOptionalOptionWithRequiredArg long: 'componentName'.
 %
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] registry=<registry-name> \
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                [--registry=<registry-name> | -r <registry-name>] \
                 --projectSet=<projectSet-name> --projectName=<project-name> \
                 --gitUrl=<spec-url>
 
@@ -28,8 +29,8 @@ OPTIONS
   --debugGem        If terminal is connected to stdout, bring up debugger. If not,
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
-  --registry=<registry-name>   
-                    name of the registry. Default is /usr/bin/hostname
+  --registry=<registry-name> | -r <registry-name> 
+                    <registry-name> is the name of the registry. Default is hostname.
   --projectSet=<projectSet-name>
                     Name of the project set.
   --gitUrl=<git-url>
@@ -44,7 +45,7 @@ EXAMPLES
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
             --gitUrl=git@github.com:GemTalk/Rowan.git
-  # simplest definition using a file: url to specify spec location
+  # simplest definition using a git url to specify spec location
   $basename --registry=bosch --projectSet=dev \
             --projectName=Rowan \
             --gitUrl=git@github.com:GemTalk/Rowan.git
@@ -61,7 +62,7 @@ EXAMPLES
             --projectName=superDoit \
             --readonlyDiskUrl=file:$GEMSTONE/upgrade/projects/Rowan
   # undefine a field`
-  $basename --registry=bosch --projectSet=dev \
+  $basename -r bosch --projectSet=dev \
             --projectName=Rowan \
             --revision=nil
 
@@ -91,6 +92,12 @@ RwLoadSpecificationV2 {
 ]
 %
 method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+method
 createProjectSet: name in: registry
 	| projectSet |
 	projectSet := ((self globalNamed: 'GDKProjectSet') newNamed: name)
@@ -98,7 +105,7 @@ createProjectSet: name in: registry
 		parentRegistryPath: '$', (self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, '/' , (registry registryFile relativeTo: registry class base_data_home) fullName;
 		yourself.
 	projectSet registryFile exists
-		ifTrue: [ self error: 'project set ', projectSet registryfile fullName printString, ' already exists'].
+		ifTrue: [ self error: 'project set ', projectSet registryfile fullName printString, ' already exists', ' (', self basename, ')'].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	registry projectSets at: name put: projectSet registryPath.
@@ -116,7 +123,7 @@ doit
 	self preDoitSpecLoad: [:spec |
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	name := self projectSet.
 	projectSetPath := stonesRegistry projectSets 
 		at: name 
@@ -125,7 +132,7 @@ doit
 		ifNotNil: [ 
 			(self globalNamed: 'GDKProjectSet') 
 				fromPath: projectSetPath 
-				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString ]]
+				ifAbsent: [ self error: 'Cannot find project set ', projectSetPath printString, ' (', self basename, ')' ]]
 		ifNil: [
 			self createProjectSet: name ].
 
@@ -137,11 +144,11 @@ doit
 			(specDict at: 'gitUrls' ifAbsentPut: [ Dictionary new ]) at: self remote put: url ]
 		ifNil: [
 			self diskUrl 
-				ifNotNil: [ self error: 'diskUrl option not yet implemented' ]
+				ifNotNil: [ self error: 'diskUrl option not yet implemented', ' (', self basename, ')' ]
 				ifNil: [
 					self readonlyDiskUrl 
-						ifNotNil: [  self error: 'readonlyDiskUrl not yet implemented' ]
-						ifNil: [ self error: 'one of ''gitUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' must be defined.' ] ] ].
+						ifNotNil: [  self error: 'readonlyDiskUrl not yet implemented', ' (', self basename, ')' ]
+						ifNil: [ self error: 'one of ''gitUrl'' or ''diskUrl'' or: ''readonlyDiskUrl'' must be defined.', ' (', self basename, ')' ] ] ].
 	self revision
 		ifNotNil: [:value | self updateField: 'revision' with: value ].
 	self componentName

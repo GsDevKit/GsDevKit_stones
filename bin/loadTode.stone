@@ -2,13 +2,13 @@
 options
 {
 	SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
-	SuperDoitOptionalOptionWithNoArg long: 'fullLogging'.
 }
 %
 usage
 -----
 USAGE 
-  $basename [--help | -h] [--debug | -D] --projectDirectory=<projects-directory>
+  $basename [--help | -h] [--debug | -D] \
+    [--projectDirectory=<projects-directory>]
 
 DESCRIPTION
   bootstrap tODE into the stone. Use --projectsDirctory to specify the location of the
@@ -33,8 +33,7 @@ EXAMPLES
   $basename -D <script-arguments>  -- -l -I ./.topazini
   $basename <script-arguments>     -- -l -I ./.topazini
 
-  $basename --projectDirectory=/bosch1/users/dhenrich/_issue_4/projects --fullLogging
-  $basename --projectDirectory=$GS_HOME/shared/repos
+  $basename --projectDirectory=/bosch1/users/dhenrich/_issue_4/projects
   $basename --projectDirectory=$GDK_stones_projects
 -----
 %
@@ -47,7 +46,6 @@ step_1_upgradeGLASS
  Should not change this script as GsUpgrader upgrades GLASS correctly."
 
   | gofer repositoryDir newCache |
-
   Transcript
     cr;
     show: '---Step 1 of tODE bootstrap process: execute upgradeGlass.ws'.
@@ -196,26 +194,12 @@ Transcript cr; show: '---Step 4 of tODE bootstrap process: execute loadTode.ws'.
       load: 'GemStone Dev' ] ].
 %
 doit
-	| originalTranscript |
 	projectDirectory := self projectDirectory.
-	self fullLogging
-		ifTrue: [ 
-			originalTranscript := UserGlobals at: #Transcript ].
-	[
-		UserGlobals at: #Transcript put: TranscriptStreamPortable new.
-		SessionTemps current at: #'TranscriptStream_SessionStream' put: GsFile stdout.
-		self 
-			step_1_upgradeGLASS;
-			step_2_loadMetacello;
-			step_3_loadGLASS1;
-			step_4_loadTode;
-			yourself.
-		^ self noResult ] 
-			ensure: [ 
-				self fullLogging
-					ifTrue: [
-						UserGlobals 
-							at: #Transcript 
-							put: originalTranscript.
-						System commit ] ]
+	self 
+		step_1_upgradeGLASS;
+		step_2_loadMetacello;
+		step_3_loadGLASS1;
+		step_4_loadTode;
+		yourself.
+	^ self noResult
 %

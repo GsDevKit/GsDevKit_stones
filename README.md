@@ -1,4 +1,15 @@
 # GsDevKit_stones
+BRANCH | STATUS
+------------- | -------------
+**v1.1.1** | [![**v1.1.1** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v1.1.1)](https://github.com/GsDevKit/GsDevKit_stones/actions)
+
+## Versions
+### v1.1.1
+Development version intended for use with superDoit:v4.1 and GemStone 3.7.0 for .solo scripts. 
+Supported Rowan v2 stone versions 3.6.4 and newer, tested through 3.7.0.
+Supported Rowan v3 stone versions 3.7.0 and newer. tested through 3.7.0
+Supported non-Rowan stone versions 3.5.3 and older (with 20.04 the limiting factor)
+
 Greatly simplified version of GsDevKit_home
 1. bin directory of scripts implemented with superDoit and 3.6.5 for solo scripts and GsHostProcess ala the .solo battery test drivers used internally
 2. stone directory modeled after GsDevKit_home, but configurable for folks with different needs … some sort of template for definition of directory structure
@@ -13,6 +24,7 @@ GsDevKit_stones/bin/install.sh
 
 export PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH
 versionReport.solo
+export GSDEVKIT_STONES_ROOT=`pwd`/GsDevKit_stones
 export STONES_DATA_HOME=$XDG_DATA_HOME
 if [ "$STONES_DATA_HOME" = "" ] ; then
 	# on Mac ensure the directory you choose exists
@@ -82,8 +94,8 @@ createStone.solo --registry=$registryName --template=default --start gs_366 3.6.
 # create stone in custom stones directory
 createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --registry=$registryName --template=default --start cust_3.6.6 3.6.6 
 
-# create a seaside stone in default stones directory (tODE loaded)
-createStone.solo --registry=rogue --force --template=default_seaside --start seaside_370 3.7.0
+# create a tode stone in default stones directory (tODE loaded)
+createStone.solo --registry=rogue --force --template=default_tode --start seaside_370 3.7.0
 
 # create a rowan_v3 stone in default stones directory
 createStone.solo --registry=rogue --template=minimal_rowan --start rowan_370_v3 3.7.0_rowanv3
@@ -147,7 +159,7 @@ GDKStonesRegistry {
 		'devkit' : '$STONES_DATA_HOME/gsdevkit_stones/projectSets/rogue/devkit.ston'
 	},
 	#templates : {
-		'default_seaside' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_seaside.ston',
+		'default_tode' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_tode.ston',
 		'minimal_rowan' : '$STONES_DATA_HOME/gsdevkit_stones/templates/minimal_rowan.ston',
 		'default_rowan' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default_rowan.ston',
 		'default' : '$STONES_DATA_HOME/gsdevkit_stones/templates/default.ston',
