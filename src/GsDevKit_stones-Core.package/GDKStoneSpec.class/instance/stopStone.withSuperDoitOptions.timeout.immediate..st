@@ -37,7 +37,10 @@ stopStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean ti
                * 11 bad user or password
                * 12 specified user does not have privilege to stop the stone.
                * 13 stone not stopped; other users logged in. Use -i to override."
-			exitStatus := ex status ].
+			exitStatus := ex status.
+			stdout
+				nextPutAll: ex stderr;
+				lf ].
 	exitStatus = 0
 		ifTrue: [ stdout nextPutAll: (arrayOfOutputs at: 1)	"stdout" ]
 		ifFalse: [ 
