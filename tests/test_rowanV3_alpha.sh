@@ -34,16 +34,15 @@ else
 	# GSDEVKIT_STONES_ROOT is $STONES_HOME/git ... the location that GsDevKit_stones 
 	#	was cloned when superDoit was installed
 	export GSDEVKIT_STONES_ROOT=$STONES_HOME/git/GsDevKit_stones
-fi
-
-set +e
-ping -c 1 git.gemtalksystems.com
-status=$?
-set -e
-if [ $status = 0 ]; then
-	# in a GemStone development environment, so use the gs project sets
-	# which include the internal remotes (gs) using git.gemtalksystems.com
-	export urlType=gs
+	set +e
+	ping -c 1 git.gemtalksystems.com
+	status=$?
+	set -e
+	if [ $status = 0 ]; then
+		# in a GemStone development environment, so use the gs project sets
+		# which include the internal remotes (gs) using git.gemtalksystems.com
+		export urlType=gs
+	fi
 fi
 
 set +e
@@ -119,7 +118,6 @@ export stoneName=gs_$GS_VERS
 createStone.solo --registry=$registry --template=$template $stoneName $GS_VERS $*
 
 echo $PLATFORM
-set -x
 if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
 	echo "NATIVE CODE*************************************"
@@ -132,7 +130,6 @@ EOF
 	cat $STONES_HOME/$registry/stones/$stoneName/gem.conf
 	echo "NATIVE CODE*************************************"
 fi
-set +x
 
 #start stone
 startStone.solo --registry=$registry $stoneName $*
