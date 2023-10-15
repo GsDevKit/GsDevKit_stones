@@ -38,8 +38,11 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		add: ' ' , self stoneName , '_ldi';
 		yourself.
 	gemConfPath := (self rootDir / 'gem.conf') fullName.
-	self gemstoneVersion >= '3.7.0' asRwGemStoneVersionNumber
-		ifTrue: [ commandLine add: ' -E ' , gemConfPath ]
+	((self gemstoneVersionString beginsWith: '3.')
+		and: [ self gemstoneVersion >= '3.7.0' asRwGemStoneVersionNumber ])
+		ifTrue: [ 
+			"exclude 370_rowanV3-Alpha1, since it predates the new meaning -E introduced in 3.7.0 final"
+			commandLine add: ' -E ' , gemConfPath ]
 		ifFalse: [ 
 			"have to defined GEMSTONE_EXE_CONF to define location of gem.conf, if not already defined"
 			(System gemEnvironmentVariable: 'GEMSTONE_EXE_CONF')
@@ -58,7 +61,10 @@ startNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 				1 if the specified netldi is already running
 				2 if already running but the executable have been deleted
 				3 or above, an error occurred and the specified netldi was not started"
-			exitStatus := ex status ].
+			exitStatus := ex status.
+			stdout
+				nextPutAll: ex stderr;
+				lf ].
 	exitStatus = 0
 		ifTrue: [ stdout nextPutAll: output	"stdout" ]
 		ifFalse: [ 

@@ -34,7 +34,10 @@ stopNetldi: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 				0 on successful stop
 				1 if the specified netldi was not running
 				3 or above, an error occurred and the specified netldi could not be stopped"
-			exitStatus := ex status ].
+			exitStatus := ex status.
+			stdout
+				nextPutAll: ex stderr;
+				lf ].
 	exitStatus = 0
 		ifTrue: [ stdout nextPutAll: (arrayOfOutputs at: 1)	"stdout" ]
 		ifFalse: [ 
