@@ -81,11 +81,11 @@ downloadProductName: productName productDirectory: downloadDirName to: downloadP
 						lf.
 					self
 						executeCommandLine:
-							'/bin/cp -R ' , (volume / downloadDirName) fullName , ' '
+							'/bin/cp -R "' , (volume / downloadDirName) fullName , '" '
 								, (downloadDir / downloadDirName) fullName
 						stdout: nil
 						andInput: nil ]
 						ensure: [ 
 							volume
-								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach ' , volume fullName ] ] ] ] ]
+								ifNotNil: [ self executeCommandLine: '/usr/bin/hdiutil detach "' , volume fullName, '"' ] ] ] ] ]
 		ensure: [ self chdir: cwd ]
