@@ -37,7 +37,7 @@ else
 fi
 
 set +e
-ping git.gemtalksystems.com
+ping -c 1 git.gemtalksystems.com
 status=$?
 set -e
 if [ $status = 0 ]; then
@@ -163,9 +163,6 @@ if [ "$template" = "minimal_rowan" ] ; then
 	echo "installing GsCommands"
 	bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
     --projectsHome=product/examples/GsCommands/projectsHome $*
-	echo "installing Announcements"
-	bin/installProject.stone file:$STONES_HOME/$registry/common_projects/Announcements/rowan/specs/Announcements.ston \
-	  --projectsHome=$STONES_HOME/$registry/common_projects $*
 	echo "installing RemoteServiceReplication -- partial workaround for https://github.com/GemTalk/Rowan/issues/905"
 	$GSDEVKIT_STONES_ROOT/bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
 		--projectsHome=$STONES_HOME/$registry/common_projects $*
