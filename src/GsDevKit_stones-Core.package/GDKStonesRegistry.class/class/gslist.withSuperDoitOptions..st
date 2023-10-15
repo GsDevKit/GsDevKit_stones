@@ -51,7 +51,10 @@ gslist: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 						1 (No servers found)
 						2 (Stale lock(s) removed)
 						3, or 4  (Fatal error)"
-			exitStatus := ex status ].
+			exitStatus := ex status.
+			stdout
+				nextPutAll: ex stderr;
+				lf ].
 	exitStatus = 0
 		ifTrue: [ 
 			verbose

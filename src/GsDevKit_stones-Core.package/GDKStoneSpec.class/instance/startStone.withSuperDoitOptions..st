@@ -41,6 +41,9 @@ startStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 		do: [ :ex | 
 			| stoneLog |
 			stoneLog := stoneLogFile asFileReference.
+			stdout
+				nextPutAll: ex stderr;
+				lf.
 			stoneLog exists
 				ifFalse: [ ^ ex pass ].
 			stdout
