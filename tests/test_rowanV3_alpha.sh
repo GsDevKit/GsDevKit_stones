@@ -27,11 +27,23 @@ projectSet_pharo=rowanV3_pharo
 export urlType=ssh
 if [ "$CI" = "true" ]; then
 	# GSDEVKIT_STONES_ROOT defined in ci.yml
+	# https has to be used on github, because default ssh
+	#  credentials are not setup 
 	export urlType=https
 else
 	# GSDEVKIT_STONES_ROOT is $STONES_HOME/git ... the location that GsDevKit_stones 
 	#	was cloned when superDoit was installed
 	export GSDEVKIT_STONES_ROOT=$STONES_HOME/git/GsDevKit_stones
+fi
+
+set +e
+ping git.gemtalksystems.com
+status=$?
+set -e
+if [ $status = 0 ]; then
+	# in a GemStone development environment, so use the gs project sets
+	# which include the internal remotes (gs) using git.gemtalksystems.com
+	export urlType=gs
 fi
 
 set +e
