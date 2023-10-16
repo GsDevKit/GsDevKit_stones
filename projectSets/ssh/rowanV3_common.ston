@@ -3,18 +3,17 @@ GDKProjectSet {
 	#parentRegistryName : 'rogue',
 	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
 	#loadSpecs : {
-		'RemoteServiceReplication' : {
-			'revision' : 'main',
-			'gitUrls' : {
-				'origin' : 'git@github.com:GemTalk/RemoteServiceReplication.git'
-			}
-		},
 		'Announcements' : {
 			'revision' : 'main',
 			'gitUrls' : {
 				'origin' : 'git@github.com:GemTalk/Announcements.git'
 			}
-		}
+		},
+		'RemoteServiceReplication' : {
+			'revision' : 'main',
+			'gitUrls' : {
+				'origin' : 'git@github.com:GemTalk/RemoteServiceReplication.git'
+			}
 	},
-	#comment : 'The common repositories for Rowan v3 are used by both the 3.7.0/RowanV3 server and pharo clients.'
+	#comment : 'The common repositories for Rowan v3 are used by both the 3.7.0/RowanV3 server and pharo clients. Announcements is required by RemoteServiceReplication, so needs to be in the same projects home for Rowan.'
 }
