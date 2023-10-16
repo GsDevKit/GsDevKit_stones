@@ -154,10 +154,6 @@ if [ "$template" = "minimal_rowan" ] ; then
 
 	# turn on unicodeComparisonMode required by Jadeite
 	enableUnicodeCompares.topaz -lq
-	# install GsDevKit_stones using Rowan installProject.stone script
-	echo "installing GsDevKit_stones"
-	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
-  	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 	echo "installing GsCommands"
 	bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
     --projectsHome=product/examples/GsCommands/projectsHome $*
@@ -176,6 +172,11 @@ if [ "$template" = "minimal_rowan" ] ; then
 
 	# attach stone to the Rowan projects that are part of the base image
 	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
+
+	# install GsDevKit_stones using Rowan installProject.stone script
+	echo "installing GsDevKit_stones"
+	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
+  	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 fi
 
 # delete the stone
