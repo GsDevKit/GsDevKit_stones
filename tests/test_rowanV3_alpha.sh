@@ -18,6 +18,7 @@ else
 fi
 
 export GS_VERS=370_rowanv3-Alpha1
+export stoneName=rowanv3_370
 
 registry=test_rowanV3
 projectSet_common=rowanV3_common
@@ -100,6 +101,10 @@ registerProductDirectory.solo --registry=$registry --productDirectory=$STONES_HO
 downloadGemStone.solo --registry=$registry 3.7.0 $GS_VERS $*
 # update product list from shared product directory when a download is done by shared registry
 registerProduct.solo --registry=$registry --fromDirectory=$STONES_HOME/test_gemstone $*
+#
+# populate the clientlibs directory with 64 libraries for use by JfP
+#
+updateClientLibs.solo -r $registry $GS_VERS
 
 # create and register stones directory for test_rowanV3
 if [ ! -d $STONES_HOME/$registry/stones ]; then
@@ -114,7 +119,6 @@ registerStonesDirectory.solo --registry=$registry --stonesDirectory=$STONES_HOME
 template="minimal_rowan"
 
 # create a $GS_VERS Rowan stone and install GsDevKit_home
-export stoneName=gs_$GS_VERS
 createStone.solo --registry=$registry --template=$template $stoneName $GS_VERS $*
 
 echo $PLATFORM
