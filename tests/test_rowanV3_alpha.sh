@@ -89,22 +89,21 @@ cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_p
 # read -p "Stop after last cloneProjectsFromProjectSet"
 
 # create and register a product directory where GemStone product trees are kept.
-if [ ! -d $STONES_HOME/test_gemstone ]; then
-	mkdir $STONES_HOME/test_gemstone
+if [ ! -d $STONES_HOME/$registry/gemstone ]; then
+	mkdir $STONES_HOME/$registry/gemstone
 else
-	echo "reuse $STONES_HOME/test_gemstone for now"
-	# chmod -R +w $STONES_HOME/test_gemstone *
-	# rm -rf  $STONES_HOME/test_gemstone/*
+	echo "reuse $STONES_HOME/$registry/gemstone for now"
 fi
-registerProductDirectory.solo --registry=$registry --productDirectory=$STONES_HOME/test_gemstone $*
+registerProductDirectory.solo --registry=$registry --productDirectory=$STONES_HOME/$registry/gemstone $*
+# reference the already downloaded product trees in $STONES_HOME/gemstone
+registerProduct.solo -r $registry --fromDirectory=$STONES_HOME/gemstone
+
 # download $GS_VERS
 downloadGemStone.solo --registry=$registry 3.7.0 $GS_VERS $*
-# update product list from shared product directory when a download is done by shared registry
-registerProduct.solo --registry=$registry --fromDirectory=$STONES_HOME/test_gemstone $*
 #
-# populate the clientlibs directory with 64 libraries for use by JfP
+# populate the clientlibs directory with 64bit libraries for use by JfP
 #
-updateClientLibs.solo -r $registry $GS_VERS
+updateClientLibs.solo -r $registry $GS_VERS $*
 
 # create and register stones directory for test_rowanV3
 if [ ! -d $STONES_HOME/$registry/stones ]; then
@@ -155,8 +154,6 @@ if [ "$template" = "minimal_rowan" ] ; then
 
 	# turn on unicodeComparisonMode required by Jadeite
 	enableUnicodeCompares.topaz -lq
-	# attach stone to the Rowan projects that are part of the base image
-	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
 	# install GsDevKit_stones using Rowan installProject.stone script
 	echo "installing GsDevKit_stones"
 	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
@@ -164,12 +161,21 @@ if [ "$template" = "minimal_rowan" ] ; then
 	echo "installing GsCommands"
 	bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
     --projectsHome=product/examples/GsCommands/projectsHome $*
+
+	echo "installing Announcements -- hack until we fix up reguired projects in RowanClientServices"
+	$GSDEVKIT_STONES_ROOT/bin/installProject.stone file:$STONES_HOME/$registry/common_projects/Announcements/rowan/specs/Announcements.ston  \
+		--projectsHome=$STONES_HOME/$registry/common_projects $*
+
 	echo "installing RemoteServiceReplication -- partial workaround for https://github.com/GemTalk/Rowan/issues/905"
 	$GSDEVKIT_STONES_ROOT/bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
 		--projectsHome=$STONES_HOME/$registry/common_projects $*
+
 	echo "installing RowanClientServices"
 	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServices/rowan/specs/RowanClientServices.ston  \
 		--projectsHome=$STONES_HOME/$registry/gs_projects $*
+
+	# attach stone to the Rowan projects that are part of the base image
+	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
 fi
 
 # delete the stone
