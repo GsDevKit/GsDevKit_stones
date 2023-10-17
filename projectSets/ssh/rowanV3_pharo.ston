@@ -10,7 +10,7 @@ GDKProjectSet {
 			}
 		},
 		'JadeiteForPharo' : {
-			'revision' : 'main',
+			'revision' : 'dkh',
 			'gitUrls' : {
 				'origin' : 'git@github.com:GemTalk/JadeiteForPharo.git'
 			}
