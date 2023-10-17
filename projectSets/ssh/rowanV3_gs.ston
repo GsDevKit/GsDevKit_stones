@@ -21,12 +21,6 @@ GDKProjectSet {
 				'origin' : 'git@github.com:dalehenrich/superDoit.git'
 			}
 		},
-		'generateGs' : {
-			'revision' : '3.7.0',
-			'gitUrls' : {
-				'origin' : 'git@git.gemtalksystems.com:generateGs'
-			}
-		},
 		'FileSystemGs' : {
 			'revision' : 'gs-3.7.x',
 			'gitUrls' : {

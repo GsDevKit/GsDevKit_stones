@@ -52,7 +52,7 @@ GDKProjectSet {
 			}
 		},
 		'RowanClientServices' : {
-			'revision' : 'masterV3.0',
+			'revision' : 'ericV3.0_pharo',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:RowanClientServices',
 				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
