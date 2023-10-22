@@ -19,7 +19,7 @@ Greatly simplified version of GsDevKit_home
 
 ## Installation
 ``` bash
-git clone git@github.com:GsDevKit/GsDevKit_stones.git
+git clone git@github.com:GsDevKit/GsDevKit_stones.git -b v1.1.1
 GsDevKit_stones/bin/install.sh
 
 export PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH
