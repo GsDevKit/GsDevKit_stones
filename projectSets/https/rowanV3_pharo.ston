@@ -14,12 +14,6 @@ GDKProjectSet {
 			'gitUrls' : {
 				'origin' : 'https://github.com/GemTalk/JadeiteForPharo.git'
 			}
-		},
-		'RowanClientServices' : {
-				'revision' : 'ericV3.0_pharo',
-			'gitUrls' : {
-				'origin' : 'https://github.com/GemTalk/RowanClientServices.git'
-			}
 		}
 	},
 	#comment : 'The pharo repositories for Rowan v3 are used strictly by the RowanV3 pharo client. The server needs a special version of RowanClientServices (ericV3.0_pharo) to be used with a pharo client.'
