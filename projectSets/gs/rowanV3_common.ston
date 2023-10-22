@@ -6,13 +6,13 @@ GDKProjectSet {
 		'Announcements' : {
 			'revision' : 'main',
 			'gitUrls' : {
-				'origin' : 'https://github.com/GemTalk/Announcements.git'
+				'origin' : 'git@github.com:GemTalk/Announcements.git'
 			}
 		},
 		'RemoteServiceReplication' : {
 			'revision' : 'main',
 			'gitUrls' : {
-				'origin' : 'https://github.com/GemTalk/RemoteServiceReplication.git'
+				'origin' : 'git@github.com:GemTalk/RemoteServiceReplication.git'
 			}
 		}
 	},
