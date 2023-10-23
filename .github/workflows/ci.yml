@@ -126,7 +126,7 @@ jobs:
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_help.sh
         shell: bash
-      - name: run project sets
+      - name: run project set tests
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
@@ -153,7 +153,7 @@ jobs:
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_projectSets.sh
         shell: bash
-      - name: run default registry
+      - name: run default registry test
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
@@ -180,7 +180,7 @@ jobs:
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_defaultRegistry.sh
         shell: bash
-      - name: run rowanV3-alpha1
+      - name: run rowanV3-alpha1 test
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
@@ -207,7 +207,7 @@ jobs:
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
         shell: bash
-      - name: run tODE
+      - name: run tODE test
         run: |
           export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
           export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}

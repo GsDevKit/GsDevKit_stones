@@ -15,7 +15,7 @@ if [ ! -d $STONES_HOME/test_git ]; then
 	mkdir $STONES_HOME/test_git
 fi
 
-registryReport.solo --registry=$registry --ensure
+createRegistry.solo --registry=$registry --ensure
 
 set +e
 createProjectSet.solo --registry=$registry --projectSet=$projectSet --empty $*
