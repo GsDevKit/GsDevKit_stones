@@ -179,6 +179,10 @@ jobs:
 
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_defaultRegistry.sh
+          gslist.solo -lc
+          deleteRegistry.solo `hostname` -f
+          gslist.solo -l
+          
         shell: bash
       - name: run rowanV3-alpha1 test
         run: |
@@ -206,6 +210,9 @@ jobs:
 
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
+          gslist.solo -lc
+          deleteRegistry.solo test_rowanV3 -f
+          gslist.solo -l
         shell: bash
       - name: run tODE test
         run: |
@@ -233,6 +240,9 @@ jobs:
 
           export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_tode.sh
+          gslist.solo -lc
+          deleteRegistry.solo devkit -f
+          gslist.solo -l
         shell: bash
   slack-workflow-status:
     if: always()
