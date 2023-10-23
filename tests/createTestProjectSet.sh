@@ -15,18 +15,7 @@ if [ ! -d $STONES_HOME/test_git ]; then
 	mkdir $STONES_HOME/test_git
 fi
 
-set +e
-registryReport.solo --registry=$registry
-status=$?
-
-set -e
-
-if [ $status == 1 ]; then
-	echo "creating $registry registry"
-	createRegistry.solo $registry
-else
-	echo "registry $registry exists"
-fi
+registryReport.solo --registry=$registry --ensure
 
 set +e
 createProjectSet.solo --registry=$registry --projectSet=$projectSet --empty $*
