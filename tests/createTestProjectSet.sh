@@ -17,13 +17,7 @@ fi
 
 createRegistry.solo $registry --ensure
 
-set +e
 createProjectSet.solo --registry=$registry --projectSet=$projectSet --empty $*
-status=$?
-
-if [ $status == 1 ]; then
-	echo "project set $projectSet exists"
-fi
 
 if [ "$urlType" = "ssh" ] ; then
 	url1="git@github.com:GsDevKit/GsDevKit_stones.git"

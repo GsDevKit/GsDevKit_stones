@@ -3,7 +3,6 @@
 # test coverage for:
 #		registryReport.sol
 #		createRegistry.solo
-#		createProjectSet.solo
 #		updateProjectSet.solo
 #		cloneProjectsFromProjectSet.solo
 #		
