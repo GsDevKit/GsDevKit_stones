@@ -46,18 +46,7 @@ else
 	fi
 fi
 
-set +e
-echo "...ignore registryReport.solo error message, if one shows up ... error is anticipated part of registryReport.solo processing"
-registryReport.solo --registry=$registry
-status=$?
-set -e
-
-if [ $status == 1 ]; then
-	echo "creating $registry registry"
-	createRegistry.solo $registry
-else
-	echo "registry ($registry) exists"
-fi
+createRegistry.solo $registry --ensure
 
 createProjectSet.solo --registry=$registry --projectSet=$projectSet_common \
   --from=$GSDEVKIT_STONES_ROOT/projectSets/$urlType/rowanV3_common.ston $*

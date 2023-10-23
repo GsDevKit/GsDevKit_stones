@@ -31,19 +31,9 @@ else
 	export GSDEVKIT_STONES_ROOT=$STONES_HOME/test_git/GsDevKit_stones
 fi
 
-set +e
 defaultRegistryName=`hostname`
-echo "...ignore registryReport.solo error message, if one shows up ... error is anticipated part of registryReport.solo processing"
-registryReport.solo --registry=`hostname`
-status=$?
-set -e
 
-if [ $status == 1 ]; then
-	echo "creating default registry"
-	createRegistry.solo
-else
-	echo "default registry ($defaultRegistryName) exists"
-fi
+createRegistry.solo --ensure
 
 createProjectSet.solo --projectSet=$projectSet --empty $*
 

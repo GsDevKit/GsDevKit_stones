@@ -73,5 +73,5 @@ doit
 	registryName := self positionalArgs size = 0
 		ifTrue: [ (self globalNamed: 'System') hostname ]
 	  ifFalse: [ self positionalArgs at: 1 ].
-	^ registryClass newRegistryNamed: registryName
+	^ registryClass newRegistryNamed: registryName ensure: self ensure
 %
