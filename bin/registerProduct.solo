@@ -1,6 +1,7 @@
 #!/usr/bin/env superdoit_solo
 options
 {
+SuperDoitOptionalOptionWithNoArg long: 'ensure' short: 'e'.
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'productPath'.
@@ -33,6 +34,8 @@ OPTIONS
                   Directory where the subdirectories are GemStone product trees.
                   A reference to each of the product trees in the directory will be
                   added to <registry-name>.
+  --force         Override existing entries with new product path.
+  --ensure        If an entry already exists, so not override
 
 EXAMPLES
   $basename --help
@@ -67,19 +70,6 @@ registryName
 		ifNil: [ (self globalNamed: 'System') hostname ]
 		ifNotNil: [:value | value ].
 %
-method
-register: gemstoneVersion path: gemstonePath for: stonesRegistry
-	(stonesRegistry products at: gemstoneVersion ifAbsent: [])
-		ifNotNil: [:existingPath | 
-			self force 
-				ifFalse: [ 
-					self error: 'There is an existing path (', 
-						existingPath, 
-						') for the GemStone version ', 
-						gemstoneVersion, 
-						'. Use the --force option to override.', ' (', self basename, ')' ] ].
-	stonesRegistry products at: gemstoneVersion put: gemstonePath.
-%
 doit
 	| registryClass stonesRegistry gemstoneVersion gemstonePath |
 	self preDoitSpecLoad: [:spec |
@@ -92,14 +82,19 @@ doit
 			gemstoneVersion := self positionalArgs at: 1.
 			(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 				ifNotNil: [:existingPath | 
-					self force 
+					self ensure
+						ifTrue: [ 
+							"ignore incoming path, since all we want to do is make sure that it is defined"
+							gemstonePath := existingPath ]
 						ifFalse: [ 
-							self error: 'There is an existing path (', 
-								existingPath,
-								') for the GemStone version ', 
-								gemstoneVersion, 
-								'. Use the --force option to override.', ' (', self basename, ')' ] ].
-			self register: gemstoneVersion path: gemstonePath for: stonesRegistry ]
+							self force 
+								ifFalse: [ 
+									self error: 'There is an existing path (', 
+										existingPath,
+										') for the GemStone version ', 
+										gemstoneVersion, 
+										'. Use the --force option to override or --ensure option to use existing path.', ' (', self basename, ')' ] ] ].
+			stonesRegistry products at: gemstoneVersion put: gemstonePath ]
 		ifNil: [
 			self fromDirectory
 				ifNotNil: [:directory |
@@ -116,7 +111,10 @@ doit
 										ifTrue: [
 											gemstoneVersion := dirName copyFrom: productPrefix size to: dashIndex - 1.
 											(stonesRegistry products at: gemstoneVersion ifAbsent: [])
-												ifNil: [ self register: gemstoneVersion path: dir fullName for: stonesRegistry ] ] ] ] ]
+												ifNotNil: [
+													self force
+														ifTrue: [ stonesRegistry products at: gemstoneVersion put: dir fullName ] ]
+												ifNil: [ stonesRegistry products at: gemstoneVersion put: dir fullName ] ] ] ] ]
 				ifNil: [ self error: 'one of --productPath or --fromDirectory is required', ' (', self basename, ')' ] ].
 	stonesRegistry export.
 
