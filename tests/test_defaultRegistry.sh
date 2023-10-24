@@ -2,6 +2,7 @@
 #
 # test coverage for when --registry option is omitted (default registry name will be hostname):
 #		registryReport.sol
+#		registryQuery.solo
 #		createRegistry.solo
 #		createProjectSet.solo
 #		updateProjectSet.solo
@@ -81,6 +82,8 @@ downloadGemStone.solo $GS_VERS $*
 # update product list from shared product directory when a download is done by shared registry
 registerProduct.solo --fromDirectory=$STONES_HOME/test_gemstone $*
 
+productPath=`registryQuery.solo --product`
+echo "product path for ${GS_VERS}: $productPath"
 # create and register default stones directory for rowanV3
 if [ ! -d $STONES_HOME/test_stones ]; then
 	mkdir $STONES_HOME/test_stones
@@ -110,9 +113,11 @@ case "$GS_VERS" in
 esac
 # create a $GS_VERS Rowan stone and install GsDevKit_home
 export stoneName=gs_$GS_VERS
-createStone.solo --template=$template $stoneName $GS_VERS $*
+createStone.solo --ensure --template=$template $stoneName $GS_VERS $*
 
+createStone.solo --ensure --template=$template $stoneName $GS_VERS $*
 echo $PLATFORM
+
 set -x
 if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
