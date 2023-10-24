@@ -167,15 +167,13 @@ doit
 	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
 		ifTrue: [ 
 			self force
+				ifTrue: [
+					stonesRegistry destroyStoneStructureFor: stoneName ]
 				ifFalse: [ 
 					self ensure
-						ifTrue: [
-							"stone already exists ... leave as is ... start stone if desired"
-							self startTheStoneAndNetldi: stoneSpec.
-							^ stoneSpec ].
-					self error: 
-						'A stone named ', stoneName, ' already exists. Use --force to clean up.', ' (', self basename, ')'].
-			stonesRegistry destroyStoneStructureFor: stoneName ].
+						ifFalse: [
+							self error: 
+								'A stone named ', stoneName, ' already exists. Use --force to clean up.', ' (', self basename, ')'] ] ].
 	stoneSpec createStoneStructureUsing: stonesRegistry.
 	stoneSpec registryDir ensureCreateDirectory.
 	stoneSpec export.
