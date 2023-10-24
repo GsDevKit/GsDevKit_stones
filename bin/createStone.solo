@@ -1,7 +1,6 @@
 #!/usr/bin/env superdoit_solo
 options
 {
-SuperDoitOptionalOptionWithNoArg long: 'ensure' short: 'e'.
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitOptionalOptionWithNoArg long: 'start'.
 SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
@@ -12,11 +11,7 @@ SuperDoitOptionalOptionWithNoArg long: 'verbose' short: 'v'.
 %
 Usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem][-v | --verbose] \
-                [
-                   [-f | --force] |
-                   [-e | --ensure]
-                ]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-f | --force] [-v | --verbose] \
                 --root=<stone-directory> [--registry=<registry-name> | -r <registry-name>] \
                 --template=<template-name> <stone-name> <gemstone-version>
 
@@ -30,7 +25,6 @@ OPTIONS
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
   -f, --force   Delete the stone directory if it exists.
-  -e, --ensure  Ensure that the stone exists. Use it "as is". 
   -v, --verbose Verbose logging enabled.
   --registry=<registry-name> | -r <registry-name> 
                 <registry-name> is the name of the registry. Default is hostname.
@@ -41,7 +35,6 @@ EXAMPLES
   $basename --debugGem
   # extent0.dbf,  SystemUser
   $basename --force --registry=gsdevkit --template=minimal gs_366 3.6.6
-  $basename --ensure --registry=gsdevkit --template=minimal gs_366 3.6.6
   # extent0.rowan.dbf,  SystemUser
   $basename -f --registry=bosch --template=minimal_rowan rowan_366 3.6.6 
   # extent0.seaside.dbf, tODE installed, DataCurator
@@ -122,13 +115,6 @@ loadTode: stoneSpec
 		stdout: nil 
 		andInput: nil
 %
-method
-startTheStoneAndNetldi: stoneSpec
-	self start
-		ifTrue: [ 
-			stoneSpec startStone: self withSuperDoitOptions: false.
-			stoneSpec startNetldi: self withSuperDoitOptions: true ].
-%
 doit
 	| registryClass stonesRegistry gemstoneVersion stoneName rootDir stoneSpec stoneSpecClass |
 	self preDoitSpecLoad: [:spec | 
@@ -168,11 +154,6 @@ doit
 		ifTrue: [ 
 			self force
 				ifFalse: [ 
-					self ensure
-						ifTrue: [
-							"stone already exists ... leave as is ... start stone if desired"
-							self startTheStoneAndNetldi: stoneSpec.
-							^ stoneSpec ].
 					self error: 
 						'A stone named ', stoneName, ' already exists. Use --force to clean up.', ' (', self basename, ')'].
 			stonesRegistry destroyStoneStructureFor: stoneName ].
@@ -184,6 +165,9 @@ doit
 	stoneSpec class 
 		symbolicLink: stoneSpec registryPath 
 		linkName: stoneSpec rootDir / '.GDKStoneSpec.ston'.
-	self startTheStoneAndNetldi: stoneSpec.
+	self start
+		ifTrue: [ 
+			stoneSpec startStone: self withSuperDoitOptions: false.
+			stoneSpec startNetldi: self withSuperDoitOptions: true ].
 	^ stoneSpec
 %

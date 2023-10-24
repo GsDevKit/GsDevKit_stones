@@ -113,9 +113,7 @@ case "$GS_VERS" in
 esac
 # create a $GS_VERS Rowan stone and install GsDevKit_home
 export stoneName=gs_$GS_VERS
-createStone.solo --ensure --template=$template $stoneName $GS_VERS $*
 
-createStone.solo --ensure --template=$template $stoneName $GS_VERS $*
 echo $PLATFORM
 
 set -x
