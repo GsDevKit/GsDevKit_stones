@@ -2,7 +2,7 @@
 options
 {
 	SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
-	SuperDoitOptionalOptionWithRequiredArg long: 'product'.
+	SuperDoitOptionalOptionWithNoArg long: 'product'.
 	SuperDoitOptionalOptionWithNoArg long: 'stonesDirectory'.
 }
 %
@@ -39,9 +39,9 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename 
-  $basename --registry=bosch
-  $basename --registry=bosch --projectSet=dev
-  $basename --registry=bosch --template=minimal
+  $basename
+  $basename --registry=bosch --product
+  $basename --registry=bosch --stonesDirectory
   $basename -r bosch --stone=bosch_370
 -----
 %
