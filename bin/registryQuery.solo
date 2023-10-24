@@ -2,7 +2,7 @@
 options
 {
 	SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
-	SuperDoitOptionalOptionWithNoArg long: 'product'.
+	SuperDoitOptionalOptionWithRequiredArg long: 'product'.
 	SuperDoitOptionalOptionWithNoArg long: 'stonesDirectory'.
 }
 %
