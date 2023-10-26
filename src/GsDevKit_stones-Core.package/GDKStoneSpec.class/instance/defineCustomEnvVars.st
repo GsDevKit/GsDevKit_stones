@@ -11,8 +11,9 @@ defineCustomEnvVars
 						System gemEnvironmentVariable: varName put: valueStr ].
 					customenvRef exists
 						ifTrue: [
+							| stream |
 							"customenv file has precedence"
-							customenvRef readStreamDo: [:stream |
+							stream := PositionableStreamPortable on: customenvRef contents.
 								[ stream atEnd ] whileFalse: [
 										| line index keyAndValue |
 								 	line := stream nextLine trimBoth.
@@ -26,5 +27,5 @@ defineCustomEnvVars
 													" export at beginning of line"
 													line := line copyFrom: index + 'export ' size to: line size.
 													keyAndValue := line subStringsDelimitedBy: $=.
-													block value: (keyAndValue at: 1) value: (keyAndValue at: 2) ] ] ] ] ]
-						ifFalse: [ customenv keysAndValuesDo: block ] ] ]
+													block value: (keyAndValue at: 1) value: (keyAndValue at: 2) ] ] ] ] 
+						ifFalse: [ customenv keysAndValuesDo: block ] ]]
