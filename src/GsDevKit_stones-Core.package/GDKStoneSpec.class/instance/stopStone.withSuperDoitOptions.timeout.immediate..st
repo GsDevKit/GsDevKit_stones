@@ -7,8 +7,10 @@ stopStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean ti
 	stdout := superDoitScriptOrNil
 		ifNotNil: [ 
 			scriptPath := superDoitScriptOrNil scriptPath.
-			superDoitScriptOrNil timeout ifNotNil: [ :value | timeout := value asNumber ].
-			immediate := superDoitScriptOrNil immediate.
+			superDoitOptionsBoolean
+				ifTrue: [
+					superDoitScriptOrNil timeout ifNotNil: [ :value | timeout := value asNumber ].
+					immediate := superDoitScriptOrNil immediate ].
 			superDoitScriptOrNil stdout ]
 		ifNil: [ GsFile stdout ].
 	stdout
