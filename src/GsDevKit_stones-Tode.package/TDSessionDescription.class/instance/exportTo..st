@@ -2,5 +2,6 @@ accessing
 exportTo: fileRef
 	fileRef
 		writeStreamDo: [ :fileStream | 
-			fileStream truncate.
+			Rowan version >= ('3.0.0' asRwSemanticVersionNumber)
+				ifTrue: [fileStream truncate].
 			STON put: self onStreamPretty: fileStream ]

@@ -113,7 +113,8 @@ createStoneStructure: stoneSpec
 				lf ].
 	stoneRoot / '.topazini'
 		writeStreamDo: [ :fileStream | 
-			fileStream truncate.
+			Rowan version >= ('3.0.0' asRwSemanticVersionNumber)
+				ifTrue: [fileStream truncate].
 			fileStream
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;

@@ -18,7 +18,7 @@ newRegistryNamed: registryName ensure: ensure
 	stonesRegistry at: registryName put: stoneRegistry registryPath.
 	self configFile
 		writeStreamDo: [ :fileStream | 
-			Rowan version >= ('3.0.0' asRwGemStoneVersionNumber)
+			Rowan version >= ('3.0.0' asRwSemanticVersionNumber)
 				ifTrue: [ fileStream truncate ].
 			STON put: stonesRegistry onStreamPretty: fileStream ].
 	stoneRegistry export.
