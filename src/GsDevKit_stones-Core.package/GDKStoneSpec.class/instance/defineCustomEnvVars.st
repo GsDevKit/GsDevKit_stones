@@ -13,7 +13,7 @@ defineCustomEnvVars
 						ifTrue: [
 							| stream |
 							"customenv file has precedence"
-							stream := PositionableStreamPortable on: customenvRef contents.
+							stream := ReadStreamPortable on: customenvRef contents.
 								[ stream atEnd ] whileFalse: [
 										| line index keyAndValue |
 								 	line := stream nextLine trimBoth.
