@@ -7,7 +7,6 @@ defineCustomEnvVars
 					| customenvRef block | 
 					customenvRef := root asFileReference / 'customenv'.
 					block := [ :varName :valueStr | 
-						GsFile stdout nextPutAll: 'defineCustomEnvVars [1] ', varName printString , ' = ', valueStr printString; lf.
 						System gemEnvironmentVariable: varName put: valueStr ].
 					customenvRef exists
 						ifTrue: [
@@ -21,7 +20,6 @@ defineCustomEnvVars
 										ifFalse: [
 											"looking for 'export xxx=yyy'"
 											index := line indexOfSubCollection: 'export' startingAt: 1.
-											GsFile stdout nextPutAll: 'defineCustomEnvVars [2] ', line printString; lf.
 											(index > 0)
 												ifTrue: [ 
 													" export at beginning of line"
