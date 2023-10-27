@@ -85,7 +85,7 @@ downloadGemStone.solo $GS_VERS $*
 # update product list from shared product directory when a download is done by shared registry
 registerProduct.solo --fromDirectory=$STONES_HOME/test_gemstone $*
 
-productPath=`registryQuery.solo --product`
+productPath=`registryQuery.solo --product=$GS_VERS`
 echo "product path for ${GS_VERS}: $productPath"
 # create and register default stones directory for rowanV3
 if [ ! -d $STONES_HOME/test_stones ]; then
