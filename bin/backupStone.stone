@@ -1,0 +1,131 @@
+#!/usr/bin/env superdoit_stone
+options
+{
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithNoArg long: 'compressed'.
+SuperDoitOptionalOptionWithNoArg long: 'safely'.
+SuperDoitOptionalOptionWithRequiredArg long: 'stoneName'.
+SuperDoitOptionalOptionWithNoArg long: 'wait'.
+SuperDoitOptionalOptionWithNoArg long: 'validate'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem]
+                [
+                 [registry=<registry-name> | -r <registry-name>]
+                 [--stoneName=<stone-name>]
+                ] [ --wait ] [ --safely ] [ --compressed ] [ --validate ] 
+                <backup-file-path>
+
+DESCRIPTION
+  Backup up the named stone. Rowan only for the time being.
+
+OPTIONS
+  -h, --help    display usage message
+  -D, --debug   bring up topaz debugger in the event of a script error
+  <backup-file-path> 
+                path of backup file to be created.
+  --compressed  Compress the backup file.
+  --debugGem    If terminal is connected to stdout, bring up debugger. If not,
+                dump stack to stdout and wait for topaz to attach using topaz
+                DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
+  --stoneName=<stone-name>
+                Name of the stone 
+  --safely      Do not overwrite an existing backup.
+  --validate    After backup is complete validate that the backup is valid by reading
+                the backup file.
+  --wait        Wait for voting to complete before starting backup.
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+-----
+  $basename --registry=bosch --stoneName=bosch_370 backups/test_backup --wait
+  $basename -r bosch --stoneName=bosch_370 backups/test_backup --wait
+  $basename --stoneName=bosch_370 backups/test_backup --wait --compressed
+  $basename --stoneName=bosch_370 backups/test_backup --wait --compressed --validate
+  # in the stone directory
+  $basename backups/myBackup --wait --safely
+  $basename backups/myBackup --wait --safely --validate
+  $basename backups/myBackup --wait --safely --compressed
+  $basename backups/myBackup --wait --safely --compressed --validate
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+},
+RwLoadSpecificationV2 {
+	#projectName : 'GsCommands',
+	#projectSpecFile : 'rowan/project.ston',
+	#diskUrl : '$GEMSTONE/examples/GsCommands/projectsHome/GsCommands',
+	#componentNames : [
+		'Commands'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'UserGlobals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+registryName
+	^ self registry
+  	ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+doit
+	| registryClass stoneSpec backupPath |
+	self preDoitSpecLoad: [:spec | 
+		spec projectName = 'GsCommands'
+			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
+			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	
+	self stoneName
+		ifNotNil: [:theStoneName |
+			| stonesRegistry |
+			stonesRegistry := registryClass stonesRegistryNamed: self registryName.
+			stoneSpec := stonesRegistry stoneNamed: theStoneName ]
+		ifNil: [
+			| specFile |
+			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.
+			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') fromPath: specFile ifAbsent: [] ].
+	self positionalArgs size ~= 1 
+		ifTrue: [ self error: 'Expected a single positional argument: <backup-file-path>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
+	backupPath := self positionalArgs at: 1.
+	System abort.
+	^ stoneSpec
+			backupStone: backupPath 
+			waitForVotingToComplete: self wait 
+			systemIsVotingBlock: [ :sessionHoldingGcLock :voteState | 
+ 	        ^ 'Please wait until system is no longer voting and try again (voteState: '
+            , voteState printString , ' gc session id: '
+            , sessionHoldingGcLock printString
+            , '). Use --wait option to delay backup until voting is complete.' ]
+			safely: self safely 
+			compressed: self compressed 
+			validate: self validate.
+%

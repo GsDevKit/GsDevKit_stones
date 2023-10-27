@@ -1,0 +1,99 @@
+#!/usr/bin/env superdoit_topaz
+#
+# 
+
+set u SystemUser p swordfish
+
+login
+
+run
+"
+	Make a snapshot copy of the extent files:
+
+    1. Suspend checkpoints. By default, checkpoints will be suspended for 15 
+       minutes. If that may not be enough time, you can specify the number of 
+       minutes to suspend the checkpoints with the --suspend option.
+    2. Copy the extent files to the <snapshot-directory> (replacing the `.dbf` 
+       file extension with the given <snapshot-file-extension>.
+    3. Resume checkpoints. Since checkpoints are explicitly resumed after the
+       copies have been made, it does not hurt to be generous with the 
+       --suspend option.
+
+  The default snapshot directory is a sibling directory of the backup directory 
+  named 'snapshot'.
+"
+  | snapshots    suspendInMinutes safely snapshotExtension snapshotPath |
+suspendInMinutes := 15.
+safely := true.
+snapshotExtension := 'test.dbf'.
+snapshotPath := '/bosch1/users/dhenrich/_stones/bosch_36x/stones/gs_367/snapshots'.
+"=========================================================================="
+  [ 
+  System commitTransaction
+    ifFalse: [ self error: 'Commit conflicts: snapshot not taken' ].
+  (System checkpointStatus at: 1)
+    ifTrue: [ 
+			System resumeCheckpoints.
+"
+			self error: 'Checkpoints currently suspended. Please wait and try again.'
+"
+		].
+  GsFile stdout nextPutAll: 'Before startCheckpointSync: ' , DateAndTime now printString; lf.
+  System startCheckpointSync
+    ifFalse: [ 
+      self
+        error:
+          'Could not start a checkpoint, See comment in System class>>startCheckpointSync for possible reasons for failure.' ].
+  GsFile stdout nextPutAll: 'Before suspendCheckpointsForMinutes: ' , DateAndTime now printString; lf.
+  (System suspendCheckpointsForMinutes: suspendInMinutes)
+    ifFalse: [ 
+      self
+        error:
+          'Could not suspend checkpoints, See comment in System class>>suspendCheckpointsForMinutes: for possible reasons for failure.' ].
+  GsFile stdout nextPutAll: 'After suspendCheckpointsForMinutes: ' , DateAndTime now printString; lf.
+  snapshots := {}.
+  (SystemRepository fileNames
+    collect: [ :each | 
+      (each indexOf: $! startingAt: 1) = 0
+        ifTrue: [ each ]
+        ifFalse: [ 
+          | idx |
+          idx := each indexOf: $! startingAt: 2.
+          each copyFrom: idx + 1 to: each size ] ])
+    do: [ :extentPath | 
+      | extent extentName snapshotName snapshotFilePath performCopy |
+      snapshotName := extentName := (extentPath subStringsDelimitedBy: $/) last.
+      (extentName endsWith: '.dbf')
+        ifTrue: [ 
+          snapshotName := (extentName copyFrom: 1 to: extentName size - 3)
+            , snapshotExtension ].
+      snapshotFilePath := snapshotPath , '/' , snapshotName.
+      performCopy := safely
+        ifTrue: [ 
+          "account for nil return value"
+          ((GsFile existsOnServer: snapshotFilePath) == true) not ]
+        ifFalse: [ true ].
+      GsFile stdout lf.
+      performCopy
+        ifTrue: [ 
+          GsFile stdout nextPutAll:
+              '---Starting snapshot to ' , (extentPath , ' ' , snapshotFilePath) printString
+                , '(' , DateAndTime now asString , ')'; lf.
+          System performOnServer: 'cp ' , extentPath , ' ' , snapshotFilePath.
+          snapshots add: snapshotFilePath.
+          GsFile stdout nextPutAll:
+                '---Finishing snapshot ' , DateAndTime now asString , ' -- ' , snapshotFilePath; lf ]
+        ifFalse: [ 
+          GsFile stdout nextPutAll:
+              'The snapshot file exists, --safely present, copy skipped for: '
+                , snapshotFilePath printString; lf ] ].
+  (System checkpointStatus at: 1)
+    ifFalse: [ 
+      snapshots do: [ :snapshotFilePath | GsFile removeServerFile: snapshotFilePath ].
+      self
+        error:
+          'Checkpoints were resumed before the extent copies were completed. Extent copies have been deleted.' ] ]
+    ensure: [ System resumeCheckpoints ].
+  ^ snapshots
+%
+
