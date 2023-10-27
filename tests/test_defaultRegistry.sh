@@ -7,8 +7,11 @@
 #		createProjectSet.solo
 #		updateProjectSet.solo
 #		cloneProjectsFromProjectSet.solo
+#		newExtent.solo
+#		snapshot.topaz
 #		
 set -e
+set -x
 
 echo "***** test_defaultRegistry.sh *****"
 
@@ -113,10 +116,10 @@ case "$GS_VERS" in
 esac
 # create a $GS_VERS Rowan stone and install GsDevKit_home
 export stoneName=gs_$GS_VERS
+createStone.solo --template=$template $stoneName $GS_VERS $*
 
 echo $PLATFORM
 
-set -x
 if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
 	echo "NATIVE CODE*************************************"
@@ -129,7 +132,6 @@ EOF
 	cat $STONES_HOME/test_stones/stones/$stoneName/gem.conf
 	echo "NATIVE CODE*************************************"
 fi
-set +x
 
 #start stone
 startStone.solo $stoneName $*
