@@ -7,11 +7,9 @@
 #		createProjectSet.solo
 #		updateProjectSet.solo
 #		cloneProjectsFromProjectSet.solo
-#		newExtent.solo
-#		snapshot.topaz
 #		
 set -e
-set -x
+# set -x
 
 echo "***** test_defaultRegistry.sh *****"
 
