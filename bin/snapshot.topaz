@@ -5,6 +5,9 @@
 set u SystemUser p swordfish
 
 login
+run
+GsFile stdout nextPutAll: 'hi'; lf.
+%
 
 run
 "
@@ -22,11 +25,38 @@ run
   The default snapshot directory is a sibling directory of the backup directory 
   named 'snapshot'.
 "
-  | snapshots    suspendInMinutes safely snapshotExtension snapshotPath |
+  | scriptArgIndex args snapshots suspendInMinutes safely snapshotExtension snapshotPath optionMap |
+args := System commandLineArguments.
 suspendInMinutes := 15.
 safely := true.
-snapshotExtension := 'test.dbf'.
-snapshotPath := '/bosch1/users/dhenrich/_stones/bosch_36x/stones/gs_367/snapshots'.
+scriptArgIndex := args indexOf: '--'.
+scriptArgIndex > 0
+	ifTrue: [
+		| block |
+		block := [:optionString :theOption :map |
+			| index theArg |
+			theArg := '--', theOption, '='.
+			(index := theArg findString: optionString startingAt: 1) > 0
+				ifTrue: [
+					| stream value |
+					stream := ReadStream on: (theArg copyFrom: index + optionString size to: theArg size).
+					value := stream upTo: Character space.
+					map at: optionString put: value ] ]. 
+		args := args copyFrom: scriptArgIndex + 1 to: args size.
+		optionMap := Dictionary new.
+		args do: [:each | 
+				block value: 'suspend' value: each value: optionMap.	
+				block value: 'safely' value: each value: optionMap.	
+				block value: 'extension' value: each value: optionMap.	
+				block value: 'snapshotPath' value: each value: optionMap ].
+		optionMap at: 'safely' ifPresent: [:val | safely := val	]. 
+		optionMap at: 'suspend' ifPresent: [:val | suspendInMinutes := val asNumber	]. 
+		optionMap at: 'extension' ifPresent: [:val | snapshotExtension := val	]. 
+		optionMap at: 'snapshotPath' ifPresent: [:val | snapshotPath := val	] ]
+	ifFalse: [
+self halt.
+		snapshotExtension := 'test.dbf'.
+		snapshotPath := '/bosch1/users/dhenrich/_stones/bosch_36x/stones/gs_367/snapshots' ].
 "=========================================================================="
   [ 
   System commitTransaction
