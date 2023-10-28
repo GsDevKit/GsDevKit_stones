@@ -1,0 +1,123 @@
+#!/usr/bin/env superdoit_stone
+options
+{
+SuperDoitOptionalOptionWithRequiredArg long: 'extension' default: '.dbf'.
+SuperDoitOptionalOptionWithNoArg long: 'safely'.
+SuperDoitOptionalOptionWithRequiredArg long: 'suspend' default: '15'.
+}
+%
+usage
+-----
+USAGE 
+  $basename [--help | -h] [--debug | -D]  [--debugGem] <snapshot-directory> \
+            [--safely] [suspend=<time-in-minutes>] [--extension=<snapshot-extension>]
+
+DESCRIPTION
+  Make a snapshot of the stone's current extent0.dbf. Suspend checkpoints for 
+  <time-in-minutes>, copy the extent to the <snapshot-directory> replacing the 
+  .dbf extension with <snapshot-extension>, resume checkpoints.
+
+  This script must be run in stone's directory.
+
+OPTIONS
+  -D, --debug  bring up topaz debugger in the event of a script error.
+
+  --debugGem   If terminal is connected to stdout, bring up debugger.  If not, 
+               dump stack to stdout and wait for topaz to attach using topaz 
+               DEBUGGEM command.
+
+  <snapshot-directory> 
+               Path to the directory where the snapshot will be copied.
+
+  --safely     If used, the script will NOT over write a snapshot with th same
+               name in the snapshot directory
+
+  --suspend=<time-in-minutes>
+               By default, checkpoints are suspended for 15 minutes. If that time
+               isn't sufficient to complete the copy, an alternate time may be
+               specified.
+
+  --extension=<snapshot-extension>
+               By default, a .dbf extension is used, an alternate extension with
+               additional identifying info may be specified.
+ 
+EXAMPLES
+  $basename --help
+  $basename -h
+  $basename -D
+  $basename snapshots --extension=`date +%m-%d-%Y_%H:%M:%S`.dbf
+
+-----
+%
+method
+suspendCheckpoints
+  self stdout nextPutAll: 'Before startCheckpointSync: ' , DateAndTime now printString; lf.
+  System startCheckpointSync
+    ifFalse: [ 
+      self
+        error:
+          'Could not start a checkpoint, See comment in System class>>startCheckpointSync for possible reasons for failure.' ].
+  self stdout nextPutAll: 'Before suspendCheckpointsForMinutes: ' , DateAndTime now printString; lf.
+  (System suspendCheckpointsForMinutes: self suspend asNumber)
+    ifFalse: [ 
+      self
+        error:
+          'Could not suspend checkpoints, See comment in System class>>suspendCheckpointsForMinutes: for possible reasons for failure.' ].
+  self stdout nextPutAll: 'After suspendCheckpointsForMinutes: ' , DateAndTime now printString; lf.
+%
+doit
+	"This script may be run against a server that does not have Rowan installed ...using old fashioned file manipulation"
+	| snapshots snapshotPath |
+	self positionalArgs size ~= 1
+		ifTrue: [ self error: 'Expected a single positional argument <snapshot-directory>' ].
+	snapshotPath := self positionalArgs at: 1.
+  (System checkpointStatus at: 1)
+    ifTrue: [
+			self error: 'Checkpoints currently suspended. Please wait and try again.' ].
+	[
+    self suspendCheckpoints.
+    snapshots := {}.
+    (SystemRepository fileNames
+      collect: [ :each | 
+        (each indexOf: $! startingAt: 1) = 0
+          ifTrue: [ each ]
+          ifFalse: [ 
+            | idx |
+            idx := each indexOf: $! startingAt: 2.
+            each copyFrom: idx + 1 to: each size ] ])
+      do: [ :extentPath | 
+        | extent extentName snapshotName snapshotFilePath performCopy |
+        snapshotName := extentName := (extentPath subStringsDelimitedBy: $/) last.
+        (extentName endsWith: '.dbf')
+          ifTrue: [ 
+            snapshotName := (extentName copyFrom: 1 to: extentName size - 3)
+              , self extension ].
+        snapshotFilePath := snapshotPath , '/' , snapshotName.
+        performCopy := self safely
+          ifTrue: [ 
+            "account for nil return value"
+            ((GsFile existsOnServer: snapshotFilePath) == true) not ]
+          ifFalse: [ true ].
+        self stdout lf.
+        performCopy
+          ifTrue: [ 
+            self stdout nextPutAll:
+                '---Starting snapshot to ' , (extentPath , ' ' , snapshotFilePath) printString
+                  , '(' , DateAndTime now asString , ')'; lf.
+            System performOnServer: 'cp ' , extentPath , ' ' , snapshotFilePath.
+            snapshots add: snapshotFilePath.
+            self stdout nextPutAll:
+                  '---Finishing snapshot ' , DateAndTime now asString , ' -- ' , snapshotFilePath; lf ]
+          ifFalse: [ 
+            self stdout nextPutAll:
+                'The snapshot file exists, --safely present, copy skipped for: '
+                  , snapshotFilePath printString; lf ] ].
+    (System checkpointStatus at: 1)
+      ifFalse: [ 
+        snapshots do: [ :snapshotFilePath | GsFile removeServerFile: snapshotFilePath ].
+        self
+          error:
+            'Checkpoints were resumed before the extent copies were completed. Extent copies have been deleted.' ] ]
+    ensure: [ System resumeCheckpoints ].
+^ self noResult
+%
