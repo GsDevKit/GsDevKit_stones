@@ -120,4 +120,6 @@ createStoneStructure: stoneSpec
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
 				nextPutAll: 'set u ' , userId , ' p ' , password;
-				lf ]
+				lf;
+				nextPutAll: 'set singlecolumn on';
+				lf  ]
