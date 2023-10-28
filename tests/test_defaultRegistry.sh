@@ -138,6 +138,9 @@ pushd $STONES_HOME/test_stones/stones
 	# test snapshot.stone -- snapshot.stone must be run in the stone directory
 	#   this script is expected to be run in non-Rowan extents and cannot load
 	#   the GsDevKit_stones support code (right now)
+ls -altr
+which superdoit_stone
+cat `which superdoit_stone`
 	if [ ! -d "snapshots" ]; then
 		mkdir snapshots
 	fi
