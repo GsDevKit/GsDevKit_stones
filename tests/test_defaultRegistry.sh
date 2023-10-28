@@ -134,7 +134,7 @@ fi
 #start stone
 startStone.solo $stoneName $*
 
-pushd $STONES_HOME/test_stones/stones
+pushd $STONES_HOME/test_stones/stones/$stoneName
 	# test snapshot.stone -- snapshot.stone must be run in the stone directory
 	#   this script is expected to be run in non-Rowan extents and cannot load
 	#   the GsDevKit_stones support code (right now)
