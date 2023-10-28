@@ -141,8 +141,8 @@ gslist.solo -l
 
 if [ "$template" = "minimal_rowan" ] ; then
 	cd $STONES_HOME/$registry/stones/$stoneName
-
-	backupStone.stone --wait backups/test_backup_2 --compressed --safely --validate
+		
+	backupStone.stone --wait test_backup_2.dbf --compressed --safely --validate
 
 	# turn on unicodeComparisonMode required by Jadeite
 	enableUnicodeCompares.topaz -lq
