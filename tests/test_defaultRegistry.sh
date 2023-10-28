@@ -138,16 +138,13 @@ pushd $STONES_HOME/test_stones/stones/$stoneName
 	# test snapshot.stone -- snapshot.stone must be run in the stone directory
 	#   this script is expected to be run in non-Rowan extents and cannot load
 	#   the GsDevKit_stones support code (right now)
-ls -altr
-which superdoit_stone
-cat `which superdoit_stone`
 	if [ ! -d "snapshots" ]; then
 		mkdir snapshots
 	fi
 	snapshot.stone --extension=`date +%m-%d-%Y_%H:%M:%S`.dbf snapshots --safely $*
+	# should remove the requirement for -r ...
+	newExtent.solo -r $defaultRegistryName -e snapshots/*.dbf $stoneName $*
 popd
-# should remove the requirement for -r ...
-newExtent.solo -r $defaultRegistryName -e snapshots/*.dbf $stoneName $*
 
 # Add ROWAN_PROJECTS_HOME env var to point to the git directory where git repositories
 #  used by this stone reside
