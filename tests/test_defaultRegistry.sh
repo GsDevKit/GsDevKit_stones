@@ -134,6 +134,14 @@ fi
 #start stone
 startStone.solo $stoneName $*
 
+# test snapshot.stone
+if [ ! -d "snapshots" ]; then
+	mkdir snapshots
+fi
+snapshot.stone --extension=`date +%m-%d-%Y_%H:%M:%S`.dbf snapshots --safely $*
+# should remove the requirement for -r ...
+newExtent.solo -r defaultRegistryName -e snapshots/*.dbf $stoneName $*
+
 # Add ROWAN_PROJECTS_HOME env var to point to the git directory where git repositories
 #  used by this stone reside
 # restart netldi, so env var available to JadeiteForPharo
