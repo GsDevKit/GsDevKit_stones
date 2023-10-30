@@ -51,6 +51,12 @@ GDKProjectSet {
 				'origin' : 'https://github.com/dalehenrich/rb.git'
 			}
 		},
+		'Seaside' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'https://github.com/SeasideSt/Seaside.git'
+			}
+		},
 		'zinc' : {
 			'revision' : 'gs_master',
 			'gitUrls' : {
