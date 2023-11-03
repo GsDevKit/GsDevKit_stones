@@ -1,0 +1,108 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitOptionalOptionWithRequiredArg long: 'create' short: 'c'.
+SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
+SuperDoitOptionalOptionWithNoArg long: 'noTode' short: 'g'.
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithRequiredArglong: 'source' short: 's'.
+SuperDoitOptionalOptionWithRequiredArglong: 'sourceStoneName' short: 'n'.
+
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                [--registry=<registry-name> | -r <registry-name>] \
+                (
+                     --source=<source-extent-path> | -s <source-extent-path> \
+                  |
+                	  --sourceStoneName=<source-stone-name> | -n <source-stone-name> \
+                )
+                [-g | --noTode] \
+                <target-stone-name> \
+                [
+                  (-c <target-gemstone-version> | --create=<target-gemstone-version>) \
+                  ( -f | --force ) \             
+                ]
+
+DESCRIPTION
+  Initiate a seaside upgrade of the extent from <stone-name> in <registry-name> or the extent specified by <source-extent-path>. If <source-stone-name> is specified, then <stone-name> is shut down before it's extent is copied.
+
+  The upgrade is performed in <target-stone-name>. If <target-stone-name> does not already exist in <registry-name> it is created using <target-gemstone-version>. The --force option may be used to recreate <target-stone-name> from scratch. If <target-stone-name> exists, then it will be shut down before the extent to be upgraded is copied into it's extent directory.
+
+OPTIONS
+  -h, --help    display usage message
+  -D, --debug   bring up topaz debugger in the event of a script error
+  --debugGem    If terminal is connected to stdout, bring up debugger. If not,
+                dump stack to stdout and wait for topaz to attach using topaz
+                DEBUGGEM command.
+  -c, --create  
+  -f, --force   Delete the stone directory if it exists.
+  -g, --noTode  Do not load tODE into <target-stone-name>
+  --registry=<registry-name> | -r <registry-name> 
+                <registry-name> is the name of the registry. Default is hostname.
+  --sourceStoneName=<source-stone-name>
+  <target-stone-name>
+  --toVersion=<target-gemstone-version> | -v <target-gemstone-version>
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+  $basename -r bosch -s snapshots/extent0.dbf gs_367 -c 3.6.7
+  $basename -r bosch -s snapshots/extent0.dbf gs_367
+  $basename -r bosch -n gs_358 gs_367 -f -c 3.6.7
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+},
+RwLoadSpecificationV2 {
+	#projectName : 'GsCommands',
+	#projectSpecFile : 'rowan/project.ston',
+	#diskUrl : '$GEMSTONE/examples/GsCommands/projectsHome/GsCommands',
+	#componentNames : [
+		'Commands'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'UserGlobals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+doit
+	| registryClass stonesRegistry gemstoneVersion stoneName rootDir stoneSpec stoneSpecClass |
+	self preDoitSpecLoad: [:spec | 
+		spec projectName = 'GsCommands'
+			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
+			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
+%

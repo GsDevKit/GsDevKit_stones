@@ -135,36 +135,14 @@ doit
 				self positionalArgs size printString, ' (', self basename, ')' ].
 	stoneName := self positionalArgs at: 1.
 	gemstoneVersion := self positionalArgs at: 2.
-	stoneSpecClass := self globalNamed: 'GDKStoneSpec'.
-	stoneSpec := stoneSpecClass
-		newNamed: stoneName 
-		rootDirectory: rootDir / stoneName
-		directorySpecName: self template 
-		gemstoneVersionString: gemstoneVersion.
-	stoneSpec
-		parentRegistryName: self registryName;
-		parentRegistryPath: 
-			'$', 
-			(self globalNamed: 'GDKGsDevKit_stonesBase') dataHomeEnvVar, 
-			'/' , 
-			(stonesRegistry registryFile relativeTo: stonesRegistry class base_data_home) 
-				fullName;
-		yourself.
-	(stoneSpec registryFile exists or: [stoneSpec rootDir exists])
-		ifTrue: [ 
-			self force
-				ifFalse: [ 
-					self error: 
-						'A stone named ', stoneName, ' already exists. Use --force to clean up.', ' (', self basename, ')'].
-			stonesRegistry destroyStoneStructureFor: stoneName ].
-	stoneSpec createStoneStructureUsing: stonesRegistry.
-	stoneSpec registryDir ensureCreateDirectory.
-	stoneSpec export.
-	stonesRegistry stones at: stoneName put: stoneSpec registryPath.
-	stonesRegistry export.
-	stoneSpec class 
-		symbolicLink: stoneSpec registryPath 
-		linkName: stoneSpec rootDir / '.GDKStoneSpec.ston'.
+	stoneSpec := (self globalNamed: 'GDKScriptCreateStone')
+		createStone: stoneName
+		stonesRegistry:
+		stoneName:
+		stoneDirectoryTemplate: self template
+		gemstoneVersion: gemstoneVersion
+		force: self force
+		script: self.
 	self start
 		ifTrue: [ 
 			stoneSpec startStone: self withSuperDoitOptions: false.
