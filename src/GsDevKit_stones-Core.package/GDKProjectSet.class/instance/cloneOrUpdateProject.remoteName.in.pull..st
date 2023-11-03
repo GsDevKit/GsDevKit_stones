@@ -43,8 +43,13 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 				ifFalse: [ 
 					pull
 						ifTrue: [ 
-							"GIT SWITCH
-								GIT PULL"
+							"GIT FETCH
+								GIT SWITCH
+									GIT PULL"
+							Transcript
+								cr;
+								show: '  Fetch  --all '.
+							gitTool gitfetchIn: gitProjectRef with: ' --all'.
 							gitTool
 								performGitCommand: 'switch'
 								in: gitProjectRef fullName
