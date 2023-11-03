@@ -136,7 +136,7 @@ doit
 	stoneName := self positionalArgs at: 1.
 	gemstoneVersion := self positionalArgs at: 2.
 	stoneSpec := (self globalNamed: 'GDKScriptCreateStone')
-		createStone: rootDir / stoneName
+		createStone: rootDir
 		stonesRegistry: stonesRegistry
 		stoneName: stoneName
 		stoneDirectoryTemplate: self template
