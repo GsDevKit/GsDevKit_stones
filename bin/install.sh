@@ -1,9 +1,7 @@
 #! /usr/bin/env bash
 
-SUPERDOIT_BRANCH=v4.1
-
-git clone --branch $SUPERDOIT_BRANCH git@github.com:dalehenrich/superDoit.git &&
-cd superDoit/bin &&
+git clone git@github.com:dalehenrich/superDoit.git -b v4.1
+cd superDoit/bin
 ./install.sh
 
 export PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH
