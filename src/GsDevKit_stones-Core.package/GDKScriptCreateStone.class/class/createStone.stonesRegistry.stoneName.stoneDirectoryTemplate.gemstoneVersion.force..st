@@ -1,6 +1,6 @@
 scripts
 createStone: stonesRootDir stonesRegistry: stonesRegistry stoneName: stoneName stoneDirectoryTemplate: templateName gemstoneVersion: gemstoneVersionString force: force
-	^ self
+	^ self new
 		createStone: stonesRootDir
 		stonesRegistry: stonesRegistry
 		stoneName: stoneName

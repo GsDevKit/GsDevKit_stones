@@ -28,6 +28,10 @@ OPTIONS
   -v, --verbose Verbose logging enabled.
   --registry=<registry-name> | -r <registry-name> 
                 <registry-name> is the name of the registry. Default is hostname.
+  --template=<template-name>
+                A <template-name> is required to define the layout of the stone 
+                directory. The name should be chosen from the list of templates 
+                in the registry. (see registryReport.solo -r <registry-name)
 
 EXAMPLES
   $basename --help

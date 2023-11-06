@@ -4,10 +4,11 @@ options
 SuperDoitOptionalOptionWithRequiredArg long: 'create' short: 'c'.
 SuperDoitOptionalOptionWithNoArg long: 'force' short: 'f'.
 SuperDoitOptionalOptionWithNoArg long: 'noTode' short: 'g'.
+SuperDoitOptionalOptionWithNoArg long: 'noConf'.
 SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
-SuperDoitOptionalOptionWithRequiredArglong: 'source' short: 's'.
-SuperDoitOptionalOptionWithRequiredArglong: 'sourceStoneName' short: 'n'.
-
+SuperDoitOptionalOptionWithRequiredArg long: 'source' short: 's'.
+SuperDoitOptionalOptionWithRequiredArg long: 'sourceStoneName' short: 'n'.
+SuperDoitOptionalOptionWithRequiredArg long: 'template'.
 }
 %
 Usage
@@ -19,11 +20,12 @@ USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
                   |
                 	  --sourceStoneName=<source-stone-name> | -n <source-stone-name> \
                 )
-                [-g | --noTode] \
+                [-g | --noTode] \ [--noConf] \
                 <target-stone-name> \
                 [
                   (-c <target-gemstone-version> | --create=<target-gemstone-version>) \
-                  ( -f | --force ) \             
+                  ( -f | --force ) \
+                  ( --template=<template-name>)             
                 ]
 
 DESCRIPTION
@@ -40,10 +42,17 @@ OPTIONS
   -c, --create  
   -f, --force   Delete the stone directory if it exists.
   -g, --noTode  Do not load tODE into <target-stone-name>
+  --noConf      Do not copy the gem.conf and system.conf files from <source-stone-name>,
+                if <source-stone-name> is specified.
   --registry=<registry-name> | -r <registry-name> 
                 <registry-name> is the name of the registry. Default is hostname.
-  --sourceStoneName=<source-stone-name>
+  --source=<source-extent-path> | -s <source-extent-path>
+  --sourceStoneName=<source-stone-name> | -n <source-stone-name>
   <target-stone-name>
+                Name of the stone to do the upgrade in.
+  --template=<template-name>
+                Name of the stone directory template to be used, if the stone is to
+                be created from scratch.
   --toVersion=<target-gemstone-version> | -v <target-gemstone-version>
 
 EXAMPLES
@@ -91,18 +100,123 @@ RwLoadSpecificationV2 {
 }
 ]
 %
+instvars
+stonesRegistry
+sourceExtentDir
+targetStoneName
+targetGemStoneVersionString
+targetTemplateName
+targetStoneSpec
+%
+method
+targetStoneName
+	^ self positionalArgs at: 1
+%
+method
+confirmToProceed
+	self stdout lf; 
+		nextPutAll: 'Performing a GsDevKit_stones upgrade to GemStone version ', targetGemStoneVersionString printString, ' using the extent '.
+	self sourceStoneName
+		ifNil: [
+			self stdout lf; nextPutAll: sourceExtentDir fullName, '.' ]
+		ifNotNil: [:value | 
+			self stdout lf; nextPutAll: 'from the stone ', value printString, '.' ].
+	self stdout
+		lf; lf;
+		nextPutAll: 'The upgrade will be performed in the stone ', self targetStoneName printString;
+		nextPutAll: ' in the registry ', stonesRegistry name printString, ':
+
+  1. executes the downloadGemStone.solo to install GemStone $gsvers
+  2. executes the createStone.solo to create the ', self targetStoneName printString, ' stone
+  3. copy the extent0.dbf file from ', self sourceStoneName printString, ' to ', self targetStoneName printString, '
+  4. create upgradeLog directory in ', self targetStoneName printString, 'directory
+  5. copy gem.conf and system.conf files from ', self sourceStoneName printString, ', unless --noConf option specified
+  6. executes the \$GEMSTONE/bin/upgradeImage script
+  7. executes the \$GEMSTONE/seaside/bin/upgradeSeasideImage script
+  8. executes the \$GS_SERVER/bin/todeLoad in $targetStoneName stone
+     to complete the upgrade process, unless -g option specified.
+  9. perform post-upgrade tasks, unless -g option specified.
+
+If an error occurs during execution of this script, the details of the error are
+available in the topazerrors.log file in the ', self targetStoneName printString, '/upgradeLog
+directory or on stdout.
+
+Press the return key to continue...
+'; lf.
+	GsFile stdin next
+%
 method
 registryName
 	^ self registry
 		ifNil: [ (self globalNamed: 'System') hostname ]
 		ifNotNil: [:value | value ].
 %
+method
+handleOptions
+	| registryClass |
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
+	self source
+		ifNotNil: [:value | sourceExtentDir := value asFileReference ]
+		ifNil: [
+			| sourceStoneSpec |
+			self sourceStoneName
+				ifNil: [ self error: 'One of either --source or --sourceStoneName must be specified' ]
+				ifNotNil: [ :value |
+					sourceStoneSpec := stonesRegistry 
+						stoneNamed: value
+						ifAbsent: [ self error: 'The stone name ', value printString, ' does not exist in the registry ', stonesRegistry name printstring ].
+					sourceExtentDir :=  sourceStoneSpec extents asFileReference / ' .extent0.dbf'.
+					targetTemplateName := sourceStoneSpec stoneDirectorySpecName ] ].
+	sourceExtentDir exists 
+		ifFalse: [ self error: 'The source extent file ', sourceExtentDir fullName printString, ' does not exist' ].
+	self positionalArgs size ~= 1
+		ifTrue: [ self error: 'Expect a single positional argument <target-stone-name>' ].
+	targetStoneName := self positionalArgs at: 1.
+	(stonesRegistry stoneNamed: targetStoneName ifAbsent: [ ])
+		ifNotNil: [ :value |
+			targetStoneSpec := value.
+			targetGemStoneVersionString := targetStoneSpec gemstoneVersion ]
+		ifNil: [
+			targetGemStoneVersionString := self create
+				ifNotNil: [:theVersionString |
+						targetTemplateName 
+							ifNil: [ 
+								self template
+									ifNotNil: [ :value | targetTemplateName := value ]
+                  ifNil: [ self error: 'The --template option is required to create a stone from scratch' ] ].
+						theVersionString ]
+				ifNil: [ 
+					self error: 'The target stone: ', targetStoneName, ' does not exist. The --create option must be used, if you want the stone created for you.'].
+			 ].
+%
 doit
-	| registryClass stonesRegistry gemstoneVersion stoneName rootDir stoneSpec stoneSpecClass |
 	self preDoitSpecLoad: [:spec | 
 		spec projectName = 'GsCommands'
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
 			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
-	registryClass := (self globalNamed: 'GDKRegistry').	
-	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
+	self handleOptions.
+	self confirmToProceed.
+	targetStoneSpec
+		ifNil: [
+			targetStoneSpec := (self globalNamed: 'GDKScriptCreateStone')
+				createStone: stonesRegistry stonesDirectory asFileReference 
+				stonesRegistry: stonesRegistry 
+				stoneName: targetStoneName 
+				stoneDirectoryTemplate: targetTemplateName 
+				gemstoneVersion: targetGemStoneVersionString 
+				force: self force
+				script: self ]
+		ifNotNil: [
+			self force
+				ifTrue: [ 
+					targetStoneSpec := (self globalNamed: 'GDKScriptCreateStone')
+						createStone: targetStoneSpec root
+						stonesRegistry: stonesRegistry 
+						stoneName: targetStoneName 
+						stoneDirectoryTemplate: targetStoneSpec stoneDirectorySpecName name 
+						gemstoneVersion: targetStoneSpec gemStoneVersionString 
+						force: true
+						script: self ] ].
+	^ self noResult
 %
