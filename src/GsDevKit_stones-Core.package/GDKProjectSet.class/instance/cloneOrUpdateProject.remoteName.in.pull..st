@@ -4,6 +4,21 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 		has already been cloned, then checkout the revision specified in the load spec"
 
 	| gitTool specDict gitUrls gitProjectRef gitUrl cloned |
+	Transcript
+		cr;
+		show: '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'.
+	pull
+		ifTrue: [ 
+			Transcript
+				cr;
+				show: '	Updating project: ' , projectName printString ]
+		ifFalse: [ 
+			Transcript
+				cr;
+				show: '	Cloning project: ' , projectName printString ].
+	Transcript
+		cr;
+		show: '++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++'.
 	gitTool := Rowan gitTools.
 	specDict := self loadSpecs at: projectName.
 	gitUrls := specDict at: 'gitUrls'.
