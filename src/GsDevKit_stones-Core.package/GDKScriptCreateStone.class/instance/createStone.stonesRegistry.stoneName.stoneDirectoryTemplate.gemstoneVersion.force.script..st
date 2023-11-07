@@ -1,6 +1,9 @@
 scripts
 createStone: stonesRootDir stonesRegistry: stonesRegistry stoneName: stoneName stoneDirectoryTemplate: templateName gemstoneVersion: gemstoneVersionString force: force script: scriptOrNil
-	| stoneSpec |
+	| stoneSpec basename |
+	basename := scriptOrNil
+		ifNil: [ '' ]
+		ifNotNil: [ :script | ' (' , script basename , ')' ].
 	stoneSpec := GDKStoneSpec
 		newNamed: stoneName
 		rootDirectory: stonesRootDir / stoneName
@@ -18,10 +21,6 @@ createStone: stonesRootDir stonesRegistry: stonesRegistry stoneName: stoneName s
 		ifTrue: [ 
 			force
 				ifFalse: [ 
-					| basename |
-					basename := scriptOrNil
-						ifNil: [ '' ]
-						ifNotNil: [ ' (' , scriptOrNil basename , ')' ].
 					self
 						error:
 							'A stone named ' , stoneName , ' already exists. Use --force to clean up.'
@@ -33,10 +32,6 @@ createStone: stonesRootDir stonesRegistry: stonesRegistry stoneName: stoneName s
 					force
 						ifTrue: [ stoneSpec rootDir ensureDeleteAll ]
 						ifFalse: [ 
-							| basename |
-							basename := scriptOrNil
-								ifNil: [ '' ]
-								ifNotNil: [ ' (' , scriptOrNil basename , ')' ].
 							self
 								error:
 									'The directory ' , stoneSpec rootDir fullName

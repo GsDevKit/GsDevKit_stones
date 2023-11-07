@@ -102,11 +102,21 @@ RwLoadSpecificationV2 {
 %
 instvars
 stonesRegistry
-sourceExtentDir
+sourceExtentFile
 targetStoneName
 targetGemStoneVersionString
 targetTemplateName
 targetStoneSpec
+%
+method
+notranlogs
+	"supporting startstone"
+	^ true
+%
+method
+restore
+	"supporting startstone"
+	^ false
 %
 method
 targetStoneName
@@ -118,7 +128,7 @@ confirmToProceed
 		nextPutAll: 'Performing a GsDevKit_stones upgrade to GemStone version ', targetGemStoneVersionString printString, ' using the extent '.
 	self sourceStoneName
 		ifNil: [
-			self stdout lf; nextPutAll: sourceExtentDir fullName, '.' ]
+			self stdout lf; nextPutAll: sourceExtentFile fullName, '.' ]
 		ifNotNil: [:value | 
 			self stdout lf; nextPutAll: 'from the stone ', value printString, '.' ].
 	self stdout
@@ -157,7 +167,7 @@ handleOptions
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	self source
-		ifNotNil: [:value | sourceExtentDir := value asFileReference ]
+		ifNotNil: [:value | sourceExtentFile := value asFileReference ]
 		ifNil: [
 			| sourceStoneSpec |
 			self sourceStoneName
@@ -166,10 +176,10 @@ handleOptions
 					sourceStoneSpec := stonesRegistry 
 						stoneNamed: value
 						ifAbsent: [ self error: 'The stone name ', value printString, ' does not exist in the registry ', stonesRegistry name printstring ].
-					sourceExtentDir :=  sourceStoneSpec extents asFileReference / ' .extent0.dbf'.
+					sourceExtentFile :=  sourceStoneSpec extents asFileReference / ' .extent0.dbf'.
 					targetTemplateName := sourceStoneSpec stoneDirectorySpecName ] ].
-	sourceExtentDir exists 
-		ifFalse: [ self error: 'The source extent file ', sourceExtentDir fullName printString, ' does not exist' ].
+	sourceExtentFile exists 
+		ifFalse: [ self error: 'The source extent file ', sourceExtentFile fullName printString, ' does not exist' ].
 	self positionalArgs size ~= 1
 		ifTrue: [ self error: 'Expect a single positional argument <target-stone-name>' ].
 	targetStoneName := self positionalArgs at: 1.
@@ -211,12 +221,18 @@ doit
 			self force
 				ifTrue: [ 
 					targetStoneSpec := (self globalNamed: 'GDKScriptCreateStone')
-						createStone: targetStoneSpec root
+						createStone: targetStoneSpec root asFileReference
 						stonesRegistry: stonesRegistry 
 						stoneName: targetStoneName 
-						stoneDirectoryTemplate: targetStoneSpec stoneDirectorySpecName name 
-						gemstoneVersion: targetStoneSpec gemStoneVersionString 
+						stoneDirectoryTemplate: targetStoneSpec stoneDirectorySpecName
+						gemstoneVersion: targetStoneSpec gemstoneVersionString 
 						force: true
 						script: self ] ].
+	(self globalNamed: 'GDKScriptNewExtent')
+		copyExtent: sourceExtentFile 
+		toStoneSpec: targetStoneSpec  
+		script: self
+		withSuperDoitOptions: true.
+	"stones is running ... time to create upgradeLog directer (step 4), etc."
 	^ self noResult
 %

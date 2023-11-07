@@ -1,8 +1,6 @@
 runtime
 startStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean
 	"if superDoitOptionsBoolean is true, then superDoitScriptOrNil is expected to respond to the following messages:
-		restart
-		conversion
 		notranlogs
 		restore"
 

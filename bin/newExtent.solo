@@ -98,31 +98,11 @@ doit
 	self registry
 		ifNil: [ self error: '--registry option is required', ' (', self basename, ')' ].
 	stonesRegistry := registryClass stonesRegistryNamed: self registry.
-		stoneSpec := stonesRegistry stoneNamed: stoneName.
-	(stoneSpec waitStone: -1) = 0
-		ifTrue: [
-			"if running" 
-			stoneSpec 
-				stopStone: nil immediate: true;
-				yourself ].
-	(status := stoneSpec waitStone: -1) ~= 3
-		ifTrue: [ self error: 'Error did not shutdown properly (status = ', status printString ].
-	stoneDirectorySpec := stoneSpec stoneDirectorySpec.
-	extentsDir := tranlogsDir := stoneSpec root asFileReference.
-	stoneDirectorySpec tranlogs
-		ifNotNil: [:tranDirName |
-			tranlogsDir := tranlogsDir / tranDirName ].
-	(tranlogsDir children select: [:child | child extension = 'dbf' and: [ child basename beginsWith: 'tranlog' ] ])
-		do: [:tranlog | tranlog delete ].
-	stoneDirectorySpec extents
-		ifNotNil: [:extentsDirName |
-			extentsDir := extentsDir / extentsDirName ].
-	extentRef := self extent asFileReference.
-	targetExtent := extentsDir / 'extent0.dbf'.
-	targetExtent ensureDelete.
-	extentRef copyTo: targetExtent.
-	self stdout lf; nextPutAll: extentRef fullName, '======	copied at ', DateAndTime now printString; lf.
-	stoneDirectorySpec class chmod: targetExtent fullName fileMode: 'u+w'.
-	stoneSpec startStone: self withSuperDoitOptions: true.
+	stoneSpec := stonesRegistry stoneNamed: stoneName.
+	(self globalNamed: 'GDKScriptNewExtent')
+		copyExtent: self extent asFileReference 
+		toStoneSpec: stoneSpec  
+		script: self
+		withSuperDoitOptions: true.
 	^ self noResult
 %
