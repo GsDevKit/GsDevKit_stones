@@ -41,7 +41,7 @@ OPTIONS
                 DEBUGGEM command.
   -c, --create  
   -f, --force   Delete the stone directory if it exists.
-  -g, --noTode  Do not load tODE into <target-stone-name>
+  -g, --noTode  Do not load tODE into <target-stone-name> after the upgrade is finished.
   --noConf      Do not copy the gem.conf and system.conf files from <source-stone-name>,
                 if <source-stone-name> is specified.
   --registry=<registry-name> | -r <registry-name> 
