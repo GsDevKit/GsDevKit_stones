@@ -19,7 +19,7 @@ destroy: force
 			(stoneSpec rootDir / '.GDKStoneSpec.ston') ensureDelete	"remove the .GDKStoneSpec.ston symbolic link, since we're destroying the referenced file" ].
 	self stones keysDo: [ :stoneName | self stones removeKey: stoneName ].
 	self export.	"will be deleted later"
-	('$STONES_DATA_HOME' asFileReference / 'stone' / self name) ensureDeleteAll.
+	('$STONES_DATA_HOME' asFileReference / 'stones' / self name) ensureDeleteAll.
 	('$STONES_DATA_HOME' asFileReference / 'projectSets' / self name)
 		ensureDeleteAll.
 	stonesRegistry := GDKRegistry instance.
