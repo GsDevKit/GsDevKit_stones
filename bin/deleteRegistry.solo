@@ -9,10 +9,12 @@ Usage
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] <registry-name>
 
 DESCRIPTION
-  Shutdown all stones and netldis associated with <registry-name>, then delete the registry meta data.
+  Delete the registry meta data in $STONES_DATA_HOME for <registry-name>.
 
-  For now the registry directory structure in $STONES_HOME/<registry-name> is left untouched and can be deleted
-  using `chmod -R +w $STONES_HOME/<registry-name>; rm -rf $STONES_HOME/<registry-name>`.
+  For now the directory structure that you created in $STONES_HOME/<registry-name> 
+  for the stones and git repositories is left intact. $STONES_HOME/<registry-name> 
+  can be deleted using `chmod -R +w $STONES_HOME/<registry-name>; 
+  rm -rf $STONES_HOME/<registry-name>`.
 
 OPTIONS
   -h, --help    display usage message
@@ -20,8 +22,7 @@ OPTIONS
   --debugGem    If terminal is connected to stdout, bring up debugger. If not,
                 dump stack to stdout and wait for topaz to attach using topaz
                 DEBUGGEM command.
-  -f, --force,  Delete registry data structues and meta data, despite potentially
-                corrupt directory structure or errors shutting down netldi or stones
+  -f, --force,  Shut down stones and netldis associated with the registry.
 
 EXAMPLES
   $basename --help
