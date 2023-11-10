@@ -233,6 +233,6 @@ doit
 		toStoneSpec: targetStoneSpec  
 		script: self
 		withSuperDoitOptions: true.
-	"stones is running ... time to create upgradeLog directer (step 4), etc."
+	"stone is running ... run upgradeImage and ... TBD"
 	^ self noResult
 %
