@@ -23,7 +23,7 @@ cd ../..
 # clone GsDevKit_stones
 git clone git@github.com:GsDevKit/GsDevKit_stones.git
 cd GsDevKit_stones
-git checkout v1.1.1
+git checkout v2
 cd ..
 
 ```

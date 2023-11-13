@@ -1,7 +1,22 @@
 # GsDevKit_stones
 BRANCH | STATUS
 ------------- | -------------
+**v2** | [![**v2** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v2)](https://github.com/GsDevKit/GsDevKit_stones/actions)
 **v1.1.1** | [![**v1.1.1** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v1.1.1)](https://github.com/GsDevKit/GsDevKit_stones/actions)
+
+## Versions
+### v2
+Stable version intended for use with superDoit:v4.1, GemStone 3.7.0 and smalltalkci:master. 
+Supported Rowan v2 stone versions 3.6.4 and newer, tested through 3.7.0.
+Supported Rowan v3 stone versions 3.7.0 and newer. tested through 3.7.0
+Supported non-Rowan stone versions 3.5.3 and older (with 20.04 the limiting factor)
+
+Greatly simplified version of GsDevKit_home
+1. bin directory of scripts implemented with superDoit and 3.6.5 for solo scripts and GsHostProcess ala the .solo battery test drivers used internally
+2. stone directory modeled after GsDevKit_home, but configurable for folks with different needs … some sort of template for definition of directory structure
+3. registry of stones so that stones can be located anywhere
+4. standard location for git repos
+5. if you are using tODE I think you should continue using GsDevKit_home
 
 ## Versions
 ### v1.1.1
@@ -19,7 +34,7 @@ Greatly simplified version of GsDevKit_home
 
 ## Installation
 ``` bash
-git clone git@github.com:GsDevKit/GsDevKit_stones.git -b v1.1.1
+git clone git@github.com:GsDevKit/GsDevKit_stones.git -b v2
 GsDevKit_stones/bin/install.sh
 
 export PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH
@@ -31,104 +46,7 @@ if [ "$STONES_DATA_HOME" = "" ] ; then
 fi
 ```
 
-## STONES_DATA_HOME
-GsDevKit_stones maintains a registry data structure based on the [XDG Base Directory Specification](https://xdgbasedirectoryspecification.com/). On Linux machines, the default location for application specific data is $HOME/.local/share and $XDG_DATA_HOME can be used to optionally define an alternate location. On Mac machines, the XDG Base Directory Specification is not defined. 
-
-Therefore to simplify the coding and allow for the creation of short-leved registry structures, The environment variable STONES_DATA_HOME is used to define the root directory for GsDevKit_STONES applications. On Linux, STONES_DATA_HOME defaults to $HOME/.local/share. On Mac, STONES_DATA_HOME must be defined.
-
-## Setting up the registry structure
-```bash
-registryName=`hostname`
-projectSetName="devkit"
-gemstoneProductsDirectory="/home/dhenrich/_stones/gemstone"
-projectsDirectory="/home/dhenrich/_stones/git/"
-stonesDirectory="/home/dhenrich/_stones/stones"
-todeHome="/home/dhenrich/_stones/tode"
-echo "
- registry:    $registryName
- project set: $projectSetName 
- products:    $gemstoneProductsDirectory
- projects:    $projectsDirectory 
- stones:      $stonesDirectory
- tode:        $todeHome"
-
-createRegistry.solo $registryName
-createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh
-createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --https
-registerProjectDirectory.solo --registry=$registryName --projectDirectory=$projectsDirectory
-cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName 
-registerProductDirectory.solo --registry=$registryName \
-                              --productDirectory=$gemstoneProductsDirectory
-
-# GemStone version not previously downloaded
-downloadGemStone.solo --registry=$registryName 3.6.6
-
-# Register full set of previously downloaded product trees
-registerProduct.solo --registry=$registryName \
-                     --fromDirectory=$GS_HOME/shared/downloads/products
-# register named GemStone version using path to product tree
-registerProduct.solo --registry=$registryName \
-                     --productPath=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
-
-# register default stones directory
-registerStonesDirectory.solo --registry=$registryName \
-                             --stonesDirectory=$stonesDirectory
-
-# register shared tODE directory
-registerTodeSharedDir.solo --registry=$registryName  \
-                           --todeHome=$todeHome \
-                           --populate
-
-registryReport.solo
-```
-
-## Create stones
-```bash
-# create stone in default stones directory
-createStone.solo --registry=$registryName --template=default --start gs_366 3.6.6
-
-# create stone in custom stones directory
-createStone.solo --root=/bosch1/users/dhenrich/_stones/stones --registry=$registryName --template=default --start cust_3.6.6 3.6.6 
-
-# create a tode stone in default stones directory (tODE loaded)
-createStone.solo --registry=rogue --force --template=default_tode --start seaside_370 3.7.0
-
-# create a rowan_v3 stone in default stones directory
-createStone.solo --registry=rogue --template=minimal_rowan --start rowan_370_v3 3.7.0_rowanv3
-
-registryReport.solo --registry=$registryName
-```
-## custom project set
-```
-createProjectSet.solo --registry=rogue --projectSet=rowan --empty
-
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Rowan --revision=masterV3.0 \
-                      --gitUrl=git@github.com:GemTalk/Rowan.git
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Rowan --revision=masterV3.0 \
-                      --remote=gs --gitUrl=git@git.gemtalksystems.com:Rowan
-
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=RemoteServiceReplication --revision=main \
-                      --gitUrl=git@github.com:GemTalk/RemoteServiceReplication.git
-
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=RowanClientServices --revision=eric_component_V3.0 \
-                      --gitUrl=git@github.com:GemTalk/RowanClientServices.git
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=RowanClientServices --revision=eric_component_V3.0 \
-                      --remote=gs --gitUrl=git@git.gemtalksystems.com:RowanClientServices
-
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=PharoGemStoneFFI \
-                      --gitUrl=git@github.com:GemTalk/PharoGemStoneFFI.git --revision=main
-
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=JadeiteForPharo \
-                      --gitUrl=git@github.com:GemTalk/JadeiteForPharo.git --revision=main
-
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Announcements \
-                      --gitUrl=git@github.com:GemTalk/Announcements.git --revision=main
-
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=GsDevKit_stones \
-                      --gitUrl=git@github.com:GsDevKit/GsDevKit_stones.git --revision=v1.1.1
-updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=GsDevKit_stones \
-                      --remote=gs --gitUrl=git@git.gemtalksystems.com:GsDevKit_stones --revision=v1.1.1
-```
+## See projectSets/README.md for up-to-date examples
 ## sample registry report
 ```
 GDKStonesRegistry {
