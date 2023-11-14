@@ -15,8 +15,8 @@ jobs:
         smalltalk: [ 3.7.0 ]
         # smalltalk: [ 3.5.3, 3.5.8, 3.6.0, 3.6.4, 3.6.5, 3.6.6, 3.7.0 ]
         include:
-          - smalltalk: 3.7.0
-            os: ubuntu-22.04
+            #- smalltalk: 3.7.0
+            #   os: ubuntu-22.04
             #- smalltalk: 3.7.0
             #   os: macos-13
             #- smalltalk: 3.7.0
@@ -78,6 +78,10 @@ jobs:
 
           export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
 
+          echo "SUPERDOIT_ROOT/bin"
+          ls -altr $SUPERDOIT_ROOT/bin
+          echo "GSDEVKIT_STONES_ROOT/bin"
+          ls -altr $GSDEVKIT_STONES_ROOT/bin
           echo "PATH=$PATH"
           echo "WORK_ROOT"
           ls -altr $WORK_ROOT
