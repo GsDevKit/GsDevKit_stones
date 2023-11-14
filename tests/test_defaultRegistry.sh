@@ -141,10 +141,6 @@ pushd $STONES_HOME/test_stones/stones/$stoneName
 	if [ ! -d "snapshots" ]; then
 		mkdir snapshots
 	fi
-	ls -altr
-	cat .topazini
-	cat .GDKStoneSpec.ston
-	versionReport.stone
 	snapshot.stone --extension=`date +%m-%d-%Y_%H:%M:%S`.dbf snapshots --safely $*
 	# should remove the requirement for -r ...
 	newExtent.solo -r $defaultRegistryName -e snapshots/*.dbf $stoneName $*

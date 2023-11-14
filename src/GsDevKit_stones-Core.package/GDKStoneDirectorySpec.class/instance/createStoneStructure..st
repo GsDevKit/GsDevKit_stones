@@ -123,7 +123,7 @@ createStoneStructure: stoneSpec
 				lf;
 				nextPutAll: 'set u ' , userId , ' p ' , password;
 				lf.
-			self class currentGemStoneVersion asRwGemStoneVersionNumber >= '3.6.0'
+			self gemstoneVersionString asRwGemStoneVersionNumber >= '3.6.0'
 				ifTrue: [ 
 					fileStream
 						nextPutAll: 'set singlecolumn on';
