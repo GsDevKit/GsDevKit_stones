@@ -45,19 +45,17 @@ jobs:
       - uses: actions/checkout@v3
       - name: install superDoit 
         run: |
-          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export WORK_ROOT="$GITHUB_WORKSPACE/../../.."
+          echo "WORK_ROOT=$GITHUB_WORKSPACE/../../.." >> "$GITHUB_ENV"
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+          echo "GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
 
           # clones superDoit and installs 3.7.0 to be used for .solo scripts
-          export CI="true"
           $GSDEVKIT_STONES_ROOT/bin/install.sh
-                  
+          echo "SUPERDOIT_ROOT=$WORK_ROOT/superDoit" >> "$GITHUB_ENV"
+                 
       - name: setup GsDevKit_stones
         run: |
-          export WORK_ROOT="$GITHUB_WORKSPACE/.."
-          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
-          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
-
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
@@ -65,18 +63,23 @@ jobs:
 
           mkdir $WORK_ROOT/STONES_DATA_HOME
           export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
+          echo "STONES_DATA_HOME=$WORK_ROOT/STONES_DATA_HOME" >> "$GITHUB_ENV"
           echo "STONES_DATA_HOME=$STONES_DATA_HOME"
 
           mkdir $WORK_ROOT/STONES_HOME
           export STONES_HOME="$WORK_ROOT/STONES_HOME"
+          echo "STONES_HOME=$WORK_ROOT/STONES_HOME" >> "$GITHUB_ENV"
           echo "STONES_HOME=$STONES_HOME"
 
           mkdir $STONES_HOME/git
           export STONES_git=$STONES_HOME/git
+          echo "STONES_git=$STONES_HOME/git" >> "$GITHUB_ENV"
           mkdir $STONES_HOME/gemstone
           export STONES_gemstone=$STONES_HOME/gemstone
+          echo "STONES_gemstone=$STONES_HOME/gemstone" >> "$GITHUB_ENV"
 
           export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
+          echo "PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH" >> "$GITHUB_ENV"
 
           echo "SUPERDOIT_ROOT/bin"
           ls -altr $SUPERDOIT_ROOT/bin
@@ -106,77 +109,21 @@ jobs:
         shell: bash
       - name: run help test
         run: |
-          export WORK_ROOT="$GITHUB_WORKSPACE/.."
-          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
-          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
-
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
           echo "WORK_ROOT=$WORK_ROOT"          
-
-          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
           echo "STONES_DATA_HOME=$STONES_DATA_HOME"
-
-          export STONES_HOME="$WORK_ROOT/STONES_HOME"
           echo "STONES_HOME=$STONES_HOME"
 
-          export STONES_git=$STONES_HOME/git
-          export STONES_gemstone=$STONES_HOME/gemstone
-
-          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
-
-          export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_help.sh
         shell: bash
       - name: run project set tests
         run: |
-          export WORK_ROOT="$GITHUB_WORKSPACE/.."
-          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
-          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
-
-          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
-          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          echo "WORK_ROOT=$WORK_ROOT"          
-
-          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
-          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
-
-          export STONES_HOME="$WORK_ROOT/STONES_HOME"
-          echo "STONES_HOME=$STONES_HOME"
-
-          export STONES_git=$STONES_HOME/git
-          export STONES_gemstone=$STONES_HOME/gemstone
-
-          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
-
-          export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_projectSets.sh
         shell: bash
       - name: run default registry test
         run: |
-          export WORK_ROOT="$GITHUB_WORKSPACE/.."
-          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
-          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
-
-          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
-          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          echo "WORK_ROOT=$WORK_ROOT"          
-
-          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
-          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
-
-          export STONES_HOME="$WORK_ROOT/STONES_HOME"
-          echo "STONES_HOME=$STONES_HOME"
-
-          export STONES_git=$STONES_HOME/git
-          export STONES_gemstone=$STONES_HOME/gemstone
-
-          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
-
-          export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_defaultRegistry.sh
           gslist.solo -lc
           deleteRegistry.solo `hostname` -f
@@ -185,27 +132,6 @@ jobs:
         shell: bash
       - name: run rowanV3-alpha1 test
         run: |
-          export WORK_ROOT="$GITHUB_WORKSPACE/.."
-          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
-          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
-
-          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
-          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          echo "WORK_ROOT=$WORK_ROOT"          
-
-          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
-          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
-
-          export STONES_HOME="$WORK_ROOT/STONES_HOME"
-          echo "STONES_HOME=$STONES_HOME"
-
-          export STONES_git=$STONES_HOME/git
-          export STONES_gemstone=$STONES_HOME/gemstone
-
-          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
-
-          export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
           gslist.solo -lc
           deleteRegistry.solo test_rowanV3 -f
@@ -213,27 +139,6 @@ jobs:
         shell: bash
       - name: run tODE test
         run: |
-          export WORK_ROOT="$GITHUB_WORKSPACE/.."
-          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
-          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
-
-          echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
-          echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
-          echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
-          echo "WORK_ROOT=$WORK_ROOT"          
-
-          export STONES_DATA_HOME="$WORK_ROOT/STONES_DATA_HOME"
-          echo "STONES_DATA_HOME=$STONES_DATA_HOME"
-
-          export STONES_HOME="$WORK_ROOT/STONES_HOME"
-          echo "STONES_HOME=$STONES_HOME"
-
-          export STONES_git=$STONES_HOME/git
-          export STONES_gemstone=$STONES_HOME/gemstone
-
-          export PATH=$SUPERDOIT_ROOT/bin:$GSDEVKIT_STONES_ROOT/bin:$PATH
-
-          export CI="true"
           $GSDEVKIT_STONES_ROOT/tests/test_tode.sh
           gslist.solo -lc
           deleteRegistry.solo devkit -f
