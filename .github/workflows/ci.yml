@@ -53,15 +53,21 @@ jobs:
           # clones superDoit and installs 3.7.0 to be used for .solo scripts
           $GSDEVKIT_STONES_ROOT/bin/install.sh
 
+          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
+          echo "SUPERDOIT_ROOT=$WORK_ROOT/superDoit"
+          echo "SUPERDOIT_ROOT=$WORK_ROOT/superDoit" >> "$GITHUB_ENV"
+
           echo " ls -altr $WORK_ROOT "
           ls -altr $WORK_ROOT
+          echo " ls -altr $WORK_ROOT/.. "
+          ls -altr $WORK_ROOT/..
+          echo " ls -altr $GSDEVKIT_STONES_ROOT "
           ls -altr $GSDEVKIT_STONES_ROOT
-          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
+          echo " ls -altr $SUPERDOIT_ROOT "
           ls -altr $SUPERDOIT_ROOT
+          echo " ls -altr $SUPERDOIT_ROOT/bin "
           ls -altr $SUPERDOIT_ROOT/bin
 
-          echo "SUPERDOIT_ROOT=$WORK_ROOT/superDoit" >> "$GITHUB_ENV"
-                 
       - name: setup GsDevKit_stones
         run: |
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
