@@ -42,19 +42,20 @@ jobs:
       PLATFORM: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - id: setup-GsDevKit_stones
-        uses: dalehenrich/setup-superDoit@v4
-        with:
-          gemstone-version: '3.7.0'
-          superDoit-branch: 'v4.1'        
-      - name: setup GsDevKit_stones
+      - name: install superDoit 
         run: |
-          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
-          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
-          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
+          # clones superDoit and installs 3.7.0 to be used for .solo scripts
+          $GSDEVKIT_STONES_ROOT/bin/install.sh
+                  
+      - name: setup GsDevKit_stones
+        run: |
+          export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
+          export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
+
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
@@ -99,12 +100,10 @@ jobs:
         shell: bash
       - name: run help test
         run: |
-          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
-          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
-          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
@@ -126,12 +125,10 @@ jobs:
         shell: bash
       - name: run project set tests
         run: |
-          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
-          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
-          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
@@ -153,12 +150,10 @@ jobs:
         shell: bash
       - name: run default registry test
         run: |
-          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
-          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
-          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
@@ -184,12 +179,10 @@ jobs:
         shell: bash
       - name: run rowanV3-alpha1 test
         run: |
-          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
-          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
-          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
@@ -214,12 +207,10 @@ jobs:
         shell: bash
       - name: run tODE test
         run: |
-          export GEMSTONE_ROOT=${{ steps.setup-GsDevKit_stones.outputs.gemstone-product-path }}
-          export SUPERDOIT_ROOT=${{ steps.setup-GsDevKit_stones.outputs.superDoit-root }}
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
+          export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
-          echo "GEMSTONE_ROOT=$GEMSTONE_ROOT"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
