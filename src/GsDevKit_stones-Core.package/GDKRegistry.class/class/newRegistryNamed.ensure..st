@@ -12,14 +12,15 @@ newRegistryNamed: registryName ensure: ensure
 	registryFile := stoneRegistry registryFile.
 	registryFile exists
 		ifTrue: [ 
-			ensure ifTrue: [ ^ stonesRegistry at: registryName put: stoneRegistry registryPath ].
+			ensure
+				ifTrue: [ ^ stonesRegistry at: registryName put: stoneRegistry registryPath ].
 			self
 				error: 'The registry named ' , registryName printString , ' already exists.' ].
 	stonesRegistry at: registryName put: stoneRegistry registryPath.
 	self configFile
 		writeStreamDo: [ :fileStream | 
 			(Rowan version >= '3.0.0' asRwSemanticVersionNumber
-				or: [ self currentGemStoneVersion asRwGemStoneVersionNumber >= '3.7.0' ])
+				or: [ self currentGemStoneVersion >= '3.7.0' asRwGemStoneVersionNumber ])
 				ifTrue: [ fileStream truncate ].
 			STON put: stonesRegistry onStreamPretty: fileStream ].
 	stoneRegistry export.
