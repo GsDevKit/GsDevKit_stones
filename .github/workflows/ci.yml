@@ -48,6 +48,7 @@ jobs:
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
 
           # clones superDoit and installs 3.7.0 to be used for .solo scripts
+          export CI="true"
           $GSDEVKIT_STONES_ROOT/bin/install.sh
                   
       - name: setup GsDevKit_stones
