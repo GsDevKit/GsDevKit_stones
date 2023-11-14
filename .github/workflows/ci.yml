@@ -45,6 +45,13 @@ jobs:
       - uses: actions/checkout@v3
       - name: install superDoit 
         run: |
+          # required files and directories for GemStone
+          sudo mkdir /opt/gemstone
+          sudo chmod oug+rwx /opt/gemstone
+          sudo mkdir /opt/gemstone/locks
+          sudo chmod oug+rwx /opt/gemstone/locks          
+
+          # set up the basic env vars from which all other paths are derived
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
           echo "WORK_ROOT=$GITHUB_WORKSPACE/.." >> "$GITHUB_ENV"
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
