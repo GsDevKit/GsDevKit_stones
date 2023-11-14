@@ -9,7 +9,7 @@
 #		cloneProjectsFromProjectSet.solo
 #		
 set -e
-# set -x
+set -x
 
 echo "***** test_defaultRegistry.sh *****"
 
