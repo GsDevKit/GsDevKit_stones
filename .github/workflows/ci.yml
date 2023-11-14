@@ -50,6 +50,7 @@ jobs:
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
           echo "GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
 
+          echo " ls -altr $WORK_ROOT "
           ls -altr $WORK_ROOT
           ls -altr $GSDEVKIT_STONES_ROOT
           # clones superDoit and installs 3.7.0 to be used for .solo scripts
