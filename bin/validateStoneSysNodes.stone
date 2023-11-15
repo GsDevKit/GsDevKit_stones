@@ -58,8 +58,9 @@ doit
 	| topez cpTool validateDirBlock stoneRoot stoneRootDir homeDir projectsDir upgradeDir rootDir dir sessionDescription |
 	topez := TDTopezServer for: 0.
 	cpTool := topez toolInstanceFor: 'cp'.
-	(self todeHome, '/sys/local/sessions/', self stoneName) asFileReference 
-		readStreamDo: [:fileStream | 
+	(ServerFileDirectory on: self todeHome, '/sys/local/sessions')
+		readOnlyFileNamed: self stoneName
+		do: [:fileStream | 
 			sessionDescription := STON fromString: fileStream contents].
 	stoneRoot := sessionDescription serverTodeRoot , '/sys/stones/' , self stoneName.
 	stoneRootDir := ServerFileDirectory on: stoneRoot.
