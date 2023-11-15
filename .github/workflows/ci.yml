@@ -74,6 +74,9 @@ jobs:
           echo " ls -altr $SUPERDOIT_ROOT/bin "
           ls -altr $SUPERDOIT_ROOT/bin
 
+          # configure shared memory on mac hosts
+          $GSDEVKIT_STONES_ROOT/dev/setSharedMemory.sh
+
       - name: setup GsDevKit_stones
         run: |
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
