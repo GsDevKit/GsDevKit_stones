@@ -12,10 +12,10 @@ Greatly simplified version of GsDevKit_home
 
 ## Versions
 ### v2
-Stable version intended for use with superDoit:v4.1, GemStone 3.7.0 and smalltalkci:master. 
-Supported Rowan v2 stone versions 3.6.4 and newer, tested through 3.7.0.
-Supported Rowan v3 stone versions 3.7.0 and newer. tested through 3.7.0
-Supported non-Rowan stone versions 3.5.3 and older (with 20.04 the limiting factor)
+Stable version intended for use with superDoit:v4.1, smalltalkci:master; GemStone 3.7.0 is used for .solo scripts, allowing v2 to support stones as old as 3.6.0. 
+
+Supported Rowan v3 stone versions 3.7.0 and newer. Tested against 3.7.0_rowanv3-Alpha
+Supported non-Rowan stone versions 3.6.0 though 3.7.0 
 
 ### v1.1.1
 Development version intended for use with superDoit:v4.1 and GemStone 3.7.0 for .solo scripts. 
