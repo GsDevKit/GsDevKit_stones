@@ -22,7 +22,6 @@
 		"backupDirectory",
 		"snapshotDirectory",
 		"gemstoneVersion",
-		"gemstoneProductPath",
 		"gciLibraryName",
 		"adornmentColor",
 		"serverGitRoot",
