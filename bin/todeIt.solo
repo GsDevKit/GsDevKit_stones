@@ -101,7 +101,7 @@ registryName
 		ifNotNil: [:value | value ].
 %
 doit
-	| registryClass stoneSpec sessionDescription commands result |
+	| registryClass stoneSpec sessionDescription commands result productPath |
 	self preDoitSpecLoad: [:spec | 
 		spec projectName = 'GsCommands'
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
@@ -132,6 +132,10 @@ doit
 				ifNil: [ self error: 'a tODE command must be entered on command line as a positional argument or via --file option', ' (', self basename, ')' ]
 				ifNotNil: [ :commandsFile |
 					commands := commandsFile asFileReference contents ] ].
+	productPath := stoneSpec stonesRegistry products 
+		at: stoneSpec gemstoneVersionString
+		ifAbsent: [ self error: 'No registered product path at ', stoneSpec gemstoneVersionString printString ].
+	sessionDescription gemstoneProductPath: productPath.
 	result := (self globalNamed: 'TDShell') 
 		sessionDescription: sessionDescription 
 		evaluate: commands
