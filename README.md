@@ -5,11 +5,10 @@ BRANCH | STATUS
 **v1.1.1** | [![**v1.1.1** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v1.1.1)](https://github.com/GsDevKit/GsDevKit_stones/actions)
 
 Greatly simplified version of GsDevKit_home
-1. bin directory of scripts implemented with superDoit and 3.6.5 for solo scripts and GsHostProcess ala the .solo battery test drivers used internally
-2. stone directory modeled after GsDevKit_home, but configurable for folks with different needs … some sort of template for definition of directory structure
-3. registry of stones so that stones can be located anywhere
-4. standard location for git repos
-5. if you are using tODE I think you should continue using GsDevKit_home
+1. bin directory of scripts implemented with superDoit and 3.7.0 for solo scripts and GsHostProcess.
+2. Stone directory modeled after GsDevKit_home, but configurable for folks with different needs. There a varient of templates that are used to specify directory structure for stones, git repositories, etc.
+3. Registry of stones so that stones and git repositories can be located anywhere.
+5. If you are using tODE I think you should continue using GsDevKit_home 
 
 ## Versions
 ### v2
