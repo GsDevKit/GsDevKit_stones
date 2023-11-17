@@ -1,4 +1,9 @@
 #!/usr/bin/env superdoit_stone
+options
+{
+	SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome'.
+}
+%
 usage
 -----
 USAGE 
@@ -9,16 +14,19 @@ DESCRIPTION
     gemstoneBaseImage to $ARCHBASE/image, if ARCHBASE env var defined
     Rowan             to $ROWAN_PROJECTS_HOME/Rowan
     RowanClientServices to $ROWAN_PROJECTS_HOME/RowanClientServices
-    
   and reload Rowan, including tests.
 
 OPTIONS
-  -h, --help                 display usage message
-  -D, --debug                bring up topaz debugger in the event of a script error
+  -h, --help       display usage message
+  -D, --debug      bring up topaz debugger in the event of a script error
+  --projectsHome=<path-to-rowan_projects-home>
+                   If the env var ROWAN_PROJECTS_HOME is not already defined, then
+                   ROWAN_PROJECTS_HOME will be defined using <path-to-rowan_projects-home>.
 
 EXAMPLES
   $basename --help -- -L -I .topazini
   $basename -- -L -I .topazini
+  $basename --projectsHome=$STONES_HOME/git
 -----
 %
 method
@@ -46,19 +54,14 @@ defineCustomEnvVars
 								keyAndValue := line subStringsDelimitedBy: $=.
 								block value: (keyAndValue at: 1) value: (keyAndValue at: 2) ] ] ] ] 
 %
-doit
-	(Rowan version >= (RwSemanticVersionNumber fromString: '2.2.0'))
-		ifFalse: [ self error: 'This script should be run in Rowan v2.2 or later'].
-	(FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston') exists
-		ifTrue: [ self defineCustomEnvVars ].
+method
+attachDevClonesV2: projectsHome
 	(System gemEnvironmentVariable: 'ARCHBASE')
 		ifNotNil: [
+			"attach but don't load"
 		 	(Rowan projectNamed: 'gemstoneBaseImage') 
 				gitRepositoryRoot: '$ARCHBASE/image'.
 			self logMessage: 'Using ARCHBASE = ', '$ARCHBASE' asFileReference pathString ].
-	(System gemEnvironmentVariable: 'ROWAN_PROJECTS_HOME')
-		ifNil: [ self error: 'The env var $ROWAN_PROJECTS_HOME is expected to be defined' ].
-	self logMessage: 'Using ROWAN_PROJECTS_HOME = ', '$ROWAN_PROJECTS_HOME' asFileReference pathString.
 	(Rowan projectNamed: 'Rowan') 
 		gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'.
 	(Rowan projectNamed: 'RowanClientServices') 
@@ -69,5 +72,57 @@ doit
 		_loadedProject resolvedProject projectsHome: '$ROWAN_PROJECTS_HOME'.
 	(Rowan projectNamed: 'Rowan')
 		loadProjectSet: Rowan platformConditionalAttributes, #('tests' 'v2' 'v2Only' 'testsV2' 'stubs' 'tonel').
+%
+method
+attachDevClonesV3: projectsHome
+	| rowanProject loadSpecs |
+		(System gemEnvironmentVariable: 'ARCHBASE')
+		ifNotNil: [
+			"attach but don't load"
+		 	(Rowan projectNamed: 'gemstoneBaseImage') 
+				gitRepositoryRoot: '$ARCHBASE/image'.
+			self logMessage: 'Using ARCHBASE = ', '$ARCHBASE' asFileReference pathString ].
+  rowanProject := Rowan projectNamed: 'Rowan'.
+	loadSpecs := rowanProject loadedLoadSpecifications.
+	loadSpecs do: [:loadSpec |
+		| relRoot |
+		relRoot := loadSpec relativeRepositoryRoot.
+		loadSpec specName = 'RowanClientServices'
+			ifTrue: [ 
+				loadSpec 
+					projectsHome: projectsHome;
+					gitUrl: 'file:', ((projectsHome, '/RowanClientServices') asFileReference pathString);
+					yourself  ]
+			ifFalse: [
+				loadSpec specName = 'Rowan'
+					ifTrue: [ 
+						loadSpec 
+							projectsHome: projectsHome;
+							gitUrl: 'file:', ((projectsHome, '/Rowan') asFileReference pathString);
+							yourself  ]
+					ifFalse: [
+						"embedded Rowan project" 
+						loadSpec
+							gitUrl: 'file:', (((projectsHome, '/Rowan') asFileReference / relRoot) pathString);
+							projectsHome: projectsHome;
+							yourself ] ] ].
+	loadSpecs load. 
+%
+doit
+	| projectsHome |
+	(Rowan version >= (RwSemanticVersionNumber fromString: '2.2.0'))
+		ifFalse: [ self error: 'This script should be run in Rowan v2.2 or later'].
+	(FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston') exists
+		ifTrue: [ self defineCustomEnvVars ].
+	self projectsHome
+		ifNil: [ 
+			(System gemEnvironmentVariable: 'ROWAN_PROJECTS_HOME')
+				ifNotNil: [:value | projectsHome := value asFileReference pathString ]
+				ifNil: [ self error: 'ROWAN_PROJECTS_HOME must be defined, either via existing env var ROWAN_PROJECTS_HOME or --projectsHome' ] ]
+		ifNotNil: [:value | projectsHome := value asFileReference pathString ].
+	self logMessage: 'projectsHome = ', '$ROWAN_PROJECTS_HOME' asFileReference pathString.
+	(Rowan version >= (RwSemanticVersionNumber fromString: '3.0.0'))
+		ifTrue: [ self attachDevClonesV3: projectsHome ]
+		ifFalse: [ self attachDevClonesV2: projectsHome ].
 	^ System commit
 %
