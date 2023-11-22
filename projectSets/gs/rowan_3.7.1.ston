@@ -25,7 +25,7 @@ GDKProjectSet {
 			}
 		},
 		'generateGs' : {
-			'revision' : 'v1',
+			'revision' : 'v2',
 			'gitUrls' : {
 				'origin' : 'git@git.gemtalksystems.com:generateGs'
 			}
