@@ -1,0 +1,79 @@
+GDKProjectSet {
+	#name : 'rowan_3.7.1',
+	#parentRegistryName : 'rogue',
+	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
+	#loadSpecs : {
+		'GsDevKit_stones' : {
+			'revision' : 'v2.1',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:GsDevKit_stones',
+				'origin' : 'git@github.com:GsDevKit/GsDevKit_stones.git'
+			}
+		},
+		'GsTestStats' : {
+			'revision' : 'v1',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:GsTestStats',
+				'origin' : 'git@github.com:dalehenrich/GsTestStats.git'
+			}
+		},
+		'superDoit' : {
+			'revision' : 'v4.2',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:superDoit',
+				'origin' : 'git@github.com:dalehenrich/superDoit.git'
+			}
+		},
+		'generateGs' : {
+			'revision' : 'v1',
+			'gitUrls' : {
+				'origin' : 'git@git.gemtalksystems.com:generateGs'
+			}
+		},
+		'FileSystemGs' : {
+			'revision' : 'gs-3.7.x',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:FileSystemGs',
+				'origin' : 'git@github.com:GemTalk/FileSystemGs.git'
+			}
+		},
+		'GsDevKit_upgrade' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:GsDevKit_upgrade',
+				'origin' : 'git@github.com:GsDevKit/GsDevKit_upgrade.git'
+			}
+		},
+		'RowanClientServices' : {
+			'revision' : 'masterV2.2',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:RowanClientServices',
+				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+			}
+		},
+		'RowanClientServicesV3' : {
+			'revision' : 'ericV3.0_pharo',
+			'projectName' : 'RowanClientServices',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:RowanClientServices',
+				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+			}
+		},
+		'Rowan' : {
+			'revision' : 'masterV2.5',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:Rowan',
+				'origin' : 'git@github.com:GemTalk/Rowan.git'
+			}
+		},
+		'RowanV3' : {
+			'revision' : 'masterV3.0',
+			'projectName' : 'Rowan',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:Rowan',
+				'origin' : 'git@github.com:GemTalk/Rowan.git'
+			}
+		}
+	},
+	#comment : 'This set of repositories are for use with 3.7.1, which includes both RowanV3, Rowan, RowanClientServices and RowanClientServicesV3'
+}

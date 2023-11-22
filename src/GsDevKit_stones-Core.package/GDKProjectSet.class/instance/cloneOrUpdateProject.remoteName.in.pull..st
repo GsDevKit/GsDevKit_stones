@@ -1,14 +1,17 @@
 installation
-cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: pull
-	"Clone the named project into the gitRootPath directory using the information in the load spec for project. If the project 
-		has already been cloned, then checkout the revision specified in the load spec"
+cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull: pull
+	"Clone the project into the gitRootPath directory using the information in the load spec for project. If the project 
+		has already been cloned, then checkout the revision specified in the load spec. The loadSpecs are indexed by
+        projectDirName to allow for multiple copies of the project in the same directory. Normally, projectDirName
+		and projectName are the same."
 
-	| gitTool specDict gitUrls gitProjectRef gitUrl cloned |
+	| gitTool specDict gitUrls gitProjectRef gitUrl cloned projectName |
 	gitTool := Rowan gitTools.
-	specDict := self loadSpecs at: projectName.
+	specDict := self loadSpecs at: projectDirName.
 	gitUrls := specDict at: 'gitUrls'.
 	gitUrl := gitUrls at: remoteName.
-	gitProjectRef := gitRootPath asFileReference / projectName.
+	projectName := specDict at: 'projectName' ifAbsent: [ projectDirName ].
+	gitProjectRef := gitRootPath asFileReference / projectDirName.
 	cloned := false.
 	gitProjectRef exists
 		ifTrue: [ 
@@ -21,18 +24,20 @@ cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: p
 							'There are unsaved changes in ' , gitProjectRef fullName printString
 								, '. We cannot clone or update a repository with unsaved chnages' ] ]
 		ifFalse: [ 
-			| originArg |
+			| originArg dirNameArg|
 			"GIT CLONE"
 			originArg := ''.
 			remoteName ~= 'origin'
 				ifTrue: [ originArg := ' --origin ' , remoteName , ' ' ].
-			gitTool gitcloneIn: gitRootPath with: originArg , gitUrl logging: true.
+			dirNameArg := ''.
+			projectName = projectDirName ifFalse: [ dirNameArg := ' ', projectDirName ].
+			gitTool gitcloneIn: gitRootPath with: originArg , gitUrl, dirNameArg logging: true.
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
 			Transcript
 				cr;
-				show: '  Set ' , projectName , ' revision to ' , revision.
+				show: '  Set ' , projectDirName , ' revision to ' , revision.
 			cloned
 				ifTrue: [ 
 					"GIT SWITCH"
