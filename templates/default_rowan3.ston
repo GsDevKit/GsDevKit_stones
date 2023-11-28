@@ -1,0 +1,15 @@
+GDKrowanStoneDirectorySpec {
+	#name : 'default_rowan',
+	#backups : 'backups',
+	#bin : 'bin',
+	#customenv : 'customenv',
+	#dbfSource : '$GEMSTONE/bin/extent0.rowan3.dbf',
+	#extents : 'extents',
+	#logs : 'logs',
+	#netldiPort : 0,
+	#stats : 'stats',
+	#tranlogs : 'tranlogs',
+	#snapshots : 'snapshots',
+	#product : 'product',
+	#userId : 'SystemUser'
+}
