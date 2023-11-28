@@ -1,5 +1,5 @@
 GDKrowanStoneDirectorySpec {
-	#name : 'minimal_rowan',
+	#name : 'minimal_rowan3',
 	#customenv : 'customenv',
 	#dbfSource : '$GEMSTONE/bin/extent0.rowan3.dbf',
 	#bin : 'bin',

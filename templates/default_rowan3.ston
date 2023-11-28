@@ -1,5 +1,5 @@
 GDKrowanStoneDirectorySpec {
-	#name : 'default_rowan',
+	#name : 'default_rowan3',
 	#backups : 'backups',
 	#bin : 'bin',
 	#customenv : 'customenv',
