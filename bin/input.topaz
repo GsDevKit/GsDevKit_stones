@@ -1,0 +1,10 @@
+#!/usr/bin/env superdoit_topaz
+#
+# execute the topaz commands in a file called inp, in the current directory.
+# 
+# If the inp file does not exist, you will be left at a topaz prompt, not logged in.
+#
+# If the inp does exist the script will be run and if there are no errors, the script will exit
+#
+
+input inp

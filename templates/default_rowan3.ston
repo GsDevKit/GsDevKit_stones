@@ -1,4 +1,4 @@
-GDKrowanStoneDirectorySpec {
+GDKrowan3StoneDirectorySpec {
 	#name : 'default_rowan3',
 	#backups : 'backups',
 	#bin : 'bin',
