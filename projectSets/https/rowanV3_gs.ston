@@ -34,7 +34,7 @@ GDKProjectSet {
 			}
 		},
 		'Rowan' : {
-			'revision' : 'masterV3.0',
+			'revision' : 'masterV3.1',
 			'gitUrls' : {
 				'origin' : 'https://github.com/GemTalk/Rowan.git'
 			}

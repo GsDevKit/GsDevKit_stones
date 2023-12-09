@@ -67,7 +67,7 @@ GDKProjectSet {
 			}
 		},
 		'RowanV3' : {
-			'revision' : 'masterV3.0',
+			'revision' : 'masterV3.1',
 			'projectName' : 'Rowan',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:Rowan',
