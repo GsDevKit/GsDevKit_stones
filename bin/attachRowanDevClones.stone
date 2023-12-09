@@ -61,7 +61,7 @@ attachDevClonesV2: projectsHome
 			"attach but don't load"
 		 	(Rowan projectNamed: 'gemstoneBaseImage') 
 				gitRepositoryRoot: '$ARCHBASE/image'.
-			self logMessage: 'Using ARCHBASE = ', '$ARCHBASE' asFileReference pathString ].
+			self logMessage: 'ARCHBASE = ', '$ARCHBASE' asFileReference pathString ].
 	(Rowan projectNamed: 'Rowan') 
 		gitRepositoryRoot: '$ROWAN_PROJECTS_HOME/Rowan'.
 	(Rowan projectNamed: 'RowanClientServices') 
@@ -76,12 +76,28 @@ attachDevClonesV2: projectsHome
 method
 attachDevClonesV3: projectsHome
 	| rowanProject loadSpecs |
-		(System gemEnvironmentVariable: 'ARCHBASE')
-		ifNotNil: [
-			"attach but don't load"
-		 	(Rowan projectNamed: 'gemstoneBaseImage') 
-				gitRepositoryRoot: '$ARCHBASE/image'.
-			self logMessage: 'Using ARCHBASE = ', '$ARCHBASE' asFileReference pathString ].
+	(System gemEnvironmentVariable: 'ARCHBASE')
+		ifNil: [ self logMessage: 'ARCHBASE not set, so gemstoneBaseImage project not attached and not loaded' ]
+		ifNotNil: [:value |
+			"attach gemstoneBaseImage project"
+			| loadSpec gitUrl |
+			System gemEnvironmentVariable: 'ARCHBASE' put: value asFileReference pathString.
+			self logMessage: 'ARCHBASE = ', '$ARCHBASE' asFileReference pathString.
+		 	loadSpec := (Rowan projectNamed: 'gemstoneBaseImage') loadSpecification.
+			gitUrl := loadSpec gitUrl.
+			(gitUrl notNil and: [gitUrl beginsWith: 'file:'])
+					ifTrue: [ 
+						"project already attached, so reload"
+						loadSpec load.
+						self logMessage: 'gemstoneBaseImage reloaded' ] 
+					ifFalse: [
+						loadSpec
+							gitUrl: 'file:', ('$ARCHBASE' asFileReference pathString);
+							projectSpecFile: 'image/rowan/project_attached.ston';
+							addCustomConditionalAttributes: #('tests');
+							load.
+						self logMessage: 'gemstoneBaseImage project attached and reloaded'.
+						System commit ] ].
   rowanProject := Rowan projectNamed: 'Rowan'.
 	loadSpecs := rowanProject loadedLoadSpecifications.
 	loadSpecs do: [:loadSpec |
@@ -91,19 +107,19 @@ attachDevClonesV3: projectsHome
 			ifTrue: [ 
 				loadSpec 
 					projectsHome: projectsHome;
-					gitUrl: 'file:', ((projectsHome, '/RowanClientServices') asFileReference pathString);
+					gitUrl: 'file:', ((projectsHome, '/', loadSpec projectAlias) asFileReference pathString);
 					yourself  ]
 			ifFalse: [
 				loadSpec specName = 'Rowan'
 					ifTrue: [ 
 						loadSpec 
 							projectsHome: projectsHome;
-							gitUrl: 'file:', ((projectsHome, '/Rowan') asFileReference pathString);
+							gitUrl: 'file:', ((projectsHome, '/', loadSpec projectAlias) asFileReference pathString);
 							yourself  ]
 					ifFalse: [
 						"embedded Rowan project" 
 						loadSpec
-							gitUrl: 'file:', (((projectsHome, '/Rowan') asFileReference / relRoot) pathString);
+							gitUrl: 'file:', (((projectsHome, '/', loadSpec projectAlias) asFileReference / relRoot) pathString);
 							projectsHome: projectsHome;
 							yourself ] ] ].
 	loadSpecs load. 
@@ -120,7 +136,7 @@ doit
 				ifNotNil: [:value | projectsHome := value asFileReference pathString ]
 				ifNil: [ self error: 'ROWAN_PROJECTS_HOME must be defined, either via existing env var ROWAN_PROJECTS_HOME or --projectsHome' ] ]
 		ifNotNil: [:value | projectsHome := value asFileReference pathString ].
-	self logMessage: 'projectsHome = ', '$ROWAN_PROJECTS_HOME' asFileReference pathString.
+	self logMessage: 'ROWAN_PROJECTS_HOME = ', '$ROWAN_PROJECTS_HOME' asFileReference pathString.
 	(Rowan version >= (RwSemanticVersionNumber fromString: '3.0.0'))
 		ifTrue: [ self attachDevClonesV3: projectsHome ]
 		ifFalse: [ self attachDevClonesV2: projectsHome ].
