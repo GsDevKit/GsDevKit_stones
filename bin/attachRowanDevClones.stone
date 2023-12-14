@@ -100,28 +100,34 @@ attachDevClonesV3: projectsHome
 						System commit ] ].
   rowanProject := Rowan projectNamed: 'Rowan'.
 	loadSpecs := rowanProject loadedLoadSpecifications.
+	{
+		'Announcements' .
+		'FileSystemGs' .
+		'RemoteServiceReplication' .
+		'RowanClientServices'
+	}
+		do: [:projectName |
+			"pick up the extra rowan3 projects"
+			(Rowan projectNamed: projectName ifAbsent: [])
+				ifNotNil: [:project |
+					| loadSpec |
+					loadSpec :=  project loadSpecification.
+					loadSpecs addLoadSpec: loadSpec ] ].
 	loadSpecs do: [:loadSpec |
 		| relRoot |
 		relRoot := loadSpec relativeRepositoryRoot.
-		loadSpec specName = 'RowanClientServices'
+		relRoot isEmpty
 			ifTrue: [ 
 				loadSpec 
 					projectsHome: projectsHome;
 					gitUrl: 'file:', ((projectsHome, '/', loadSpec projectAlias) asFileReference pathString);
 					yourself  ]
 			ifFalse: [
-				loadSpec specName = 'Rowan'
-					ifTrue: [ 
-						loadSpec 
-							projectsHome: projectsHome;
-							gitUrl: 'file:', ((projectsHome, '/', loadSpec projectAlias) asFileReference pathString);
-							yourself  ]
-					ifFalse: [
 						"embedded Rowan project" 
 						loadSpec
 							gitUrl: 'file:', (((projectsHome, '/', loadSpec projectAlias) asFileReference / relRoot) pathString);
 							projectsHome: projectsHome;
-							yourself ] ] ].
+							yourself ] ].
 	loadSpecs load. 
 %
 doit
