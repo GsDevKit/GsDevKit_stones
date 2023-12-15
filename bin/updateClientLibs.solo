@@ -9,10 +9,10 @@ Usage
 -----
 USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [-v | --verbose] \
                 [--registry=<registry-name> | -r <registry-name>] \
-                <product-tree-path>
+                <product-name>
 
 DESCRIPTION
-  Update the clientlibs directory for the product directory of the named stone.
+  Update the clientlibs directory using the named product for the registry.
 
 OPTIONS
   -h, --help    display usage message
@@ -23,8 +23,8 @@ OPTIONS
   -v, --verbose Verbose logging enabled.
   --registry=<registry-name> | -r <registry-name> 
                 <registry-name> is the name of the registry. Default is hostname.
-  <product-tree-path>
-                Path to product tree from which to extract the 64 gci libraries
+  <product-name>
+                Name of the product in <registry-name>
 
 EXAMPLES
   $basename --help
