@@ -6,9 +6,13 @@ instance
 		ifTrue: [ 
 			configFile
 				readStreamDo: [ :fileStream | 
-					| stream |
-					stream := ZnBufferedReadStream on: fileStream.	"wrap with buffered stream to bypass https://github.com/GemTalk/FileSystemGs/issues/9"
-					[ STON fromStream: stream ]
+					[ STON fromStream: fileStream ]
 						on: STONReaderError
-						do: [ :ex | Error signal: ex asString , ' while reading ' , configFile fullName ] ] ]
+						do: [ :ex | 
+							ex
+								addText:
+									(RwRepositoryResolvedProjectTonelReaderVisitorV2
+										lineNumberStringForOffset: fileStream position
+										fileName: configFile fullName).
+							ex pass ] ] ]
 		ifFalse: [ self new ]
