@@ -71,7 +71,7 @@ attachDevClonesV2: projectsHome
 	(Rowan projectNamed: 'RowanClientServices')
 		_loadedProject resolvedProject projectsHome: '$ROWAN_PROJECTS_HOME'.
 	(Rowan projectNamed: 'Rowan')
-		loadProjectSet: Rowan platformConditionalAttributes, #('tests' 'v2' 'v2Only' 'testsV2' 'stubs' 'tonel').
+		loadProjectSet: Rowan platformConditionalAttributes, #('tests' 'testsV2').
 %
 method
 attachDevClonesV3: projectsHome
@@ -88,7 +88,9 @@ attachDevClonesV3: projectsHome
 			(gitUrl notNil and: [gitUrl beginsWith: 'file:'])
 					ifTrue: [ 
 						"project already attached, so reload"
-						loadSpec load.
+						loadSpec
+							addCustomConditionalAttributes: #('tests');
+							load.
 						self logMessage: 'gemstoneBaseImage reloaded' ] 
 					ifFalse: [
 						loadSpec
@@ -104,7 +106,7 @@ attachDevClonesV3: projectsHome
 		'Announcements' .
 		'FileSystemGs' .
 		'RemoteServiceReplication' .
-		'RowanClientServices'
+		'RowanClientServices' .
 	}
 		do: [:projectName |
 			"pick up the extra rowan3 projects"
@@ -127,7 +129,8 @@ attachDevClonesV3: projectsHome
 						loadSpec
 							gitUrl: 'file:', (((projectsHome, '/', loadSpec projectAlias) asFileReference / relRoot) pathString);
 							projectsHome: projectsHome;
-							yourself ] ].
+							yourself ].
+		loadSpec addCustomConditionalAttributes: #('tests' 'testsv2') ].
 	loadSpecs load. 
 %
 doit
