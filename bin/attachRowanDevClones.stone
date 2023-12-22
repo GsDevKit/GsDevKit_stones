@@ -71,7 +71,9 @@ attachDevClonesV2: projectsHome
 	(Rowan projectNamed: 'RowanClientServices')
 		_loadedProject resolvedProject projectsHome: '$ROWAN_PROJECTS_HOME'.
 	(Rowan projectNamed: 'Rowan')
-		loadProjectSet: Rowan platformConditionalAttributes, #('tests' 'testsV2').
+		loadProjectSet: Rowan platformConditionalAttributes, #('tests' 'v2' 'v2Only' 'testsV2' 'stubs' 'tonel').
+	(Rowan projectNamed: 'RowanClientServices')
+		loadProjectSet: Rowan platformConditionalAttributes, #('v2' 'tests' 'testsV2').
 %
 method
 attachDevClonesV3: projectsHome
@@ -146,6 +148,7 @@ doit
 				ifNil: [ self error: 'ROWAN_PROJECTS_HOME must be defined, either via existing env var ROWAN_PROJECTS_HOME or --projectsHome' ] ]
 		ifNotNil: [:value | projectsHome := value asFileReference pathString ].
 	self logMessage: 'ROWAN_PROJECTS_HOME = ', '$ROWAN_PROJECTS_HOME' asFileReference pathString.
+	self logMessage: 'Rowan version: ', Rowan versionString.
 	(Rowan version >= (RwSemanticVersionNumber fromString: '3.0.0'))
 		ifTrue: [ self attachDevClonesV3: projectsHome ]
 		ifFalse: [ self attachDevClonesV2: projectsHome ].
