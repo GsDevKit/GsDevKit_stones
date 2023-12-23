@@ -2,12 +2,14 @@
 #
 # test coverage for when --registry option is omitted (default registry name will be hostname):
 #		registryReport.sol
+#		registryQuery.solo
 #		createRegistry.solo
 #		createProjectSet.solo
 #		updateProjectSet.solo
 #		cloneProjectsFromProjectSet.solo
 #		
 set -e
+set -x
 
 echo "***** test_defaultRegistry.sh *****"
 
@@ -31,19 +33,9 @@ else
 	export GSDEVKIT_STONES_ROOT=$STONES_HOME/test_git/GsDevKit_stones
 fi
 
-set +e
 defaultRegistryName=`hostname`
-echo "...ignore registryReport.solo error message, if one shows up ... error is anticipated part of registryReport.solo processing"
-registryReport.solo --registry=`hostname`
-status=$?
-set -e
 
-if [ $status == 1 ]; then
-	echo "creating default registry"
-	createRegistry.solo
-else
-	echo "default registry ($defaultRegistryName) exists"
-fi
+createRegistry.solo --ensure
 
 createProjectSet.solo --projectSet=$projectSet --empty $*
 
@@ -91,6 +83,8 @@ downloadGemStone.solo $GS_VERS $*
 # update product list from shared product directory when a download is done by shared registry
 registerProduct.solo --fromDirectory=$STONES_HOME/test_gemstone $*
 
+productPath=`registryQuery.solo --product=$GS_VERS`
+echo "product path for ${GS_VERS}: $productPath"
 # create and register default stones directory for rowanV3
 if [ ! -d $STONES_HOME/test_stones ]; then
 	mkdir $STONES_HOME/test_stones
@@ -123,7 +117,7 @@ export stoneName=gs_$GS_VERS
 createStone.solo --template=$template $stoneName $GS_VERS $*
 
 echo $PLATFORM
-set -x
+
 if [ "$CI" = "true" ]; then
 	# possible native code generation issues on mac and github, disable native code
 	echo "NATIVE CODE*************************************"
@@ -136,10 +130,25 @@ EOF
 	cat $STONES_HOME/test_stones/stones/$stoneName/gem.conf
 	echo "NATIVE CODE*************************************"
 fi
-set +x
 
 #start stone
 startStone.solo $stoneName $*
+
+pushd $STONES_HOME/test_stones/stones/$stoneName
+	# test snapshot.stone -- snapshot.stone must be run in the stone directory
+	#   this script is expected to be run in non-Rowan extents and cannot load
+	#   the GsDevKit_stones support code (right now)
+	if [ ! -d "snapshots" ]; then
+		mkdir snapshots
+	fi
+	ls -altr
+	cat .topazini
+	cat .GDKStoneSpec.ston
+	versionReport.stone
+	snapshot.stone --extension=`date +%m-%d-%Y_%H:%M:%S`.dbf snapshots --safely $*
+	# should remove the requirement for -r ...
+	newExtent.solo -r $defaultRegistryName -e snapshots/*.dbf $stoneName $*
+popd
 
 # Add ROWAN_PROJECTS_HOME env var to point to the git directory where git repositories
 #  used by this stone reside

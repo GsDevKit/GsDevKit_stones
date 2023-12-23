@@ -3,7 +3,6 @@
 # test coverage for:
 #		registryReport.sol
 #		createRegistry.solo
-#		createProjectSet.solo
 #		updateProjectSet.solo
 #		cloneProjectsFromProjectSet.solo
 #		
@@ -23,17 +22,7 @@ if [ "$CI" = "true" ]; then
 	export urlType=https
 fi
 
-set +e
-registryReport.solo --registry=$registry
-status=$?
-set -e
-
-if [ $status == 1 ]; then
-	echo "creating $registry registry"
-	createRegistry.solo $registry
-else
-	echo "registry $registry exists"
-fi
+createRegistry.solo $registry --ensure
 
 TEST_SCRIPTS_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 $TEST_SCRIPTS_DIR/createTestProjectSet.sh $*

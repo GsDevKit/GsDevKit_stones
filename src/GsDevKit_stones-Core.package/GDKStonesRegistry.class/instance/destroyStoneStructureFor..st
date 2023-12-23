@@ -1,5 +1,6 @@
-stone management
+destruction
 destroyStoneStructureFor: stoneName
+	"destroy named stone on disk and in registry metadata"
 	| stoneSpec status |
 	stoneSpec := self stoneNamed: stoneName.
 	(stoneSpec waitStone: 1) = 0

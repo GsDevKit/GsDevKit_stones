@@ -1,7 +1,12 @@
 #!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitOptionalOptionWithNoArg long: 'ensure' short: 'e'.
+}
+%
 usage
 -----
-USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [ <registry-name> ]
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] [--ensure] [ <registry-name> ]
 
 DESCRIPTION
   Create GsDevKit_stones registry for the given . If no <registry-name> is 
@@ -29,6 +34,7 @@ OPTIONS
   --debugGem        If terminal is connected to stdout, bring up debugger. If not,
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
+  -e, --ensure      Create the registry if it does not alreay exist.
   <registry-name>   name of the registry. Default is /usr/bin/hostname
 
 EXAMPLES
@@ -36,7 +42,7 @@ EXAMPLES
   $basename -D
   $basename --debugGem
   $basename 
-  $basename bosch
+  $basename bosch --ensure
 -----
 %
 specs
@@ -67,5 +73,5 @@ doit
 	registryName := self positionalArgs size = 0
 		ifTrue: [ (self globalNamed: 'System') hostname ]
 	  ifFalse: [ self positionalArgs at: 1 ].
-	^ registryClass newRegistryNamed: registryName
+	^ registryClass newRegistryNamed: registryName ensure: self ensure
 %

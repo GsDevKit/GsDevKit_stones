@@ -6,6 +6,7 @@
 #		createProjectSet.solo
 #		updateProjectSet.solo
 #		cloneProjectsFromProjectSet.solo
+#		backupStone.stone
 #		
 set -e
 
@@ -46,18 +47,7 @@ else
 	fi
 fi
 
-set +e
-echo "...ignore registryReport.solo error message, if one shows up ... error is anticipated part of registryReport.solo processing"
-registryReport.solo --registry=$registry
-status=$?
-set -e
-
-if [ $status == 1 ]; then
-	echo "creating $registry registry"
-	createRegistry.solo $registry
-else
-	echo "registry ($registry) exists"
-fi
+createRegistry.solo $registry --ensure
 
 createProjectSet.solo --registry=$registry --projectSet=$projectSet_common \
   --from=$GSDEVKIT_STONES_ROOT/projectSets/$urlType/rowanV3_common.ston $*
@@ -151,6 +141,8 @@ gslist.solo -l
 
 if [ "$template" = "minimal_rowan" ] ; then
 	cd $STONES_HOME/$registry/stones/$stoneName
+		
+	backupStone.stone --wait test_backup_2.dbf --compressed --safely --validate
 
 	# turn on unicodeComparisonMode required by Jadeite
 	enableUnicodeCompares.topaz -lq

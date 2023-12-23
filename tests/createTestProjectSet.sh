@@ -15,26 +15,9 @@ if [ ! -d $STONES_HOME/test_git ]; then
 	mkdir $STONES_HOME/test_git
 fi
 
-set +e
-registryReport.solo --registry=$registry
-status=$?
+createRegistry.solo $registry --ensure
 
-set -e
-
-if [ $status == 1 ]; then
-	echo "creating $registry registry"
-	createRegistry.solo $registry
-else
-	echo "registry $registry exists"
-fi
-
-set +e
 createProjectSet.solo --registry=$registry --projectSet=$projectSet --empty $*
-status=$?
-
-if [ $status == 1 ]; then
-	echo "project set $projectSet exists"
-fi
 
 if [ "$urlType" = "ssh" ] ; then
 	url1="git@github.com:GsDevKit/GsDevKit_stones.git"

@@ -101,7 +101,7 @@ registryName
 		ifNotNil: [:value | value ].
 %
 doit
-	| registryClass stoneSpec sessionDescription commands result |
+	| registryClass stoneSpec sessionDescription commands result stonesRegistry |
 	self preDoitSpecLoad: [:spec | 
 		spec projectName = 'GsCommands'
 			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
@@ -111,7 +111,6 @@ doit
 		ifTrue: [ (self globalNamed: 'GDKGsDevKit_stonesBase') verbose: true ].
 	self stoneName
 		ifNotNil: [:stoneName |
-			| stonesRegistry |
 			stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 			stoneSpec := stonesRegistry stoneNamed: stoneName ] 
 		ifNil: [
@@ -119,7 +118,8 @@ doit
 			specFile := FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston'.
 			stoneSpec := (self globalNamed: 'GDKAbstractRegistryStore') 
 				fromPath: specFile 
-				ifAbsent: [ self error: 'No .GDKStoneSpec.ston file found in current directory. If you are not in a stone directory, you must use --registry and --stoneName options. If you are in a stone directory, then the stone itself is not registered.', ' (', self basename, ')'] ].
+				ifAbsent: [ self error: 'No .GDKStoneSpec.ston file found in current directory. If you are not in a stone directory, you must use --registry and --stoneName options. If you are in a stone directory, then the stone itself is not registered.', ' (', self basename, ')'].
+			stonesRegistry := stoneSpec stonesRegistry ].
 	sessionDescription := (self globalNamed: 'TDSessionDescription') 
 		fromFile: stoneSpec todeHome asFileReference / 'sys' / 'local' / 'sessions' / stoneSpec stoneName.
 	self positionalArgs size > 0
@@ -132,6 +132,8 @@ doit
 				ifNil: [ self error: 'a tODE command must be entered on command line as a positional argument or via --file option', ' (', self basename, ')' ]
 				ifNotNil: [ :commandsFile |
 					commands := commandsFile asFileReference contents ] ].
+	sessionDescription
+		gemstoneProductPath: (stonesRegistry products at: stoneSpec gemstoneVersionString).
 	result := (self globalNamed: 'TDShell') 
 		sessionDescription: sessionDescription 
 		evaluate: commands

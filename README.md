@@ -1,9 +1,22 @@
 # GsDevKit_stones
 BRANCH | STATUS
-------------- | -------------
+------------ | -------------
+**v2** | [![**v2** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v2)](https://github.com/GsDevKit/GsDevKit_stones/actions)
 **v1.1.1** | [![**v1.1.1** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v1.1.1)](https://github.com/GsDevKit/GsDevKit_stones/actions)
 
+Greatly simplified version of GsDevKit_home
+1. bin directory of scripts implemented with superDoit and 3.7.0 for solo scripts and GsHostProcess.
+2. Stone directory modeled after GsDevKit_home, but configurable for folks with different needs. There a varient of templates that are used to specify directory structure for stones, git repositories, etc.
+3. Registry of stones so that stones and git repositories can be located anywhere.
+5. If you are using tODE I think you should continue using GsDevKit_home 
+
 ## Versions
+### v2
+Stable version intended for use with superDoit:v4.1, smalltalkci:master; GemStone 3.7.0 is used for .solo scripts, allowing v2 to support stones as old as 3.6.0. 
+
+Supported Rowan v3 stone versions 3.7.0 and newer. Tested against 3.7.0_rowanv3-Alpha
+Supported non-Rowan stone versions 3.6.0 though 3.7.0 
+
 ### v1.1.1
 Development version intended for use with superDoit:v4.1 and GemStone 3.7.0 for .solo scripts. 
 Supported Rowan v2 stone versions 3.6.4 and newer, tested through 3.7.0.
@@ -19,7 +32,7 @@ Greatly simplified version of GsDevKit_home
 
 ## Installation
 ``` bash
-git clone git@github.com:GsDevKit/GsDevKit_stones.git -b v1.1.1
+git clone git@github.com:GsDevKit/GsDevKit_stones.git -b v2
 GsDevKit_stones/bin/install.sh
 
 export PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH

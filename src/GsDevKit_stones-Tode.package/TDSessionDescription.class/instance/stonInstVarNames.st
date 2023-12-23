@@ -1,3 +1,6 @@
 ston
 stonInstVarNames
-  ^ self class allInstVarNames asOrderedCollection
+	| names |
+	names := self class allInstVarNames asOrderedCollection.
+	names removeIfPresent: #'gemstoneProductPath'.
+	^ names

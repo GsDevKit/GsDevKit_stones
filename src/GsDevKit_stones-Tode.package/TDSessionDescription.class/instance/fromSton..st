@@ -1,7 +1,7 @@
 ston
 fromSton: stonReader
 	| allInstanceVariableNames |
-	allInstanceVariableNames := self stonInstVarNames.
+	allInstanceVariableNames := self class allInstVarNames.
 	stonReader
 		parseMapDo: [ :instVarName :value | 
 			[ 

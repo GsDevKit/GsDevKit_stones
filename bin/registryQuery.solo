@@ -1,0 +1,87 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+	SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
+	SuperDoitOptionalOptionWithRequiredArg long: 'product'.
+	SuperDoitOptionalOptionWithNoArg long: 'stonesDirectory'.
+}
+%
+usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+  [ \
+     [ --registry=<registry-name>  | -r <registry-name>] \
+     [ --product=<product-name> ] \
+     [ --stonesDirectory ] 
+  ]
+
+DESCRIPTION
+  Writes the value of the given attribute on stdout, or an empty string, if the
+  attribute is not found.
+
+OPTIONS
+  -h, --help        display usage message
+  -D, --debug       bring up topaz debugger in the event of a script error
+  --debugGem        If terminal is connected to stdout, bring up debugger. If not,
+                    dump stack to stdout and wait for topaz to attach using topaz
+                    DEBUGGEM command.
+  --registry=<registry-name> | -r <registry-name> 
+                    <registry-name> is the name of the registry.
+  --product=<productName-name>
+                    write path to product directory to stdout or empty string, if
+                    the <product-name> is not registered
+  --stonesDirectory
+                    write stones directory path to stdout or empty string, if not
+                    registered
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+  $basename 
+  $basename
+  $basename --registry=bosch --product
+  $basename --registry=bosch --stonesDirectory
+  $basename -r bosch --stone=bosch_370
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+registryName
+	^ self registry
+		ifNil: [ (self globalNamed: 'System') hostname ]
+		ifNotNil: [:value | value ].
+%
+doit
+  | registryClass stonesRegistry |
+  self preDoitSpecLoad: [:spec |
+    spec projectsHome: self dirname asFileReference parent parent].
+ 	registryClass := (self globalNamed: 'GDKRegistry').	
+	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
+	self stonesDirectory
+		ifTrue: [
+			self stdout nextPutAll: (stonesRegistry stonesDirectory ifNil: [ '']); lf ].
+	self product
+		ifNotNil: [ :productName |
+			self stdout nextPutAll: (stonesRegistry products at: productName ifAbsent: ['']); lf ].
+	^ self noResult
+%

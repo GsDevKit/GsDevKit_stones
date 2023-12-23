@@ -107,15 +107,25 @@ createStoneStructure: stoneSpec
 	systemConfStream close.
 	stoneRoot / 'gem.conf'
 		writeStreamDo: [ :fileStream | 
-			fileStream truncate.
+			(Rowan version >= '3.0.0' asRwSemanticVersionNumber
+				or: [ self class currentGemStoneVersion >= '3.7.0' asRwGemStoneVersionNumber ])
+				ifTrue: [ fileStream truncate ].
 			fileStream
 				nextPutAll: 'GEM_TEMPOBJ_CACHE_SIZE = 1000000;';
 				lf ].
 	stoneRoot / '.topazini'
 		writeStreamDo: [ :fileStream | 
-			fileStream truncate.
+			(Rowan version >= '3.0.0' asRwSemanticVersionNumber
+				or: [ self class currentGemStoneVersion >= '3.7.0' asRwGemStoneVersionNumber ])
+				ifTrue: [ fileStream truncate ].
 			fileStream
 				nextPutAll: 'set GEMSTONE ' , stoneSpec stoneName;
 				lf;
 				nextPutAll: 'set u ' , userId , ' p ' , password;
-				lf ]
+				lf.
+			stoneSpec gemstoneVersionString asRwGemStoneVersionNumber
+				>= '3.6.0' asRwGemStoneVersionNumber
+				ifTrue: [ 
+					fileStream
+						nextPutAll: 'set singlecolumn on';
+						lf ] ]

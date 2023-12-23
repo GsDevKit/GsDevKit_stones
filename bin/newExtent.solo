@@ -1,0 +1,128 @@
+#!/usr/bin/env superdoit_solo
+options
+{
+SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
+SuperDoitOptionalOptionWithRequiredArg long: 'extent' short: 'e'.
+}
+%
+Usage
+-----
+USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
+                (--registry=<registry-name> | -r <registry-name>) \
+                (--extent=<source-extent-path> | -e <source-extent-path>) \
+                <stone-name>
+
+DESCRIPTION
+  Stop <stone-name>, remove the tranlogs, replace extent0.dbf with 
+  <source-extent-path>, restart <stone-name> with -N option (no tranlogs are used).
+
+OPTIONS
+  -h, --help    display usage message
+  -D, --debug   bring up topaz debugger in the event of a script error
+  --debugGem    If terminal is connected to stdout, bring up debugger. If not,
+                dump stack to stdout and wait for topaz to attach using topaz
+                DEBUGGEM command.
+  -e, --extent
+                Path to the extent to be copied to <stone-name>.
+  -r, --registry
+                Name of the registry where the <stone-name> resides.
+  <stone-name>  Name of the stone that will recieve the new extent (<source-extent-path>)
+
+EXAMPLES
+  $basename --help
+  $basename -D
+  $basename --debugGem
+  $basename --registry=bosch bosch_370 --extent=snapshots/extent0.dbf
+  $basename -r bosch bosch_370 -e snapshots/extent0.dbf
+-----
+%
+specs
+[
+RwLoadSpecificationV2 {
+	#projectName : 'GsDevKit_stones',
+	#projectSpecFile : 'rowan/project.ston',
+	#componentNames : [
+		'Core',
+		'Solo'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'Globals'
+			}
+		}
+	},
+	#comment : ''
+},
+RwLoadSpecificationV2 {
+	#projectName : 'GsCommands',
+	#projectSpecFile : 'rowan/project.ston',
+	#diskUrl : '$GEMSTONE/examples/GsCommands/projectsHome/GsCommands',
+	#componentNames : [
+		'Commands'
+	],
+	#platformProperties : {
+		'gemstone' : {
+			'allusers' : {
+				#defaultSymbolDictName : 'UserGlobals'
+			}
+		}
+	},
+	#comment : ''
+}
+]
+%
+method
+notranlogs
+	"start stone support"
+
+	^ true
+%
+method
+restore
+	"start stone support"
+
+	^ false
+%
+doit
+	| registryClass stonesRegistry stoneName stoneSpec stoneDirectorySpec tranlogsDir extentsDir extentRef targetExtent status |
+	self preDoitSpecLoad: [:spec | 
+		spec projectName = 'GsCommands'
+			ifTrue: [ spec projectsHome: '$GEMSTONE/examples/GsCommands/projectsHome' ]
+			ifFalse: [ spec projectsHome: self dirname asFileReference parent parent ] ].
+	registryClass := (self globalNamed: 'GDKRegistry').	
+	self positionalArgs size ~= 1
+		ifTrue: [
+			self error: 'Expected a single positional argument: <stone-name>, not ', self positionalArgs size printString, ' positional arguments', ' (', self basename, ')' ].
+	stoneName := self positionalArgs at: 1.
+	self registry
+		ifNil: [ self error: '--registry option is required', ' (', self basename, ')' ].
+	stonesRegistry := registryClass stonesRegistryNamed: self registry.
+		stoneSpec := stonesRegistry stoneNamed: stoneName.
+	(stoneSpec waitStone: -1) = 0
+		ifTrue: [
+			"if running" 
+			stoneSpec 
+				stopStone: nil immediate: true;
+				yourself ].
+	(status := stoneSpec waitStone: -1) ~= 3
+		ifTrue: [ self error: 'Error did not shutdown properly (status = ', status printString ].
+	stoneDirectorySpec := stoneSpec stoneDirectorySpec.
+	extentsDir := tranlogsDir := stoneSpec root asFileReference.
+	stoneDirectorySpec tranlogs
+		ifNotNil: [:tranDirName |
+			tranlogsDir := tranlogsDir / tranDirName ].
+	(tranlogsDir children select: [:child | child extension = 'dbf' and: [ child basename beginsWith: 'tranlog' ] ])
+		do: [:tranlog | tranlog delete ].
+	stoneDirectorySpec extents
+		ifNotNil: [:extentsDirName |
+			extentsDir := extentsDir / extentsDirName ].
+	extentRef := self extent asFileReference.
+	targetExtent := extentsDir / 'extent0.dbf'.
+	targetExtent ensureDelete.
+	extentRef copyTo: targetExtent.
+	self stdout lf; nextPutAll: extentRef fullName, '======	copied at ', DateAndTime now printString; lf.
+	stoneDirectorySpec class chmod: targetExtent fullName fileMode: 'u+w'.
+	stoneSpec startStone: self withSuperDoitOptions: true.
+	^ self noResult
+%
