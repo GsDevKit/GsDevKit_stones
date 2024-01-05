@@ -83,7 +83,7 @@ attachDevClonesV2: projectsHome
 %
 method
 attachDevClonesV3: projectsHome
-	| rowanProject loadSpecs |
+	| rowanProject loadSpecs projectNames |
 	(System gemEnvironmentVariable: 'ARCHBASE')
 		ifNil: [ self logMessage: 'ARCHBASE not set, so gemstoneBaseImage project not attached and not loaded' ]
 		ifNotNil: [:value |
@@ -139,7 +139,10 @@ attachDevClonesV3: projectsHome
 							projectsHome: projectsHome;
 							yourself ].
 		loadSpec addCustomConditionalAttributes: #('tests' 'testsv2') ].
-	loadSpecs load. 
+	projectNames := loadSpecs load projectNames asArray sort. 
+	self logMessage: 'Rowan projects attached and reloaded: '.
+	projectNames do: [:each |
+		self logMessage: '	', each ]
 %
 doit
 	| projectsHome |
@@ -152,7 +155,9 @@ doit
 			(System gemEnvironmentVariable: 'ROWAN_PROJECTS_HOME')
 				ifNotNil: [:value | projectsHome := value asFileReference pathString ]
 				ifNil: [ self error: 'ROWAN_PROJECTS_HOME must be defined, either via existing env var ROWAN_PROJECTS_HOME or --projectsHome' ] ]
-		ifNotNil: [:value | projectsHome := value asFileReference pathString ].
+		ifNotNil: [:value | 
+			projectsHome := value asFileReference pathString.
+			System gemEnvironmentVariable: 'ROWAN_PROJECTS_HOME' put: projectsHome ].
 	self logMessage: 'ROWAN_PROJECTS_HOME = ', '$ROWAN_PROJECTS_HOME' asFileReference pathString.
 	self logMessage: 'Rowan version: ', Rowan versionString.
 	(Rowan version >= (RwSemanticVersionNumber fromString: '3.0.0'))
