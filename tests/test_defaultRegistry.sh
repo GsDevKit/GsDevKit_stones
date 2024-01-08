@@ -162,7 +162,7 @@ if [ "$template" = "minimal_rowan" ] ; then
 	cd $STONES_HOME/test_stones/stones/$stoneName
 
 	# install GsDevKit_stones using Rowan installProject.stone script
-	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
+	installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 fi
 

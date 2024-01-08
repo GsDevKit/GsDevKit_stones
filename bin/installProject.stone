@@ -1,7 +1,7 @@
 #!/usr/bin/env superdoit_stone
 options
 {
-SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome' default: '$ROWAN_PROJECTS_HOME'.
+SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome'.
 SuperDoitOptionalOptionWithNoArg long: 'strict'.
 }
 %
@@ -47,6 +47,31 @@ EXAMPLES
   $basename file:$GS_HOME/shared/repos/RowanSample9/specs/spec_0082.ston \
             --strict --projectsHome=$GS_HOME/shared/repos
 -----
+%
+method
+defineCustomEnvVars
+	| customenvRef block | 
+	customenvRef := FileLocator workingDirectory asFileReference asFileReference / 'customenv'.
+	block := [ :varName :valueStr | 
+		System gemEnvironmentVariable: varName put: valueStr ].
+	customenvRef exists
+		ifTrue: [
+			| stream |
+			"customenv file has precedence"
+			stream := ReadStreamPortable on: customenvRef contents.
+			[ stream atEnd ] whileFalse: [
+				| line index keyAndValue |
+			 	line := stream nextLine trimBoth.
+				(line beginsWith: '#')
+					ifFalse: [
+						"looking for 'export xxx=yyy'"
+						index := line indexOfSubCollection: 'export' startingAt: 1.
+						(index > 0)
+							ifTrue: [ 
+								" export at beginning of line"
+								line := line copyFrom: index + 'export ' size to: line size.
+								keyAndValue := line subStringsDelimitedBy: $=.
+								block value: (keyAndValue at: 1) value: (keyAndValue at: 2) ] ] ] ] 
 %
 method
 rowanV2Install
@@ -95,6 +120,8 @@ rowanV3Install
 	^ System commit
 %
 doit
+	(FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston') exists
+		ifTrue: [ self defineCustomEnvVars ].
 	(Rowan respondsTo: #version)
 		ifTrue: [
 			Rowan version >= '3.0.0' asRwSemanticVersionNumber
