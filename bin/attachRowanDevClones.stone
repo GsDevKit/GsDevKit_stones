@@ -97,14 +97,14 @@ attachDevClonesV3: projectsHome
 					ifTrue: [ 
 						"project already attached, so reload"
 						loadSpec
-							addCustomConditionalAttributes: #('tests');
+							addCustomConditionalAttributes: #('tests' 'obsolete');
 							load.
 						self logMessage: 'gemstoneBaseImage reloaded' ] 
 					ifFalse: [
 						loadSpec
 							gitUrl: 'file:', ('$ARCHBASE' asFileReference pathString);
 							projectSpecFile: 'image/rowan/project_attached.ston';
-							addCustomConditionalAttributes: #('tests');
+							addCustomConditionalAttributes: #('tests' 'obsolete');
 							load.
 						self logMessage: 'gemstoneBaseImage project attached and reloaded'.
 						System commit ] ].
