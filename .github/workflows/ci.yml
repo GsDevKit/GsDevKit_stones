@@ -38,6 +38,7 @@ jobs:
     env:
       GS_VERS: ${{ matrix.smalltalk }}
       PLATFORM: ${{ matrix.os }}
+      CI: ${{ "true" }}
     steps:
       - uses: actions/checkout@v3
       - name: install superDoit 
