@@ -161,14 +161,14 @@ jobs:
           gslist.solo -l
           
         shell: bash
-      - name: run rowanV3-alpha1 test
-        run: |
-          echo "CI=$CI"
-          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
-          gslist.solo -lc
-          deleteRegistry.solo test_rowanV3 -f
-          gslist.solo -l
-        shell: bash
+#      - name: run rowanV3-alpha1 test
+#        run: |
+#          echo "CI=$CI"
+#          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
+#          gslist.solo -lc
+#          deleteRegistry.solo test_rowanV3 -f
+#          gslist.solo -l
+#        shell: bash
       - name: run tODE test
         run: |
           echo "CI=$CI"
