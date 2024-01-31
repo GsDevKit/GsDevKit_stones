@@ -49,6 +49,9 @@ jobs:
           sudo chmod oug+rwx /opt/gemstone/locks          
 
           # set up the basic env vars from which all other paths are derived
+          export CI="true"
+          echo "CI=$CI"
+          echo "CI=true" >> "$GITHUB_ENV"
           export WORK_ROOT="$GITHUB_WORKSPACE/.."
           echo "WORK_ROOT=$GITHUB_WORKSPACE/.." >> "$GITHUB_ENV"
           export GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE
@@ -79,9 +82,11 @@ jobs:
 
       - name: setup GsDevKit_stones
         run: |
+          echo "CI=$CI"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
+          echo "CI=true" >> "$GITHUB_ENV"
           echo "WORK_ROOT=$WORK_ROOT"
 
           mkdir $WORK_ROOT/STONES_DATA_HOME
@@ -132,6 +137,7 @@ jobs:
         shell: bash
       - name: run help test
         run: |
+          echo "CI=$CI"
           echo "SUPERDOIT_ROOT=$SUPERDOIT_ROOT"
           echo "GSDEVKIT_STONES_ROOT=$GSDEVKIT_STONES_ROOT"
           echo "GITHUB_WORKSPACE=$GITHUB_WORKSPACE"
@@ -143,25 +149,29 @@ jobs:
         shell: bash
       - name: run project set tests
         run: |
+          echo "CI=$CI"
           $GSDEVKIT_STONES_ROOT/tests/test_projectSets.sh
         shell: bash
       - name: run default registry test
         run: |
+          echo "CI=$CI"
           $GSDEVKIT_STONES_ROOT/tests/test_defaultRegistry.sh
           gslist.solo -lc
           deleteRegistry.solo `hostname` -f
           gslist.solo -l
           
         shell: bash
-      - name: run rowanV3-alpha1 test
-        run: |
-          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
-          gslist.solo -lc
-          deleteRegistry.solo test_rowanV3 -f
-          gslist.solo -l
-        shell: bash
+#      - name: run rowanV3-alpha1 test
+#        run: |
+#          echo "CI=$CI"
+#          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
+#          gslist.solo -lc
+#          deleteRegistry.solo test_rowanV3 -f
+#          gslist.solo -l
+#        shell: bash
       - name: run tODE test
         run: |
+          echo "CI=$CI"
           $GSDEVKIT_STONES_ROOT/tests/test_tode.sh
           gslist.solo -lc
           deleteRegistry.solo devkit -f

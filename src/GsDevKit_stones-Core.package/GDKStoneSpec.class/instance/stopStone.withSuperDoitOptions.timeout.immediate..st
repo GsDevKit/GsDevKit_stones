@@ -50,7 +50,10 @@ stopStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean ti
 				ifTrue: [ 
 					stdout
 						nextPutAll: 'No running stone with the name ' , self stoneName printString;
-						lf ]
+						lf;
+						nextPutAll: '****************************************';
+						lf.
+					^ self ]
 				ifFalse: [ 
 					exitStatus = 2
 						ifTrue: [ 
