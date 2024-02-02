@@ -76,12 +76,12 @@ doit
 		spec projectsHome: self dirname asFileReference parent parent].
 	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
-	self positionalArgs size ~= 1
-		ifTrue: [ self error: 'Expected a single positional argument for GemStone version' ].
 	self productPath
 		ifNotNil: [:productPath |
 			gemstonePath := GsFile serverRealPath: self productPath.
-			gemstoneVersion := self positionalArgs at: 1.
+			self positionalArgs size = 1
+				ifTrue: [ gemstoneVersion := self positionalArgs at: 1 ] 
+				ifFalse: [ self error: 'Expected a single positional argument for GemStone version' ].
 			(stonesRegistry products at: gemstoneVersion ifAbsent: [])
 				ifNotNil: [:existingPath | 
 					self ensure
