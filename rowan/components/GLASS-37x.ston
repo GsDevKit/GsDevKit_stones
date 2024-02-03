@@ -2,6 +2,7 @@ RwPlatformNestedProjectLoadComponentV2 {
 	#name : 'GLASS-37x',
 	#condition : [
 		'gs3.7.[0-]'
+		'gs3.7.0.[0-]'
 	],
 	#packageNames : [
 		'GsDevKit_stones-GLASS-37x'
