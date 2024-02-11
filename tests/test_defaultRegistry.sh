@@ -172,6 +172,7 @@ echo "stonesDirectory QUERY=$queryResult"
 if [ "$queryResult" != "$STONES_HOME/test_stones/stones" ]; then
 	echo "stonesDirectory query ($queryResult) does not equal expected result ($STONES_HOME/test_stones/stones"
 	exit 1
+fi
 queryResult=`registryQuery.solo --GsDevKit_stones_root`
 echo "GsDevKit_stones_root QUERY=$queryResult"
 
