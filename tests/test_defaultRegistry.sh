@@ -166,18 +166,34 @@ if [ "$template" = "minimal_rowan" ] ; then
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 fi
 
+onDarwin="false"
+PLATFORM="`uname -sm | tr ' ' '-'`"
+case "$PLATFORM" in
+   Darwin-arm64 | Darwin-x86_64)
+		onDarwin="true"
+		;;
+	*)
+		echo "This script should only be run on Mac (Darwin-i386 or Darwin-arm64), or Linux (Linux-x86_64) ). The result from \"uname -sm\" is \"`uname -sm`\""
+		exit 1
+     ;;
+esac
+
 # test regitstryQuery.solo
-queryResult=`registryQuery.solo -r $defaultRegistryName --stonesDirectory`
-queryResult=`realpath $queryResult`
-expectedResult=`realpath $STONES_HOME/test_stones/stones`
-echo "stonesDirectory QUERY=$queryResult"
-if [ "$queryResult" != "$expectedResult" ]; then
-	echo "stonesDirectory query ($queryResult) does not equal expected result ($expectedResult)"
-	exit 1
-fi
 queryResult=`registryQuery.solo --GsDevKit_stones_root`
 echo "GsDevKit_stones_root QUERY=$queryResult"
+queryResult=`registryQuery.solo -r $defaultRegistryName --stonesDirectory`
+echo "stonesDirectory QUERY=$queryResult"
 
+if [ "$onDarwin" = "false" ]; then 
+	# realpath does not exist on Darwin, so don't bother validating the query result
+	queryResult=`realpath $queryResult`
+	expectedResult=`realpath $STONES_HOME/test_stones/stones`
+	echo "stonesDirectory QUERY=$queryResult"
+	if [ "$queryResult" != "$expectedResult" ]; then
+		echo "stonesDirectory query ($queryResult) does not equal expected result ($expectedResult)"
+		exit 1
+	fi
+fi
 # delete the stone
 cd $STONES_HOME
 deleteStone.solo $stoneName $*
