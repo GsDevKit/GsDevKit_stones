@@ -168,8 +168,8 @@ fi
 
 # test regitstryQuery.solo
 queryResult=`registryQuery.solo -r $defaultRegistryName --stonesDirectory`
-queryResult=`realPath $queryResult`
-expectedResult=`realPath $STONES_HOME/test_stones/stones`
+queryResult=`realpath $queryResult`
+expectedResult=`realpath $STONES_HOME/test_stones/stones`
 echo "stonesDirectory QUERY=$queryResult"
 if [ "$queryResult" != "$expectedResult" ]; then
 	echo "stonesDirectory query ($queryResult) does not equal expected result ($expectedResult)"
