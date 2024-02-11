@@ -4,6 +4,7 @@ options
 	SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'product'.
 	SuperDoitOptionalOptionWithNoArg long: 'stonesDirectory'.
+	SuperDoitOptionalOptionWithNoArg long: 'GsDevKit_stones_root'.
 }
 %
 usage
@@ -25,6 +26,10 @@ OPTIONS
   --debugGem        If terminal is connected to stdout, bring up debugger. If not,
                     dump stack to stdout and wait for topaz to attach using topaz
                     DEBUGGEM command.
+  --GsDevKit_stones_root
+                    write the GsDevKit_stones root directory path to stdout (i.e.,
+                    the root directory of the GsDevKit_stones in which this script
+                    is located.
   --registry=<registry-name> | -r <registry-name> 
                     <registry-name> is the name of the registry.
   --product=<productName-name>
@@ -43,6 +48,7 @@ EXAMPLES
   $basename --registry=bosch --product
   $basename --registry=bosch --stonesDirectory
   $basename -r bosch --stone=bosch_370
+  $basename --GsDevKit_stones_root
 -----
 %
 specs
@@ -75,6 +81,10 @@ doit
   | registryClass stonesRegistry |
   self preDoitSpecLoad: [:spec |
     spec projectsHome: self dirname asFileReference parent parent].
+	self GsDevKit_stones_root
+		ifTrue: [
+			self stdout nextPutAll: self dirname asFileReference parent fullName.
+			^ self noResult ].
  	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
 	self stonesDirectory

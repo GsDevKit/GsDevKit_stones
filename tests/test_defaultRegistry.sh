@@ -166,6 +166,15 @@ if [ "$template" = "minimal_rowan" ] ; then
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 fi
 
+# test regitstryQuery.solo
+queryResult=`registryQuery.solo -r $defaultRegistryName --stonesDirectory`
+echo "stonesDirectory QUERY=$queryResult"
+if [ "$queryResult" != "$STONES_HOME/test_stones/stones" ]; then
+	echo "stonesDirectory query ($queryResult) does not equal expected result ($STONES_HOME/test_stones/stones"
+	exit 1
+queryResult=`registryQuery.solo --GsDevKit_stones_root`
+echo "GsDevKit_stones_root QUERY=$queryResult"
+
 # delete the stone
 cd $STONES_HOME
 deleteStone.solo $stoneName $*
