@@ -5,7 +5,7 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
         projectDirName to allow for multiple copies of the project in the same directory. Normally, projectDirName
 		and projectName are the same."
 
-	| wasTracing gitTool specDict gitUrls gitProjectRef gitUrl cloned projectName title |
+	| wasTracing gitTool specDict gitUrls gitProjectRef gitUrl cloned projectName title stdout |
 	(wasTracing := Rowan projectTools trace isTracing)
 		ifTrue: [ Rowan projectTools trace stopTracing ].
 	gitTool := Rowan gitTools.
@@ -18,18 +18,20 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 	title := 'Clone or update ' , projectName.
 	projectDirName = projectName
 		ifFalse: [ title := title , ' as ' , projectDirName ].
-	Transcript
+	stdout := GsFile stdout.
+	stdout
 		cr;
-		show: '---------------';
+		nextPutAll: '====================';
 		cr;
-		show: title.
-	Transcript
+		nextPutAll: 'Project ' , projectName printString;
+		cr;
+		nextPutAll: '====================';
 		cr;
 		tab;
-		show: 'Remote ' , remoteName;
+		nextPutAll: 'Remote ' , remoteName;
 		cr;
 		tab;
-		show: 'In  directory ' , gitProjectRef fullName.
+		nextPutAll: 'In  directory ' , gitProjectRef fullName.
 	gitProjectRef exists
 		ifTrue: [ 
 			(Rowan gitTools gitstatusIn: gitProjectRef fullName with: '--porcelain') isEmpty
@@ -52,7 +54,7 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 			Transcript
 				cr;
 				tab;
-				show: 'Cloning ' , gitUrl , ' to ' , projectDirName.
+				nextPutAll: 'Cloning ' , gitUrl , ' to ' , projectDirName.
 			gitTool
 				gitcloneIn: gitRootPath
 				with: originArg , gitUrl , dirNameArg
@@ -60,17 +62,17 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
-			Transcript
+			stdout
 				cr;
 				tab;
-				show: 'Set ' , projectDirName , ' revision to ' , revision.
+				nextPutAll: 'Set ' , projectDirName , ' revision to ' , revision.
 			cloned
 				ifTrue: [ 
 					"GIT SWITCH"
-					Transcript
+					stdout
 						cr;
 						tab;
-						show:
+						nextPutAll:
 								'Switch (after clone) ' , remoteName , '/' , revision , ' -t -C ' , revision.
 					gitTool
 						performGitCommand: 'switch'
@@ -82,24 +84,24 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 							"GIT FETCH
 								GIT SWITCH
 								GIT PULL"
-							Transcript
+							stdout
 								cr;
 								tab;
-								show: 'Fetch  --all '.
+								nextPutAll: 'Fetch  --all '.
 							gitTool gitfetchIn: gitProjectRef with: ' --all'.
-							Transcript
+							stdout
 								cr;
 								tab;
-								show:
+								nextPutAll:
 										'Switch (after fetch) ' , remoteName , '/' , revision , ' -t -C ' , revision.
 							gitTool
 								performGitCommand: 'switch'
 								in: gitProjectRef fullName
 								with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision.
-							Transcript
+							stdout
 								cr;
 								tab;
-								show:
+								nextPutAll:
 										'Pull ' , projectName , ' revision ' , revision , ' from remote ' , remoteName.
 							gitTool
 								gitpullIn: gitProjectRef fullName
@@ -114,15 +116,20 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 						gitAddRemoteIn: gitProjectRef fullName
 						remote: theRemote
 						gitUrl: (gitUrls at: theRemote) ].	"GIT FETCH --all"
-			Transcript
+			stdout
 				cr;
 				tab;
-				show: 'Fetch  --all '.
+				nextPutAll: 'Fetch  --all '.
 			gitTool gitfetchIn: gitProjectRef with: ' --all' ].
-	Transcript
+	stdout
 		cr;
-		tab;
-		show: '---DONE---';
+		nextPutAll: '------ branch';
+		cr;
+		nextPutAll: (Rowan gitTools gitbranchIn: gitProjectRef fullName with: '');
+		cr;
+		nextPutAll: '==========';
+		cr;
+		nextPutAll: '==========';
 		cr.
 	wasTracing
 		ifTrue: [ Rowan projectTools trace startTracing ]
