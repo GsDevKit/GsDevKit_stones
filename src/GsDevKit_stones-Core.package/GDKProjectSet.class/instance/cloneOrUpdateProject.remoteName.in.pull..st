@@ -51,14 +51,17 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 			dirNameArg := ''.
 			projectName = projectDirName
 				ifFalse: [ dirNameArg := ' ' , projectDirName ].
-			Transcript
+			stdout
 				cr;
 				tab;
 				nextPutAll: 'Cloning ' , gitUrl , ' to ' , projectDirName.
-			gitTool
-				gitcloneIn: gitRootPath
-				with: originArg , gitUrl , dirNameArg
-				logging: false.
+			stdout
+				cr;
+				nextPutAll:
+						(gitTool
+								gitcloneIn: gitRootPath
+								with: originArg , gitUrl , dirNameArg
+								logging: false).
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
@@ -74,10 +77,13 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 						tab;
 						nextPutAll:
 								'Switch (after clone) ' , remoteName , '/' , revision , ' -t -C ' , revision.
-					gitTool
-						performGitCommand: 'switch'
-						in: gitProjectRef fullName
-						with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision ]
+					stdout
+						cr;
+						nextPutAll:
+								(gitTool
+										performGitCommand: 'switch'
+										in: gitProjectRef fullName
+										with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision) ]
 				ifFalse: [ 
 					pull
 						ifTrue: [ 
@@ -88,25 +94,30 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 								cr;
 								tab;
 								nextPutAll: 'Fetch  --all '.
-							gitTool gitfetchIn: gitProjectRef with: ' --all'.
+							stdout
+								cr;
+								nextPutAll: (gitTool gitfetchIn: gitProjectRef with: ' --all').
 							stdout
 								cr;
 								tab;
 								nextPutAll:
 										'Switch (after fetch) ' , remoteName , '/' , revision , ' -t -C ' , revision.
-							gitTool
-								performGitCommand: 'switch'
-								in: gitProjectRef fullName
-								with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision.
+							stdout
+								cr;
+								nextPutAll:
+										(gitTool
+												performGitCommand: 'switch'
+												in: gitProjectRef fullName
+												with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision).
 							stdout
 								cr;
 								tab;
 								nextPutAll:
 										'Pull ' , projectName , ' revision ' , revision , ' from remote ' , remoteName.
-							gitTool
-								gitpullIn: gitProjectRef fullName
-								remote: remoteName
-								branch: revision ] ] ].
+							stdout
+								cr;
+								nextPutAll:
+										(gitTool gitpullIn: gitProjectRef fullName remote: remoteName branch: revision) ] ] ].
 	cloned
 		ifTrue: [ 
 			"GIT REMOTE ADD"
@@ -120,7 +131,9 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 				cr;
 				tab;
 				nextPutAll: 'Fetch  --all '.
-			gitTool gitfetchIn: gitProjectRef with: ' --all' ].
+			stdout
+				cr;
+				nextPutAll: (gitTool gitfetchIn: gitProjectRef with: ' --all') ].
 	stdout
 		cr;
 		nextPutAll: '------ branch';
