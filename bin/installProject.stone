@@ -1,6 +1,8 @@
 #!/usr/bin/env superdoit_stone
 options
 {
+SuperDoitOptionalOptionWithNoArg long: 'ignoreInvalidCategories'.
+SuperDoitOptionalOptionWithNoArg long: 'trace'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome'.
 SuperDoitOptionalOptionWithNoArg long: 'strict'.
 }
@@ -32,6 +34,8 @@ OPTIONS
   --strict             load spec will be loaded using #resolveStrict, which forces
                        the checkout branch to match the the branch specified in
                        the revision field of the load spec.
+  --ignoreInvalidCategories
+                       Ignore invalid protocol messages during install.                      
 
 EXAMPLES
   $basename -h
@@ -116,12 +120,20 @@ rowanV3Install
 			ifNotNil: [ :theSpec |
 				"project is already loaded, reuse projectsHome, so the same git repo is used during reload"
 				loadSpec projectsHome: theSpec projectsHome ] ].
-	loadSpecs load.
+	[ loadSpecs load ]
+		on: RwInvalidCategoryProtocolConventionErrorNotification
+		do: [:ex | 
+			self stdout tab; nextPutAll: 'invalid protocol notification: ', ex _errorMessage; lf. 
+			self ignoreInvalidCategories
+				ifTrue: [ ex resume ]
+				ifFalse: [ ex pass] ].
 	^ System commit
 %
 doit
 	(FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston') exists
 		ifTrue: [ self defineCustomEnvVars ].
+	self trace 
+		ifTrue: [ Rowan projectTools trace startTracing ].
 	(Rowan respondsTo: #version)
 		ifTrue: [
 			Rowan version >= '3.0.0' asRwSemanticVersionNumber
