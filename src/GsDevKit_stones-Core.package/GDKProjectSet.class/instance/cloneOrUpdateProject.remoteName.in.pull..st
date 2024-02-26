@@ -25,7 +25,7 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath pull
 		cr;
 		nextPutAll: 'Directory ', gitProjectRef basename printString;
 		cr;
-		nextPutAll: 'Project ' , projectName printString;
+		nextPutAll: 'Project   ' , projectName printString;
 		cr;
 		nextPutAll: '====================';
 		cr;
