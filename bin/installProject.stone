@@ -2,6 +2,7 @@
 options
 {
 SuperDoitOptionalOptionWithNoArg long: 'ignoreInvalidCategories'.
+SuperDoitOptionalOptionWithNoArg long: 'noAutoInitialize'.
 SuperDoitOptionalOptionWithNoArg long: 'trace'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome'.
 SuperDoitOptionalOptionWithNoArg long: 'strict'.
@@ -35,7 +36,8 @@ OPTIONS
                        the checkout branch to match the the branch specified in
                        the revision field of the load spec.
   --ignoreInvalidCategories
-                       Ignore invalid protocol messages during install.                      
+                       Ignore invalid protocol messages during install.
+  --noAutoInitialize   Do not run initialize methods after load.
 
 EXAMPLES
   $basename -h
@@ -134,9 +136,14 @@ doit
 		ifTrue: [ self defineCustomEnvVars ].
 	self trace 
 		ifTrue: [ Rowan projectTools trace startTracing ].
-	(Rowan respondsTo: #version)
-		ifTrue: [
-			Rowan version >= '3.0.0' asRwSemanticVersionNumber
-				ifTrue: [ ^ self rowanV3Install ] ].
-	^ self rowanV2Install
+	[
+		(Rowan respondsTo: #version)
+			ifTrue: [
+				Rowan version >= '3.0.0' asRwSemanticVersionNumber
+					ifTrue: [ ^ self rowanV3Install ] ].
+		^ self rowanV2Install ] 
+			on: RwExecuteClassInitializeMethodsAfterLoadNotification
+			do: [:ex | 
+				"control initialization during load"
+				ex resume: self noAutoInitialize not ].
 %
