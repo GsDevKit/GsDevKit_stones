@@ -3,6 +3,7 @@ options
 {
 	SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 	SuperDoitOptionalOptionWithRequiredArg long: 'product'.
+	SuperDoitOptionalOptionWithNoArg long: 'projectDirectory'.
 	SuperDoitOptionalOptionWithNoArg long: 'stonesDirectory'.
 	SuperDoitOptionalOptionWithNoArg long: 'GsDevKit_stones_root'.
 }
@@ -35,6 +36,9 @@ OPTIONS
   --product=<productName-name>
                     write path to product directory to stdout or empty string, if
                     the <product-name> is not registered
+  --projectDirectory
+                    write the project directory path to stdout or empty string, if
+                    not registered
   --stonesDirectory
                     write stones directory path to stdout or empty string, if not
                     registered
@@ -87,6 +91,9 @@ doit
 			^ self noResult ].
  	registryClass := (self globalNamed: 'GDKRegistry').	
 	stonesRegistry := registryClass stonesRegistryNamed: self registryName.
+	self projectDirectory
+		ifTrue: [
+			self stdout nextPutAll: (stonesRegistry projectDirectory ifNil: [ '']); lf ].
 	self stonesDirectory
 		ifTrue: [
 			self stdout nextPutAll: (stonesRegistry stonesDirectory ifNil: [ '']); lf ].
