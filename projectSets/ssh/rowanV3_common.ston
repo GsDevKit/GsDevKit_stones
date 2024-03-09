@@ -14,6 +14,7 @@ GDKProjectSet {
 			'gitUrls' : {
 				'origin' : 'git@github.com:GemTalk/RemoteServiceReplication.git'
 			}
+		}
 	},
 	#comment : 'The common repositories for Rowan v3 are used by both the 3.7.0/RowanV3 server and pharo clients. Announcements is required by RemoteServiceReplication, so needs to be in the same projects home for Rowan.'
 }
