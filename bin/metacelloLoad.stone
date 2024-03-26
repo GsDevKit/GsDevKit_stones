@@ -1,0 +1,70 @@
+#!/usr/bin/env superdoit_stone
+options
+{
+	SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
+	SuperDoitRequiredOptionWithRequiredArg long: 'project'.
+	SuperDoitRequiredOptionWithRequiredArg long: 'repoPath'.
+}
+%
+usage
+-----
+USAGE 
+  $basename [--help | -h] [--debug | -D] \
+    --projectName=<project-name> \
+    --projectDirectory=<project-root-directory> \
+    --repoPath=<path-to-the-package-directory> \
+    <list-of-groups-to-be-loaded>
+
+DESCRIPTION
+  Load specified Metacello project into stone.
+
+
+OPTIONS
+  <path-to-.topazini>        path to a .topazini file with a minimum of username, 
+                             password and stone name set
+  <topaz-command-line-args>  topaz options that should be passed to topaz when running
+                             running the script
+  -h, --help                 display usage message
+  -D, --debug                bring up topaz debugger in the event of a script error
+  --project=<project-name>   name of project used in BaselineOf
+  --projectDirectory=<project-root-directory>
+                             path to the project clone
+
+EXAMPLES
+  $basename -h                     -- -l -I ./.topazini
+  $basename -D <script-arguments>  -- -l -I ./.topazini
+  $basename <script-arguments>     -- -l -I ./.topazini
+
+#	command for loading the following project
+#  Metacello new
+#    baseline: 'Seaside3';
+#    repository: seasideRepo;
+#    load: #( 'Welcome' 'Development' 'Zinc Project' 'Examples' 'CI' ).
+#    ].
+  $basename --project=Seaside3 --repoPath=repository \
+            --projectDirectory=/bosch1/users/dhenrich/devkit/Seaside \
+            Welcome Development 'Zinc Project' Examples CI
+-----
+%
+instvars
+projectDirectory
+%
+method
+loadProject
+Transcript cr; show: '--Load ', self project.
+
+ GsUpgrader batchErrorHandlingDo: [
+  | projectRepo |
+ 	projectRepo := 'filetree://', projectDirectory, '/', self repoPath.
+  Metacello new
+    baseline: self project;
+    repository: projectRepo;
+    load: self positionalArgs.
+    ].
+	System commitTransaction
+%
+doit
+	projectDirectory := self projectDirectory.
+	self loadProject.
+	^ self noResult
+%

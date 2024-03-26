@@ -131,7 +131,9 @@ EOF
 todeIt.stone --file=testing $*
 
 # install seaside
-loadSeaside.stone --projectDirectory=$STONES_HOME/$registry/devkit $*
+metacelloLoad.stone --project=Seaside3 --repoPath=repository \
+	--projectDirectory=$STONES_HOME/$registry/devkit/Seaside \
+	Welcome Development 'Zinc Project' Examples CI $*
 
 if [ "1" = "0" ]; then
 set +e
