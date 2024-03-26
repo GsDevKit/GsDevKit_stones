@@ -130,6 +130,19 @@ eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
 EOF
 todeIt.stone --file=testing $*
 
+# install seaside
+loadSeaside.stone --projectDirectory=$STONES_HOME/$registry/devkit $*
+
+# run Seaside unit tests ... expect some failures, like WAWebDriverFunctionalTestCases and a few others
+#--transcript--'**************************************************************************************'
+#--transcript--'Results for Seaside3 tests'
+#--transcript--'1525 run, 1481 passes, 4 expected defects, 0 failures, 40 errors, 0 unexpected passes'
+#--transcript--'**************************************************************************************'
+cat - > testing << EOF
+test --batch project Seaside3
+eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
+EOF
+todeIt.stone --file=testing $*
 
 # delete the stone
 cd $STONES_HOME
