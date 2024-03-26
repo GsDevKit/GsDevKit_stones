@@ -1,0 +1,66 @@
+#!/usr/bin/env superdoit_stone
+options
+{
+	SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
+}
+%
+usage
+-----
+USAGE 
+  $basename [--help | -h] [--debug | -D] \
+    [--projectDirectory=<projects-directory>]
+
+DESCRIPTION
+  Load Seaside into the stone
+
+
+OPTIONS
+  <path-to-.topazini>        path to a .topazini file with a minimum of username, 
+                             password and stone name set
+  <topaz-command-line-args>  topaz options that should be passed to topaz when running
+                             running the script
+  -h, --help                 display usage message
+  -D, --debug                bring up topaz debugger in the event of a script error
+  --projectDirectory=<projects-directory>
+                             the customenv file in the stone directory defines the 
+                             env var $GDK_stones_projects which contains the path
+                             for the projects directory registred in the stones 
+                             registry.
+
+EXAMPLES
+  $basename -h                     -- -l -I ./.topazini
+  $basename -D <script-arguments>  -- -l -I ./.topazini
+  $basename <script-arguments>     -- -l -I ./.topazini
+
+  $basename --projectDirectory=/bosch1/users/dhenrich/_issue_4/projects
+  $basename --projectDirectory=$GDK_stones_projects
+-----
+%
+instvars
+projectDirectory
+%
+method
+loadSeaside
+Transcript cr; show: '--Load Seaside'.
+
+ GsUpgrader batchErrorHandlingDo: [
+  | seasideRepo |
+  seasideRepo := 'filetree://', projectDirectory, '/Seaside/repository'.
+  Metacello new
+    baseline: 'Seaside3';
+    repository: seasideRepo;
+    load: #( 'Welcome' 'Development' 'Zinc Project' 'Examples' 'CI' ).
+    ].
+	System commitTransaction
+%
+method
+step_2_loadSeaside
+%
+
+doit
+	projectDirectory := self projectDirectory.
+	self 
+		loadSeaside;
+		yourself.
+	^ self noResult
+%
