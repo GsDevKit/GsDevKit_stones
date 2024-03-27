@@ -1,6 +1,7 @@
 #!/usr/bin/env superdoit_stone
 options
 {
+	SuperDoitOptionalOptionWithNoArg long: 'onConflictUseLoaded'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'projectDirectory'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'project'.
 	SuperDoitRequiredOptionWithRequiredArg long: 'repoPath'.
@@ -29,6 +30,8 @@ OPTIONS
   --project=<project-name>   name of project used in BaselineOf
   --projectDirectory=<project-root-directory>
                              path to the project clone
+  --onConflictUseLoaded      Use the loaded project if there are load conflicts. By
+                             defaults loads use onConflictUseIncoming.
 
 EXAMPLES
   $basename -h                     -- -l -I ./.topazini
@@ -54,14 +57,16 @@ loadProject
 Transcript cr; show: '--Load ', self project.
 
  GsUpgrader batchErrorHandlingDo: [
-  | projectRepo |
+  | projectRepo metacello |
  	projectRepo := 'filetree://', projectDirectory, '/', self repoPath.
-  Metacello new
+  metacello := Metacello new
     baseline: self project;
-    repository: projectRepo;
-    load: self positionalArgs.
-    ].
-	System commitTransaction
+    repository: projectRepo.
+	self onConflictUseLoaded
+		ifTrue: [ metacello onConflictUseLoaded ]
+		ifFalse: [ metacello onConflictUseIncoming ].
+	metacello load: self positionalArgs ].
+ System commitTransaction
 %
 doit
 	projectDirectory := self projectDirectory.
