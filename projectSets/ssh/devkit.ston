@@ -15,6 +15,12 @@ GDKProjectSet {
 				'origin' : 'git@github.com:dalehenrich/filetree.git'
 			}
 		},
+		'gsApplicationTools' : {
+			'revision' : 'master',
+			'gitUrls' : {
+				'origin' : 'git@github.com:dalehenrich/gsApplicationTools.git'
+			}
+		},
 		'ston' : {
 			'revision' : 'gemstone',
 			'gitUrls' : {

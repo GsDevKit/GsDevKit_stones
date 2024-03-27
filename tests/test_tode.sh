@@ -130,6 +130,12 @@ eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
 EOF
 todeIt.stone --file=testing $*
 
+# metacello install zinc and gsApplicationTools ... since they are github: projects by default
+metacelloLoad.stone -D --project=GsApplicationTools --repoPath=repository \
+	--projectDirectory=$STONES_HOME/$registry/devkit/gsApplicationTools
+metacelloLoad.stone -D --project=ZincHTTPComponents --repoPath=repository \
+	--projectDirectory=$STONES_HOME/$registry/devkit/devkit/zinc
+
 # install seaside
 metacelloLoad.stone --project=Seaside3 --repoPath=repository \
 	--projectDirectory=$STONES_HOME/$registry/devkit/Seaside \
