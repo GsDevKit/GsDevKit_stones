@@ -2,7 +2,7 @@
 options
 {
 SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
-SuperDoitOptionalOptionWithRequiredArg long: 'extent' short: 'e'.
+SuperDoitRequiredOptionWithRequiredArg long: 'extent' short: 'e'.
 }
 %
 Usage
