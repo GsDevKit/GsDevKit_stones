@@ -22,4 +22,4 @@ else
 fi
 git clone $gitUrl -b v4.2
 cd superDoit/bin
-./install.sh
+./install.sh $1
