@@ -134,7 +134,7 @@ todeIt.stone --file=testing $*
 metacelloLoad.stone -D --project=GsApplicationTools --repoPath=repository \
 	--projectDirectory=$STONES_HOME/$registry/devkit/gsApplicationTools
 metacelloLoad.stone -D --project=ZincHTTPComponents --repoPath=repository \
-	--projectDirectory=$STONES_HOME/$registry/devkit/devkit/zinc
+	--projectDirectory=$STONES_HOME/$registry/devkit/zinc
 
 # install seaside
 metacelloLoad.stone --project=Seaside3 --repoPath=repository \

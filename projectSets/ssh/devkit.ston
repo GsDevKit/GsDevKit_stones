@@ -18,7 +18,7 @@ GDKProjectSet {
 		'gsApplicationTools' : {
 			'revision' : 'master',
 			'gitUrls' : {
-				'origin' : 'git@github.com:dalehenrich/gsApplicationTools.git'
+				'origin' : 'git@github.com:GsDevKit/gsApplicationTools.git'
 			}
 		},
 		'ston' : {
