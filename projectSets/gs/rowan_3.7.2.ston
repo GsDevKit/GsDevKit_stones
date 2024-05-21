@@ -1,10 +1,10 @@
 GDKProjectSet {
-	#name : 'rowanV3_gs',
+	#name : 'rowan_3.7.1',
 	#parentRegistryName : 'rogue',
 	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
 	#loadSpecs : {
 		'GsDevKit_stones' : {
-			'revision' : 'v1.1.1',
+			'revision' : 'v2.1',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:GsDevKit_stones',
 				'origin' : 'git@github.com:GsDevKit/GsDevKit_stones.git'
@@ -18,16 +18,10 @@ GDKProjectSet {
 			}
 		},
 		'superDoit' : {
-			'revision' : 'v4.1',
+			'revision' : 'v4.2',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:superDoit',
 				'origin' : 'git@github.com:dalehenrich/superDoit.git'
-			}
-		},
-		'generateGs' : {
-			'revision' : '3.7.0',
-			'gitUrls' : {
-				'origin' : 'git@git.gemtalksystems.com:generateGs'
 			}
 		},
 		'FileSystemGs' : {
@@ -44,20 +38,36 @@ GDKProjectSet {
 				'origin' : 'git@github.com:GsDevKit/GsDevKit_upgrade.git'
 			}
 		},
+		'RowanClientServices' : {
+			'revision' : 'masterV2.2',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:RowanClientServices',
+				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+			}
+		},
+		'RowanClientServicesV3' : {
+			'revision' : 'ericV3.0_pharo',
+			'projectName' : 'RowanClientServices',
+			'gitUrls' : {
+				'gs' : 'git@git.gemtalksystems.com:RowanClientServices',
+				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+			}
+		},
 		'Rowan' : {
-			'revision' : 'masterV3.1',
+			'revision' : 'masterV2.5',
 			'gitUrls' : {
 				'gs' : 'git@git.gemtalksystems.com:Rowan',
 				'origin' : 'git@github.com:GemTalk/Rowan.git'
 			}
 		},
-		'RowanClientServices' : {
-			'revision' : 'ericV3.0_pharo',
+		'RowanV3' : {
+			'revision' : 'masterV3.2',
+			'projectName' : 'Rowan',
 			'gitUrls' : {
-				'gs' : 'git@git.gemtalksystems.com:RowanClientServices',
-				'origin' : 'git@github.com:GemTalk/RowanClientServices.git'
+				'gs' : 'git@git.gemtalksystems.com:Rowan',
+				'origin' : 'git@github.com:GemTalk/Rowan.git'
 			}
 		}
- },
-	#comment : 'The gs repositories for Rowan v3 are used strictly by the 3.7.0/RowanV3 gs server.'
+	},
+	#comment : 'This set of repositories are for use with 3.7.1, which includes both RowanV3, Rowan, RowanClientServices and RowanClientServicesV3'
 }

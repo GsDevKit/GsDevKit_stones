@@ -8,7 +8,7 @@ stopStone: superDoitScriptOrNil withSuperDoitOptions: superDoitOptionsBoolean ti
 		ifNotNil: [ 
 			scriptPath := superDoitScriptOrNil scriptPath.
 			superDoitOptionsBoolean
-				ifTrue: [
+				ifTrue: [ 
 					superDoitScriptOrNil timeout ifNotNil: [ :value | timeout := value asNumber ].
 					immediate := superDoitScriptOrNil immediate ].
 			superDoitScriptOrNil stdout ]

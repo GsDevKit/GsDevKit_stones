@@ -55,7 +55,12 @@ EXAMPLES
   # populate using a pre-defined project set 
   $basename -r bosch --projectSet=rowanV3_common \
     --from=$STONES_HOME/git/GsDevKit_stones/projectSets/rowanV3_common.ston
-  # populate for GemStone internal development 
+  # populate json file for GemStone internal development (ext2json.pl is a script in GemStone development environment,
+  # however, the format of the .json is:
+  # 	{ 
+  # 		cloneDir : [ projectName , branchName ]
+  # 	}
+  # and can come from any source
   ext2json.pl /bosch1/users/dhenrich/_stones/bosch_36x/g_36x/externals_st.config.default > ext.json
   $basename -r bosch_36x --projectSet=gs_36x --json=ext.json
 -----
@@ -135,10 +140,14 @@ doit
 							ifNil: [ self error: 'Must specify one and only one of --from, --empty or --json options', ' (', self basename, ')' ]
 							ifNotNil: [:fileName | 
 								fileName asFileReference readStreamDo: [:stream |
+									"JSON format:
+										{ projectAlias : [ projectName, branch ] } "
 									dict := STON fromStream: stream ].
-								dict keysAndValuesDo: [:projectName :branch |
-									| specDict  |
-									specDict := projectSet loadSpecs at: projectName ifAbsentPut: [Dictionary new].
+								dict keysAndValuesDo: [:projectAlias :fields |
+									| specDict projectName branch |
+									projectName := fields at: 1.
+									branch := fields at: 2.
+									specDict := projectSet loadSpecs at: projectAlias ifAbsentPut: [Dictionary new].
 									specDict
 										at: 'revision'
 										put: branch.
@@ -147,7 +156,12 @@ doit
 										ifAbsentPut: [Dictionary new])
 											at: 'gs' 
 											put: 'git@git.gemtalksystems.com:', projectName.
-									projectSet loadSpecs at: projectName put: specDict ] ] ] ].
+									projectAlias ~= projectName
+										ifTrue: [
+											specDict
+												at: 'projectName'  
+												put: projectName ].
+											projectSet loadSpecs at: projectAlias put: specDict ] ] ] ].
 	projectSet registryDir ensureCreateDirectory.
 	projectSet export.
 	stonesRegistry projectSets at: name put: projectSet registryPath.

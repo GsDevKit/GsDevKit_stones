@@ -1,7 +1,10 @@
 #!/usr/bin/env superdoit_stone
 options
 {
-SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome' default: '$ROWAN_PROJECTS_HOME'.
+SuperDoitOptionalOptionWithNoArg long: 'ignoreInvalidCategories'.
+SuperDoitOptionalOptionWithNoArg long: 'noAutoInitialize'.
+SuperDoitOptionalOptionWithNoArg long: 'trace'.
+SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome'.
 SuperDoitOptionalOptionWithNoArg long: 'strict'.
 }
 %
@@ -32,6 +35,9 @@ OPTIONS
   --strict             load spec will be loaded using #resolveStrict, which forces
                        the checkout branch to match the the branch specified in
                        the revision field of the load spec.
+  --ignoreInvalidCategories
+                       Ignore invalid protocol messages during install.
+  --noAutoInitialize   Do not run initialize methods after load.
 
 EXAMPLES
   $basename -h
@@ -47,6 +53,31 @@ EXAMPLES
   $basename file:$GS_HOME/shared/repos/RowanSample9/specs/spec_0082.ston \
             --strict --projectsHome=$GS_HOME/shared/repos
 -----
+%
+method
+defineCustomEnvVars
+	| customenvRef block | 
+	customenvRef := FileLocator workingDirectory asFileReference asFileReference / 'customenv'.
+	block := [ :varName :valueStr | 
+		System gemEnvironmentVariable: varName put: valueStr ].
+	customenvRef exists
+		ifTrue: [
+			| stream |
+			"customenv file has precedence"
+			stream := ReadStreamPortable on: customenvRef contents.
+			[ stream atEnd ] whileFalse: [
+				| line index keyAndValue |
+			 	line := stream nextLine trimBoth.
+				(line beginsWith: '#')
+					ifFalse: [
+						"looking for 'export xxx=yyy'"
+						index := line indexOfSubCollection: 'export' startingAt: 1.
+						(index > 0)
+							ifTrue: [ 
+								" export at beginning of line"
+								line := line copyFrom: index + 'export ' size to: line size.
+								keyAndValue := line subStringsDelimitedBy: $=.
+								block value: (keyAndValue at: 1) value: (keyAndValue at: 2) ] ] ] ] 
 %
 method
 rowanV2Install
@@ -91,13 +122,28 @@ rowanV3Install
 			ifNotNil: [ :theSpec |
 				"project is already loaded, reuse projectsHome, so the same git repo is used during reload"
 				loadSpec projectsHome: theSpec projectsHome ] ].
-	loadSpecs load.
+	[ loadSpecs load ]
+		on: RwInvalidCategoryProtocolConventionErrorNotification
+		do: [:ex | 
+			self stdout tab; nextPutAll: 'invalid protocol notification: ', ex _errorMessage; lf. 
+			self ignoreInvalidCategories
+				ifTrue: [ ex resume ]
+				ifFalse: [ ex pass] ].
 	^ System commit
 %
 doit
-	(Rowan respondsTo: #version)
-		ifTrue: [
-			Rowan version >= '3.0.0' asRwSemanticVersionNumber
-				ifTrue: [ ^ self rowanV3Install ] ].
-	^ self rowanV2Install
+	(FileLocator workingDirectory asFileReference / '.GDKStoneSpec.ston') exists
+		ifTrue: [ self defineCustomEnvVars ].
+	self trace 
+		ifTrue: [ Rowan projectTools trace startTracing ].
+	[
+		(Rowan respondsTo: #version)
+			ifTrue: [
+				Rowan version >= '3.0.0' asRwSemanticVersionNumber
+					ifTrue: [ ^ self rowanV3Install ] ].
+		^ self rowanV2Install ] 
+			on: RwExecuteClassInitializeMethodsAfterLoadNotification
+			do: [:ex | 
+				"control initialization during load"
+				ex resume: self noAutoInitialize not ].
 %

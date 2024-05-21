@@ -68,16 +68,9 @@ step_1_upgradeGLASS
   (Smalltalk at: #'GsUpgrader') upgradeGLASS
 %
 method
-step_2_loadMetacello
-"Second step in tODE load process: lock Metacello if you want to use a non-standard repository.
- load Metacello from local git clone."
-
-"Important Note --- the values of these env vars are as of the last time that the netldi was started"
-
-Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello.ws'.
-
+lockRepositories
  (Smalltalk at: #'GsUpgrader')batchErrorHandlingDo: [
-  | metacelloRepo filetreeRepo greaseRepo pharoCompatRepo glass1Repo rbRepo stonRepo zincRepo zodiacRepo |
+  | metacelloRepo filetreeRepo greaseRepo pharoCompatRepo glass1Repo rbRepo stonRepo zincRepo zodiacRepo gsApplicationToolsRepo |
   metacelloRepo := 'filetree://', projectDirectory, '/metacello-work/repository'.
   filetreeRepo := 'filetree://', projectDirectory, '/filetree/repository'.
   greaseRepo := 'filetree://', projectDirectory, '/Grease/repository'.
@@ -86,6 +79,7 @@ Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello
   rbRepo := 'filetree://', projectDirectory, '/rb/repository'.
   stonRepo := 'filetree://', projectDirectory, '/ston/repository'.
   zincRepo := 'filetree://', projectDirectory, '/zinc/repository'.
+  gsApplicationToolsRepo := 'filetree://', projectDirectory, '/gsApplicationTools/repository'.
   zodiacRepo := 'filetree://', projectDirectory, '/zodiac/repository'.
   Transcript 
     cr; 
@@ -136,8 +130,22 @@ Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello
   Metacello new
     baseline: 'Ston';
     repository: stonRepo;
-    lock.
-  Transcript
+    lock ]
+%
+method
+step_2_loadMetacello
+"Second step in tODE load process: lock Metacello if you want to use a non-standard repository.
+ load Metacello from local git clone."
+
+"Important Note --- the values of these env vars are as of the last time that the netldi was started"
+
+Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello.ws'.
+
+	self lockRepositories.
+ (Smalltalk at: #'GsUpgrader') batchErrorHandlingDo: [
+ 	| greaseRepo |
+  greaseRepo := 'filetree://', projectDirectory, '/Grease/repository'.
+ 	Transcript
     cr; 
     show: 'Lock and Load Grease (to ensure new repo is honored): ', greaseRepo printString.
   (Metacello image
@@ -158,7 +166,7 @@ Transcript cr; show: '---Step 2 of tODE bootstrap process: execute loadMetacello
     baseline: 'Grease';
     repository: greaseRepo;
     load.
-    ].
+  ].
 %
 method
 step_3_loadGLASS1

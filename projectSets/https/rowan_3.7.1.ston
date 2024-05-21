@@ -1,5 +1,5 @@
 GDKProjectSet {
-	#name : 'rowanV3_gs',
+	#name : 'rowan_3.7',
 	#parentRegistryName : 'rogue',
 	#parentRegistryPath : '$STONES_DATA_HOME/gsdevkit_stones/registry.ston',
 	#loadSpecs : {
@@ -16,7 +16,7 @@ GDKProjectSet {
 			}
 		},
 		'superDoit' : {
-			'revision' : 'v4.1',
+			'revision' : 'v3.1',
 			'gitUrls' : {
 				'origin' : 'https://github.com/dalehenrich/superDoit.git'
 			}
@@ -33,18 +33,25 @@ GDKProjectSet {
 				'origin' : 'https://github.com/GsDevKit/GsDevKit_upgrade.git'
 			}
 		},
+		'RowanClientServices' : {
+			'revision' : 'masterV2.2',
+			'gitUrls' : {
+				'origin' : 'https://github.com/GemTalk/RowanClientServices.git'
+			}
+		},
 		'Rowan' : {
-			'revision' : 'masterV3.1',
+			'revision' : 'masterV2.5',
 			'gitUrls' : {
 				'origin' : 'https://github.com/GemTalk/Rowan.git'
 			}
 		},
-		'RowanClientServices' : {
-			'revision' : 'ericV3.0_pharo',
+		'RowanV3' : {
+			'revision' : 'masterV3.1',
+			'projectName' : 'Rowan',
 			'gitUrls' : {
-				'origin' : 'https://github.com/GemTalk/RowanClientServices.git'
+				'origin' : 'https://github.com/GemTalk/Rowan.git'
 			}
 		}
- },
-	#comment : 'The gs repositories for Rowan v3 are used strictly by the 3.7.0/RowanV3 gs server.'
+	},
+	#comment : 'This set of repositories are for use with 3.7.1, which includes both RowanV3, Rowan, RowanClientServices and RowanClientServicesV3'
 }

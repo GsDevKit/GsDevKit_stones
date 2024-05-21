@@ -147,27 +147,27 @@ if [ "$template" = "minimal_rowan" ] ; then
 	# turn on unicodeComparisonMode required by Jadeite
 	enableUnicodeCompares.topaz -lq
 	echo "installing GsCommands"
-	bin/installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
+	installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
     --projectsHome=product/examples/GsCommands/projectsHome $*
 
 	echo "installing Announcements -- hack until we fix up reguired projects in RowanClientServices"
-	$GSDEVKIT_STONES_ROOT/bin/installProject.stone file:$STONES_HOME/$registry/common_projects/Announcements/rowan/specs/Announcements.ston  \
+	installProject.stone file:$STONES_HOME/$registry/common_projects/Announcements/rowan/specs/Announcements.ston  \
 		--projectsHome=$STONES_HOME/$registry/common_projects $*
 
 	echo "installing RemoteServiceReplication -- partial workaround for https://github.com/GemTalk/Rowan/issues/905"
-	$GSDEVKIT_STONES_ROOT/bin/installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
+	installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
 		--projectsHome=$STONES_HOME/$registry/common_projects $*
 
 	echo "installing RowanClientServices"
-	bin/installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServices/rowan/specs/RowanClientServices.ston  \
+	installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServices/rowan/specs/RowanClientServices.ston  \
 		--projectsHome=$STONES_HOME/$registry/gs_projects $*
 
 	# attach stone to the Rowan projects that are part of the base image
-	bin/attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
+	attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/gs_projects $*
 
 	# install GsDevKit_stones using Rowan installProject.stone script
 	echo "installing GsDevKit_stones"
-	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
+	installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 fi
 

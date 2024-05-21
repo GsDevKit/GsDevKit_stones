@@ -120,38 +120,44 @@ gslist.solo -l
 cd $STONES_HOME/$registry/stones/$stoneName
 loadTode.stone --projectDirectory=$STONES_HOME/$registry/devkit $*
 
-case "$GS_VERS" in
-  3.7.*)
-		runTodeIt="true"
-		;;
-	*)
-		if [[  "$PLATFORM" = "macos"* ]]; then
-			# skip the following expressions on macos when running versions older than 3.7.0
-			# until the issue is characterized and fixed
-			runTodeIt="false"
-		else
-			runTodeIt="true"
-		fi
-		;;
-esac
-if [ "$runTodeIt" = "true" ] ; then
-	todeIt.solo --registry=$registry --stoneName=$stoneName \
-		--file=$GSDEVKIT_STONES_ROOT/tode/setUpSys_1 $*
-	validateStoneSysNodes.stone --todeHome=$todeHome --stoneName=$stoneName \
- 	 --files --repair $*
-	todeIt.solo --registry=$registry --stoneName=$stoneName \
- 	 --file=$GSDEVKIT_STONES_ROOT/tode/setUpSys_2 $*
+#
+# skip todieIt.solo and setUpSys_1 and setUpSys_2 ... not required and todeIt.stone should be used instead
+#
+# validate installation by running a couple of todeIt.stone commands
+todeIt.stone -h
+todeIt.stone 'eval `3+4`' $*
 
-	# validate installation by running a couple of todeIt.stone commands
-	todeIt.stone -h
-	todeIt.stone 'eval `3+4`' $*
-
-  cat - > testing << EOF
+ cat - > testing << EOF
 eval \`TDTestToolTests enableTests: false\`
 test --batch class TDTestToolTests
 eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
 EOF
-	todeIt.stone --file=testing $*
+todeIt.stone --file=testing $*
+
+# metacello install zinc and gsApplicationTools ... since they are github: projects by default
+metacelloLoad.stone -D --project=GsApplicationTools --repoPath=repository \
+	--projectDirectory=$STONES_HOME/$registry/devkit/gsApplicationTools
+metacelloLoad.stone -D --project=ZincHTTPComponents --repoPath=repository \
+	--projectDirectory=$STONES_HOME/$registry/devkit/zinc
+
+# install seaside
+metacelloLoad.stone --project=Seaside3 --repoPath=repository \
+	--projectDirectory=$STONES_HOME/$registry/devkit/Seaside \
+	Welcome Development 'Zinc Project' Examples CI $*
+
+if [ "1" = "0" ]; then
+set +e
+# run Seaside unit tests ... expect some failures, like WAWebDriverFunctionalTestCases and a few others
+#--transcript--'**************************************************************************************'
+#--transcript--'Results for Seaside3 tests'
+#--transcript--'1525 run, 1481 passes, 4 expected defects, 0 failures, 40 errors, 0 unexpected passes'
+#--transcript--'**************************************************************************************'
+cat - > testing << EOF
+test --batch project Seaside3
+eval \`self hasFailures ifTrue: [ self error: 'FAILING' ] ifFalse: [ self ]\`
+EOF
+todeIt.stone --file=testing $*
+set -e
 fi
 
 # delete the stone

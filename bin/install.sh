@@ -2,6 +2,15 @@
 
 set -x
 
+# Setup GemStone directories
+if [ ! -d "/opt/gemstone" ]; then
+	echo "Creating /opt/gemstone to store lock files used by GemStone"
+	sudo mkdir -p /opt/gemstone
+	sudo chmod oug+rwx /opt/gemstone
+	sudo mkdir /opt/gemstone/locks
+	sudo chmod oug+rwx /opt/gemstone/locks
+fi
+
 gsDevKitStones="`dirname $0`/.."
 cd $gsDevKitStones/..
 
@@ -13,7 +22,7 @@ else
 fi
 git clone $gitUrl -b v4.2
 pushd superDoit/bin
-./install.sh
+./install.sh $1
 popd
 
 PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH

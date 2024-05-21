@@ -7,5 +7,5 @@ populateStoneBinDirectory: stoneSpec
 	#('exportRowanProjectAsTopaz.solo')
 		do: [ :scriptName | 
 			stoneSpec class
-				symbolicLink: gs / 'rowan' / 'bin' / scriptName
+				symbolicLink: gs / 'rowan3' / 'bin' / scriptName
 				linkName: stoneSpec rootDir / 'bin' / scriptName ]

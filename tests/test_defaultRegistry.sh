@@ -83,8 +83,10 @@ downloadGemStone.solo $GS_VERS $*
 # update product list from shared product directory when a download is done by shared registry
 registerProduct.solo --fromDirectory=$STONES_HOME/test_gemstone $*
 
-productPath=`registryQuery.solo --product=$GS_VERS`
+productPath=`registryQuery.solo --product=$GS_VERS` $*
 echo "product path for ${GS_VERS}: $productPath"
+projectPath=`registryQuery.solo --projectDirectory` $*
+echo "project path: $projectPath"
 # create and register default stones directory for rowanV3
 if [ ! -d $STONES_HOME/test_stones ]; then
 	mkdir $STONES_HOME/test_stones
@@ -162,10 +164,36 @@ if [ "$template" = "minimal_rowan" ] ; then
 	cd $STONES_HOME/test_stones/stones/$stoneName
 
 	# install GsDevKit_stones using Rowan installProject.stone script
-	bin/installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
+	installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 fi
 
+PLATFORM="`uname -sm | tr ' ' '-'`"
+case "$PLATFORM" in
+   Darwin-arm64 | Darwin-x86_64)
+		onDarwin="true"
+		;;
+	*)
+		onDarwin="false"
+    ;;
+esac
+
+# test regitstryQuery.solo
+queryResult=`registryQuery.solo --GsDevKit_stones_root`
+echo "GsDevKit_stones_root QUERY=$queryResult"
+queryResult=`registryQuery.solo -r $defaultRegistryName --stonesDirectory`
+echo "stonesDirectory QUERY=$queryResult"
+
+if [ "$onDarwin" = "false" ]; then 
+	# realpath does not exist on Darwin, so don't bother validating the query result
+	queryResult=`realpath $queryResult`
+	expectedResult=`realpath $STONES_HOME/test_stones/stones`
+	echo "stonesDirectory QUERY=$queryResult"
+	if [ "$queryResult" != "$expectedResult" ]; then
+		echo "stonesDirectory query ($queryResult) does not equal expected result ($expectedResult)"
+		exit 1
+	fi
+fi
 # delete the stone
 cd $STONES_HOME
 deleteStone.solo $stoneName $*
