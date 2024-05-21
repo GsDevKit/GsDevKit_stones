@@ -15,7 +15,7 @@ USAGE $basename [--help | -h] [--debug | -D]  [--debugGem] \
                 --projectSet=<projectSet-name> [--projectDirectory=<project-directory>]
 
 DESCRIPTION
-  A project set is a list of load specs  that specify a group of git repositories that are managed together. 
+  Creates local clones in the project directory of the git repositories for the given project set .
 
 CLONE git commands for each project
   git clone <project-url>

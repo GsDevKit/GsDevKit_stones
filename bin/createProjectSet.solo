@@ -38,6 +38,7 @@ OPTIONS
                     Name of the project set.
   --empty           Creates a new empty project set to replace the original, if 
                     one exists.
+  --from			Creates a new project set as a copy of an existing projectset
   --json
                     Populate projectSet for gemstone development (using 
                     git@git.gemtalksystems.com:gemstone.git) as the remote git
