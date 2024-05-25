@@ -114,7 +114,9 @@ rowanV3Install
 	args size > 0
 		ifTrue: [ spec componentNames: args ].
 	loadSpecs := self strict
-		ifTrue: [ spec resolveStrict ]
+		ifTrue: [ 
+			spec resolveStrict.
+			spec resolve ]
 		ifFalse: [ spec resolve ].
 	loadSpecs do: [:loadSpec |
 		"workaround for https://github.com/GemTalk/Rowan/issues/905"
