@@ -33,7 +33,7 @@ jobs:
       GS_VERS: ${{ matrix.smalltalk }}
       PLATFORM: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: install superDoit 
         run: |
           # required files and directories for GemStone
