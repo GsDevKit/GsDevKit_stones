@@ -1,10 +1,10 @@
 {
-	"category" : "GsDevKit_stones-Core",
-	"classinstvars" : [
-		 ],
-	"classvars" : [
-		 ],
 	"commentStamp" : "",
+	"super" : "GDKAbstractRegistryStore",
+	"category" : "GsDevKit_stones-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
 	"instvars" : [
 		"stones",
 		"todeHome",
@@ -14,9 +14,8 @@
 		"projectDirectory",
 		"products",
 		"projectSets",
-		"templates" ],
+		"templates"
+	],
 	"name" : "GDKStonesRegistry",
-	"pools" : [
-		 ],
-	"super" : "GDKAbstractRegistryStore",
-	"type" : "normal" }
+	"type" : "normal"
+}
