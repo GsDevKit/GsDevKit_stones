@@ -136,6 +136,15 @@ fi
 #start stone
 startStone.solo $stoneName $*
 
+# test what happens when .stone script is run without .topazini
+set +e
+versionReport.stone
+status=$?
+
+echo "versionReport.stone status: ", $status
+
+set -e
+
 pushd $STONES_HOME/test_stones/stones/$stoneName
 	# test snapshot.stone -- snapshot.stone must be run in the stone directory
 	#   this script is expected to be run in non-Rowan extents and cannot load
