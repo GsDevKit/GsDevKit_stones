@@ -136,7 +136,7 @@ fi
 #start stone
 startStone.solo $stoneName $*
 
-# test what happens when .stone script is run without .topazini
+# test what happens when .stone script is run without .topazini (no .GDKStoneSpec.ston)
 set +e
 versionReport.stone
 status=$?
@@ -175,6 +175,20 @@ if [ "$template" = "minimal_rowan" ] ; then
 	# install GsDevKit_stones using Rowan installProject.stone script
 	installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
   	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
+
+	# test what happens when .stone script is outside stone directory (no .GDKStoneSpec.ston) 
+	set +e
+	cd $STONES_HOME/test_stones/stones
+	installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
+  	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
+	status=$?
+	echo "installProject.stone status: ", $status
+
+	status=$?
+
+	set -e
+	cd $STONES_HOME/test_stones/stones/$stoneName
+
 fi
 
 PLATFORM="`uname -sm | tr ' ' '-'`"
