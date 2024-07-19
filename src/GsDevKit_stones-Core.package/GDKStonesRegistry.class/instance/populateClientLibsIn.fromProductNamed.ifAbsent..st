@@ -1,6 +1,6 @@
 product management
 populateClientLibsIn: productsDirPath fromProductNamed: productName ifAbsent: absentBlock
-	| productsDir productTreeDir clientLibDir libDir libNames readOnlyPermissions |
+	| productsDir productTreeDir clientLibDir libDir libNames readOnlyPermissions libExtensions |
 	productsDir := productsDirPath asFileReference.
 	productTreeDir := (self products at: productName ifAbsent: absentBlock)
 		asFileReference.
@@ -9,11 +9,12 @@ populateClientLibsIn: productsDirPath fromProductNamed: productName ifAbsent: ab
 	libDir := clientLibDir / productName / '64bit'.
 	libDir ensureCreateDirectory.
 	libNames := #('libgcirpc' 'libgcits' 'libkrb5' 'libssl').
+	libExtensions := #('so' 'dylib').
 	readOnlyPermissions := FileSystemPermission posixPermissions: 8r444.
 	(productTreeDir / 'lib') children
 		do: [ :each | 
-			each extension = 'so'
-				ifTrue: [ 
+			(libExtensions detect: [ :libExt | libExt = each extension] ifNone: [ nil ])
+			ifNotNil: [ :libExtension |  
 					libNames
 						do: [ :libName | 
 							(each basename beginsWith: libName)
@@ -30,7 +31,7 @@ populateClientLibsIn: productsDirPath fromProductNamed: productName ifAbsent: ab
 											"if an alpha or beta is downloaded the product name will look 
 												something like 370_rowanv3-Alpha1 and JfP will be looking 
 												for a lilbgcits using that product name ... create a symbol link"
-											link := libDir / (libName , '-' , productName , '-64.so').
+											link := libDir / (libName , '-' , productName , '-64.', libExtension).
 											link basename ~= target basename
 												ifTrue: [ 
 													| cwd |
