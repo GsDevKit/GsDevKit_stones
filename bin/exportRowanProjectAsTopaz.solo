@@ -1,0 +1,69 @@
+#!/usr/bin/env superdoit_rowan3_solo
+options
+{
+SuperDoitOptionalOptionWithRequiredArg long: 'projectsHome' default: '$ROWAN_PROJECTS_HOME'.
+SuperDoitOptionalOptionWithRequiredArg long: 'projectAlias'.
+}
+%
+usage
+-----
+USAGE
+      $basename <spec-url> <topaz-file-name> [--projectAlias=<project-alias> ] [--projectsHome=<projects-home-directory>]
+
+DESCRIPTION
+  Read the project denoted by <spec-url> from disk and export it to a .gs file name
+  <topaz-file-path>.
+
+OPTIONS
+  <spec-url>           Url referencing the load spec of the project, the load.
+                       Spec is used to read the project from disk.
+  <topaz-file-name>    Full name of the topaz .gs file
+  --projectsHome=<projects-home-directory>
+                       The directory where the project is located. By default,
+                       $ROWAN_PROJECTS_HOME.
+  --projectAlias=<project-alias>
+                       The name of the project directory on disk, if different
+                       than the project name in the load spec.
+                       
+  -h, --help           Display usage message
+  -D, --debug          Bring up topaz debugger in the event of a script error.
+
+EXAMPLES
+  $basename -h
+  $basename file:$ROWAN_PROJECTS_HOME/MyProject/rowan/specs/MyProject.ston \
+            $ROWAN_PROJECTS_HOME/MyProject/gemstone/MyProject.gs
+  $basename file:/home/daleh/projects/MyProject/rowan/specs/MyProject.ston  \
+            $ROWAN_PROJECTS_HOME/MyProject/gemstone/MyProject.gs \
+            --projectsHome=/home/daleh/projects/
+  $basename file:/home/daleh/projects/MyProject/rowan/specs/MyProject.ston  \
+            $ROWAN_PROJECTS_HOME/MyProject/gemstone/MyProject.gs \
+            --projectsHome=/home/daleh/projects/ \
+            --projectAlias=MyProjectV3
+
+-----
+%
+doit
+	| loadSpecUrl args loadSpec resolvedProject topazFilename projectSet projectAlias projectName |
+	args := self positionalArgs.
+	args size ~= 2
+		ifTrue: [
+			self usage. 
+			self error: 'expected two positional arguments: <spec-url> <topaz-file-name>' ].
+	loadSpecUrl := args removeFirst.
+	topazFilename := args removeFirst.
+	loadSpec := RwSpecification fromUrl: loadSpecUrl.
+	projectName := loadSpec projectName.
+	projectAlias := self projectAlias ifNil: [ projectName ]. 
+	loadSpec
+		diskUrl: 'file://', self projectsHome asFileReference fullName, '/', projectAlias;
+		projectsHome: self projectsHome;
+		yourself.
+	projectSet := (loadSpec resolve: loadSpec customConditionalAttributes, Rowan platformConditionalAttributes) read.
+	topazFilename asFileReference writeStreamDo: [:stream | stream truncate ].	"make sure the file is truncated -- Rowan issue fixed in masterV3.3"
+	(projectSet projectNamed: projectName)
+		exportTopazFormatTo: topazFilename 
+		logClassCreation: false 
+		excludeClassInitializers: false 
+		excludeRemoveAllMethods: true.
+	^ self noResult.
+%
