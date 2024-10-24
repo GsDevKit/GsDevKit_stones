@@ -59,7 +59,7 @@ doit
 		projectsHome: self projectsHome;
 		yourself.
 	projectSet := (loadSpec resolve: loadSpec customConditionalAttributes, Rowan platformConditionalAttributes) read.
-	topazFilename asFileReference writeStreamDo: [:stream | stream truncate ].	"make sure the file is truncated -- Rowan issue fixed in masterV3.3"
+	topazFilename asFileReference writeStreamDo: [:stream | stream truncate ].	"make sure the file is truncated -- Rowan issue fixed in masterV3.2"
 	(projectSet projectNamed: projectName)
 		exportTopazFormatTo: topazFilename 
 		logClassCreation: false 
