@@ -22,12 +22,8 @@ jobs:
           #  os: macos-12
           - smalltalk: 3.6.8
             os: macos-13
-          - smalltalk: 3.6.8
-            os: macos-12
           - smalltalk: 3.6.6
             os: macos-13
-          - smalltalk: 3.6.6
-            os: macos-12
     runs-on: ${{ matrix.os }}
     env:
       GS_VERS: ${{ matrix.smalltalk }}
