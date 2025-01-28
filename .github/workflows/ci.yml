@@ -159,10 +159,10 @@ jobs:
           deleteRegistry.solo `hostname` -f
           gslist.solo -l
         shell: bash
-      - name: run rowan3 test
+      - name: run rowanV3 test
         run: |
           echo "CI=$CI"
-          $GSDEVKIT_STONES_ROOT/tests/test_rowan3.sh
+          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3.sh
           gslist.solo -lc
           deleteRegistry.solo test_rowanV3 -f
           gslist.solo -l
