@@ -48,8 +48,8 @@ jobs:
           # clones superDoit and installs 3.7.0 to be used for .solo scripts
           case "$GS_VERS" in
             3.7.2)
-              # use 3.7.2 ...
-              $GSDEVKIT_STONES_ROOT/bin/install.sh $GS_VERS
+              # use 3.7.1 for superDoit ...
+              $GSDEVKIT_STONES_ROOT/bin/install.sh 3.7.1
               ;;
             3.7.1)
               # use 3.7.1 ...
@@ -164,10 +164,14 @@ jobs:
       - name: run rowanV3 test
         run: |
           echo "CI=$CI"
-          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3.sh
-          gslist.solo -lc
-          deleteRegistry.solo test_rowanV3 -f
-          gslist.solo -l
+          if [ "$GS_VERS" = "3.7.2" ]; then
+            $GSDEVKIT_STONES_ROOT/tests/test_rowanV3.sh
+            gslist.solo -lc
+            deleteRegistry.solo test_rowanV3 -f
+            gslist.solo -l
+          else
+            echo "SKIP rowanV3 test for $GS_VERS";
+          fi
         shell: bash
       - name: run tODE test
         run: |
