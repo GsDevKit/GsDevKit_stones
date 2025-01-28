@@ -19,7 +19,13 @@ else
 	rm -rf  $STONES_HOME/test_git/*
 fi
 
-export GS_VERS=3.7.2
+if [ "$GS_VERS"x = "x" ] ; then
+	export GS_VERS=3.7.2
+elif	[ "$GS_VERS" != "3.7.2" ]; then
+	echo "skip test_rowanV3.sh for $GS_VERS ... only 3.7.2 or later should be supported"
+	exit 0
+fi
+
 export stoneName=test_rowanv3_372
 
 registry=test_rowanV3
