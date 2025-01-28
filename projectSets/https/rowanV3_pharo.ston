@@ -10,15 +10,9 @@ GDKProjectSet {
 			}
 		},
 		'JadeiteForPharo' : {
-			'revision' : 'dkh',
+			'revision' : 'main',
 			'gitUrls' : {
 				'origin' : 'https://github.com/GemTalk/JadeiteForPharo.git'
-			}
-		},
-		'RowanClientServices' : {
-				'revision' : 'ericV3.0_pharo',
-			'gitUrls' : {
-				'origin' : 'https://github.com/GemTalk/RowanClientServices.git'
 			}
 		}
 	},

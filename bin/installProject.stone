@@ -1,6 +1,7 @@
 #!/usr/bin/env superdoit_stone
 options
 {
+SuperDoitOptionalOptionWithRequiredArg long: 'alias'.
 SuperDoitOptionalOptionWithNoArg long: 'ignoreInvalidCategories'.
 SuperDoitOptionalOptionWithNoArg long: 'noAutoInitialize'.
 SuperDoitOptionalOptionWithNoArg long: 'trace'.
@@ -28,6 +29,8 @@ OPTIONS
                        component names in the load spec.
   -h, --help           display usage message
   -D, --debug          bring up topaz debugger in the event of a script error
+  --alias=<project-alias>
+                       Use the <project-alias> as the name of the project directory.
   --projectsHome=<project-directory>
                        This is the directory where the project will be loaded
                        from. By default, projects are loaded from 
@@ -52,6 +55,8 @@ EXAMPLES
 
   $basename file:$GS_HOME/shared/repos/RowanSample9/specs/spec_0082.ston \
             --strict --projectsHome=$GS_HOME/shared/repos
+  $basename file:$GS_HOME/shared/repos/RowanClientServices/specs/RowanClientServices.ston \
+            --strict --projectsHome=$GS_HOME/shared/repos --alias=RowanClientServicesV3
 -----
 %
 method
@@ -90,6 +95,8 @@ rowanV2Install
 	spec := (RwSpecification fromUrl: args removeFirst)
 		projectsHome: self projectsHome;
 		yourself.
+	self alias
+		ifNotNil: [ :projectAlias | spec projectAlias: projectAlias ].
 	args size > 0
 		ifTrue: [ spec componentNames: args ].
 	self strict
@@ -111,6 +118,8 @@ rowanV3Install
 	spec := (RwSpecification fromUrl: args removeFirst)
 		projectsHome: self projectsHome;
 		yourself.
+	self alias
+		ifNotNil: [ :projectAlias | spec projectAlias: projectAlias ].
 	args size > 0
 		ifTrue: [ spec componentNames: args ].
 	loadSpecs := self strict
