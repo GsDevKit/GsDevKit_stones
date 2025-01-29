@@ -1,6 +1,7 @@
 # GsDevKit_stones
 BRANCH | STATUS
 ------------ | -------------
+**v2.1** | [![**v2.1** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v2.1)](https://github.com/GsDevKit/GsDevKit_stones/actions)
 **v2** | [![**v2** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v2)](https://github.com/GsDevKit/GsDevKit_stones/actions)
 **v1.1.1** | [![**v1.1.1** build status](https://github.com/GsDevKit/GsDevKit_stones/actions/workflows/ci.yml/badge.svg?branch=v1.1.1)](https://github.com/GsDevKit/GsDevKit_stones/actions)
 
@@ -11,6 +12,11 @@ Greatly simplified version of GsDevKit_home
 5. If you are using tODE I think you should continue using GsDevKit_home 
 
 ## Versions
+### v2.1
+Recommended for use with GemStone 3.7.1 and 3.7.2, **including a number of bugfixes**. Uses 3.7.1 with superDoit:v4.2. Includes support for using Rowan V3. tests/test_rowanV3.sh is an (evolving) example that can be used to setup an environement for using Rowan V3 and JadeiteForPharo for development. 
+
+**Note that Rowan V3 and JadeiteForPharo are still undergoing heavy development.**
+
 ### v2
 Stable version intended for use with superDoit:v4.1, smalltalkci:master; GemStone 3.7.0 is used for .solo scripts, allowing v2 to support stones as old as 3.6.0. 
 
