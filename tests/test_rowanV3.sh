@@ -145,9 +145,12 @@ if [ "$template" = "minimal_rowan3" ] ; then
 	installProject.stone file:product/examples/GsCommands/projectsHome/GsCommands/rowan/specs/GsCommands.ston \
     --projectsHome=product/examples/GsCommands/projectsHome $*
 
-	echo "installing RemoteServiceReplication -- partial workaround for https://github.com/GemTalk/Rowan/issues/905"
-	installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
-		--projectsHome=$STONES_HOME/$registry/common_projects $*
+	if [ "$urlType" = "ssh" ] ; then
+		# RemoteServiceReplication requires Announcements and is defined to use ssh clone
+		echo "installing RemoteServiceReplication -- partial workaround for https://github.com/GemTalk/Rowan/issues/905"
+		installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
+			--projectsHome=$STONES_HOME/$registry/common_projects $*
+	fi
 
 	echo "installing RowanClientServices"
 	installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServicesV3/rowan/specs/RowanClientServices.ston  \
@@ -157,7 +160,7 @@ if [ "$template" = "minimal_rowan3" ] ; then
 	# install GsDevKit_stones using Rowan installProject.stone script
 	echo "installing GsDevKit_stones"
 	installProject.stone file:$GSDEVKIT_STONES_ROOT/rowan/specs/GsDevKit_stones.ston \
-  	--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
+ 		--projectsHome=$GSDEVKIT_STONES_ROOT/.. $*
 fi
 
 # delete the stone
