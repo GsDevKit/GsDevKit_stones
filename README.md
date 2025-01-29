@@ -13,7 +13,7 @@ Greatly simplified version of GsDevKit_home
 
 ## Versions
 ### v2.1
-Recommended for use with GemStone 3.7.1 and 3.7.2, **including a number of bugfixes**. Uses 3.7.1 with superDoit:v4.2. Includes support for using Rowan V3. tests/test_rowanV3.sh is an (evolving) example that can be used to setup an environement for using Rowan V3 and JadeiteForPharo for development. 
+Recommended for use with GemStone 3.7.1 and 3.7.2, **including a number of bugfixes**. Uses 3.7.1 with superDoit:v4.2. Includes support for using Rowan V3. tests/test_rowanV3.sh is an (evolving) example that can be used to setup an environement for using Rowan V3 and [JadeiteForPharo](https://github.com/GemTalk/JadeiteForPharo) for development. 
 
 **Note that Rowan V3 and JadeiteForPharo are still undergoing heavy development.**
 
