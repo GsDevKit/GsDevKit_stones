@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 #
+# .../GsDevKit_stones/tests/testRowanV3.sh -D >> test_rowanV3.out 2>&1
 # test coverage for setting up a rowan v3 dev environment
 #		registryReport.sol
 #		createRegistry.solo
@@ -29,7 +30,7 @@ fi
 export stoneName=test_rowanv3_372
 
 registry=test_rowanV3
-projectSet=rowan_V3_common
+projectSet_common=rowan_V3_common
 projectSet_gs=rowanV3_gs
 projectSet_pharo=rowanV3_pharo
 
@@ -48,30 +49,46 @@ fi
 
 createRegistry.solo $registry --ensure
 
-createProjectSet.solo --registry=$registry --projectSet=$projectSet \
+createProjectSet.solo --registry=$registry --projectSet=$projectSet_common \
   --from=$GSDEVKIT_STONES_ROOT/projectSets/$urlType/rowanV3_common.ston $*
 createProjectSet.solo --registry=$registry --projectSet=$projectSet_gs \
   --from=$GSDEVKIT_STONES_ROOT/projectSets/$urlType/rowanV3_gs.ston $*
 createProjectSet.solo --registry=$registry --projectSet=$projectSet_pharo \
   --from=$GSDEVKIT_STONES_ROOT/projectSets/$urlType/rowanV3_pharo.ston $*
 
-if [ -d $STONES_HOME/$registry/common_projects ]; then
-	rm -rf  $STONES_HOME/$registry/common_projects
+if [ -d $STONES_HOME/$registry/same_host_projects ]; then
+	rm -rf  $STONES_HOME/$registry/same_host_projects
 fi
-if [ -d $STONES_HOME/$registry/gs_projects ]; then
-	rm -rf  $STONES_HOME/$registry/gs_projects
+if [ -d $STONES_HOME/$registry/gs_host_projects ]; then
+	rm -rf  $STONES_HOME/$registry/gs_host_projects
 fi
-if [ -d $STONES_HOME/$registry/pharo_projects ]; then
-	rm -rf  $STONES_HOME/$registry/pharo_projects
+if [ -d $STONES_HOME/$registry/pharo_host_projects ]; then
+	rm -rf  $STONES_HOME/$registry/pharo_host_projects
 fi
 
 # cloneProjectsFromProjectSet.solo will create the project directory if it does not already exist
+#
+# scenario 1 ... Pharo and GemStone on same host ... all projects cloned into a common directory
 cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_gs \
-  --projectDirectory=$STONES_HOME/$registry/gs_projects $*
-cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet \
-  --projectDirectory=$STONES_HOME/$registry/common_projects $*
+  --projectDirectory=$STONES_HOME/$registry/same_host_projects $*
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_common \
+  --projectDirectory=$STONES_HOME/$registry/same_host_projects $*
 cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_pharo \
-  --projectDirectory=$STONES_HOME/$registry/pharo_projects $*
+  --projectDirectory=$STONES_HOME/$registry/same_host_projects $*
+#
+# scenario 2 ... Pharo and GemStone on separate hosts ... gs and pharo directories
+#
+# gs_host_projects
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_gs \
+  --projectDirectory=$STONES_HOME/$registry/gs_host_projects $*
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_common \
+  --projectDirectory=$STONES_HOME/$registry/gs_host_projects $*
+#
+# pharo_host_projects
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_common \
+  --projectDirectory=$STONES_HOME/$registry/pharo_host_projects $*
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet_pharo \
+  --projectDirectory=$STONES_HOME/$registry/pharo_host_projects $*
 
 # create and register a product directory where GemStone product trees are kept.
 if [ ! -d $STONES_HOME/$registry/gemstone ]; then
@@ -148,14 +165,17 @@ if [ "$template" = "minimal_rowan3" ] ; then
 	if [ "$urlType" = "ssh" ] ; then
 		# RemoteServiceReplication requires Announcements and is defined to use ssh clone
 		echo "installing RemoteServiceReplication -- partial workaround for https://github.com/GemTalk/Rowan/issues/905"
-		installProject.stone file:$STONES_HOME/$registry/common_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
-			--projectsHome=$STONES_HOME/$registry/common_projects $*
+		installProject.stone file:$STONES_HOME/$registry/gs_host_projects/RemoteServiceReplication/rowan/specs/RemoteServiceReplication.ston  \
+			--projectsHome=$STONES_HOME/$registry/gs_host_projects $*
 	fi
 
 	echo "installing RowanClientServices"
-	installProject.stone file:$STONES_HOME/$registry/gs_projects/RowanClientServicesV3/rowan/specs/RowanClientServices.ston  \
+	installProject.stone file:$STONES_HOME/$registry/gs_host_projects/RowanClientServicesV3/rowan/specs/RowanClientServices.ston  \
 		--alias=RowanClientServicesV3 \
-		--projectsHome=$STONES_HOME/$registry/gs_projects $*
+		--projectsHome=$STONES_HOME/$registry/gs_host_projects $*
+
+	# attach stone to the Rowan projects that are part of the base image
+	attachRowanDevClones.stone --projectsHome=$STONES_HOME/$registry/same_host_projects $*
 
 	# install GsDevKit_stones using Rowan installProject.stone script
 	echo "installing GsDevKit_stones"
