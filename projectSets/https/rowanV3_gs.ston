@@ -41,7 +41,7 @@ GDKProjectSet {
 			'projectName' : 'Rowan'
 		},
 		'RowanClientServicesV3' : {
-			'revision' : 'mainV3.0',
+			'revision' : 'JfpAlpha372',
 			'gitUrls' : {
 				'origin' : 'https://github.com/GemTalk/RowanClientServices.git'
 			},
