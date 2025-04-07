@@ -16,8 +16,8 @@ jobs:
         include:
 #          - smalltalk: 3.7.2
 #            os: macos-14
-          - smalltalk: 3.7.1
-            os: macos-14
+#          - smalltalk: 3.7.1
+#            os: macos-14
           - smalltalk: 3.6.8
             os: macos-13
           - smalltalk: 3.6.6
