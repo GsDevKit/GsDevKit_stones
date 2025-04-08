@@ -37,17 +37,27 @@ Greatly simplified version of GsDevKit_home
 5. if you are using tODE I think you should continue using GsDevKit_home
 
 ## Installation
-``` bash
-git clone git@github.com:GsDevKit/GsDevKit_stones.git -b v2
-GsDevKit_stones/bin/install.sh
+Shell script:
 
+``` bash
+# Run that in a base directory where all of your GemStone stuff will be placed
+
+# Get the source code, and checkout the needed branch (newest is v2.1 at the time of writing)
+git clone git@github.com:GsDevKit/GsDevKit_stones.git -b v2.1
+
+# Run the installation script from within the base directory
+./GsDevKit_stones/bin/install.sh
+
+# Setup your environment (you might want to persist that in /etc/profile.d/... or similar)
 export PATH=`pwd`/superDoit/bin:`pwd`/GsDevKit_stones/bin:$PATH
-versionReport.solo
 export STONES_DATA_HOME=$XDG_DATA_HOME
 if [ "$STONES_DATA_HOME" = "" ] ; then
 	# on Mac ensure the directory you choose exists
 	export STONES_DATA_HOME=$HOME/.local/share
 fi
+
+# First check, if installation is all good. You will get a report of some GemStone installation facts
+versionReport.solo
 ```
 
 ## STONES_DATA_HOME
@@ -56,13 +66,18 @@ GsDevKit_stones maintains a registry data structure based on the [XDG Base Direc
 Therefore to simplify the coding and allow for the creation of short-leved registry structures, The environment variable STONES_DATA_HOME is used to define the root directory for GsDevKit_STONES applications. On Linux, STONES_DATA_HOME defaults to $HOME/.local/share. On Mac, STONES_DATA_HOME must be defined.
 
 ## Setting up the registry structure
+Pseudo shell script (go through it manually and read the comments):
+
 ```bash
+# Setup some config values (use your own here!)
 registryName=`hostname`
 projectSetName="devkit"
 gemstoneProductsDirectory="/home/dhenrich/_stones/gemstone"
 projectsDirectory="/home/dhenrich/_stones/git/"
 stonesDirectory="/home/dhenrich/_stones/stones"
 todeHome="/home/dhenrich/_stones/tode"
+
+# Print those config values (Just for the beauty of viewing all at once)
 echo "
  registry:    $registryName
  project set: $projectSetName 
@@ -71,25 +86,37 @@ echo "
  stones:      $stonesDirectory
  tode:        $todeHome"
 
+# Create a (first) registry. You can define multiple registries. Each one is like a global namespace for your GemStone projects.
 createRegistry.solo $registryName
-createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh
-createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --https
+
+# Create a (first) empty project set, one for SSH and one for HTTPS connections
+createProjectSet.solo --registry=$registryName --projectSet=$projectSetName --ssh --empty
+createProjectSet.solo --registry=$registryName --projectSet=${projectSetName}_https --https --empty
+
+# Save the project directory in the registry, where the git repositories will be stored
 registerProjectDirectory.solo --registry=$registryName --projectDirectory=$projectsDirectory
+
+# Get the project sources for a set of projects, through git clone. (Which is empty initially, so no need for that really)
 cloneProjectsFromProjectSet.solo --registry=$registryName --projectSet=$projectSetName 
+
+# Save the directory, where the "products" (= The actual GemStone software) will be downloaded to.
 registerProductDirectory.solo --registry=$registryName \
                               --productDirectory=$gemstoneProductsDirectory
 
-# GemStone version not previously downloaded
-downloadGemStone.solo --registry=$registryName 3.6.6
+# Download a GemStone version. Use your GemStone version(s) here.
+downloadGemStone.solo --registry=$registryName 3.7.2
 
+# ... or if you already have (multiple) downloaded GemStone products (e.g. from a GsDevKit_home installation):
 # Register full set of previously downloaded product trees
 registerProduct.solo --registry=$registryName \
                      --fromDirectory=$GS_HOME/shared/downloads/products
+
+# ... or if you have a single GemStone product at some other location:
 # register named GemStone version using path to product tree
 registerProduct.solo --registry=$registryName \
                      --productPath=/bosch1/users/dhenrich/_work/d_37x/noop50/gs/product 3.7.0
 
-# register default stones directory
+# Save default stones directory in the registry. That's where your stone data will be stored.
 registerStonesDirectory.solo --registry=$registryName \
                              --stonesDirectory=$stonesDirectory
 
@@ -98,10 +125,18 @@ registerTodeSharedDir.solo --registry=$registryName  \
                            --todeHome=$todeHome \
                            --populate
 
+# View the list of all registries
 registryReport.solo
+
+# View one particular registry details
+registryReport.solo --registry=$registryName
+
 ```
 
+
 ## Create stones
+Shell script:
+
 ```bash
 # create stone in default stones directory
 createStone.solo --registry=$registryName --template=default --start gs_366 3.6.6
@@ -118,7 +153,9 @@ createStone.solo --registry=rogue --template=minimal_rowan --start rowan_370_v3 
 registryReport.solo --registry=$registryName
 ```
 ## custom project set
-```
+Bash script:
+
+``` bash
 createProjectSet.solo --registry=rogue --projectSet=rowan --empty
 
 updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=Rowan --revision=masterV3.0 \
@@ -148,7 +185,10 @@ updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=GsDevKit
 updateProjectSet.solo --registry=rogue --projectSet=rowan --projectName=GsDevKit_stones \
                       --remote=gs --gitUrl=git@git.gemtalksystems.com:GsDevKit_stones --revision=v1.1.1
 ```
+
 ## sample registry report
+Bash script:
+
 ```
 GDKStonesRegistry {
 	#name : 'rogue',
