@@ -11,23 +11,19 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-20.04, ubuntu-22.04 ]
-        smalltalk: [ 3.6.6, 3.6.8, 3.7.0, 3.7.1 ]
+        os: [ ubuntu-24.04, ubuntu-22.04 ]
+        smalltalk: [ 3.6.6, 3.6.8, 3.7.0, 3.7.1, 3.7.2, 3.7.4.1 ]
         include:
-          #- smalltalk: 3.7.1
-          #  os: macos-13
-          #- smalltalk: 3.7.0
-          #  os: macos-13
-          #- smalltalk: 3.7.0
-          #  os: macos-12
+          - smalltalk: 3.7.4.1
+            os: macos-14
+#          - smalltalk: 3.7.2
+#            os: macos-14
+#          - smalltalk: 3.7.1
+#            os: macos-14
           - smalltalk: 3.6.8
             os: macos-13
-          - smalltalk: 3.6.8
-            os: macos-12
           - smalltalk: 3.6.6
             os: macos-13
-          - smalltalk: 3.6.6
-            os: macos-12
     runs-on: ${{ matrix.os }}
     env:
       GS_VERS: ${{ matrix.smalltalk }}
@@ -52,7 +48,20 @@ jobs:
           echo "GSDEVKIT_STONES_ROOT=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
 
           # clones superDoit and installs 3.7.0 to be used for .solo scripts
-          $GSDEVKIT_STONES_ROOT/bin/install.sh
+          case "$GS_VERS" in
+            3.7.2)
+              # use 3.7.1 for superDoit ...
+              $GSDEVKIT_STONES_ROOT/bin/install.sh 3.7.1
+              ;;
+            3.7.1)
+              # use 3.7.1 ...
+              $GSDEVKIT_STONES_ROOT/bin/install.sh $GS_VERS
+              ;;
+            *)
+              # 3.7.0 is the default
+              $GSDEVKIT_STONES_ROOT/bin/install.sh
+              ;;
+          esac
 
           export SUPERDOIT_ROOT=$WORK_ROOT/superDoit
           echo "SUPERDOIT_ROOT=$WORK_ROOT/superDoit"
@@ -153,16 +162,7 @@ jobs:
           gslist.solo -lc
           deleteRegistry.solo `hostname` -f
           gslist.solo -l
-          
         shell: bash
-#      - name: run rowanV3-alpha1 test
-#        run: |
-#          echo "CI=$CI"
-#          $GSDEVKIT_STONES_ROOT/tests/test_rowanV3_alpha.sh
-#          gslist.solo -lc
-#          deleteRegistry.solo test_rowanV3 -f
-#          gslist.solo -l
-#        shell: bash
       - name: run tODE test
         run: |
           echo "CI=$CI"
@@ -171,12 +171,24 @@ jobs:
           deleteRegistry.solo devkit -f
           gslist.solo -l
         shell: bash
+      - name: run rowanV3 test
+        run: |
+          echo "CI=$CI"
+          if [ "$GS_VERS" = "3.7.2" ]; then
+            $GSDEVKIT_STONES_ROOT/tests/test_rowanV3.sh
+            gslist.solo -lc
+            deleteRegistry.solo test_rowanV3 -f
+            gslist.solo -l
+          else
+            echo "SKIP rowanV3 test for $GS_VERS";
+          fi
+        shell: bash
   slack-workflow-status:
     if: always()
     name: Post Workflow Status To Slack
     needs:
       - build
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
        - name: Slack Workflow Notification
          uses: Gamesight/slack-workflow-status@master

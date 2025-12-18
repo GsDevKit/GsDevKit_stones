@@ -5,7 +5,7 @@ SuperDoitOptionalOptionWithRequiredArg long: 'registry' short: 'r'.
 SuperDoitOptionalOptionWithRequiredArg long: 'remote' default: 'origin'.
 SuperDoitRequiredOptionWithRequiredArg long: 'projectSet'.
 SuperDoitOptionalOptionWithRequiredArg long: 'projectDirectory'.
-SuperDoitOptionalOptionWithNoArg long: 'flag'.
+SuperDoitOptionalOptionWithNoArg long: 'preview'.
 SuperDoitOptionalOptionWithNoArg long: 'update'.
 }
 %
@@ -44,9 +44,9 @@ OPTIONS
                     Path to directory where the projects will be cloned. If not
                     specified the projectDirectory associated with the project set 
                     is used.
-  --flag            If present identify the list of projects that would be updated 
-                    by the --update option. Useful to manually review the state of
-                    projects PRIOR to running the update command.
+  --preview         If present log whether or not a pull request is needed. Useful 
+                    to manually review the state of projects PRIOR to doing a pull
+                    request.
   --update          If present, a pull request will be issued for the origin remote
                     to update the repository to the latest version of the branch 
                     available.
@@ -61,6 +61,7 @@ EXAMPLES
   $basename 
   $basename --registry=bosch --projectSet=dev --remote=https Rowan \
             --projectDirectory=/home/dhenrich/bosch1/_exp_git
+  $basename -r=bosch --projectSet=_stones Rowan --preview
   $basename -r=bosch --projectSet=_stones Rowan --update
 -----
 %
@@ -117,9 +118,9 @@ doit
 	projectDir asFileReference ensureCreateDirectory. 
 	Rowan projectTools trace startTracing.
 	self positionalArgs size = 0
-		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir remoteName: self remote flag: self flag pull: self update]
+		ifTrue: [ projectSet cloneOrUpdateProjectSet: projectDir remoteName: self remote preview: self preview pull: self update]
 		ifFalse: [ 
 			self positionalArgs  do: [:projectName |
-				projectSet cloneOrUpdateProject: projectName remoteName: self remote in: projectDir flag: self flag pull: self update] ].
+				projectSet cloneOrUpdateProject: projectName remoteName: self remote in: projectDir preview: self preview pull: self update] ].
 	true
 %

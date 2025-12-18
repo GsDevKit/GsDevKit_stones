@@ -30,10 +30,16 @@ $TEST_SCRIPTS_DIR/createTestProjectSet.sh $*
 cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet \
  	--projectDirectory=$STONES_HOME/test_git $*
 
+# use --flag to preview what will be done by --update
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet \
+	--projectDirectory=$STONES_HOME/test_git --remote=gs --flag $*
 # use --update, which will do a pull
 cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet \
 	--projectDirectory=$STONES_HOME/test_git --remote=gs --update $*
 
+# use --flag to preview what will be done by --update
+cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet \
+	--projectDirectory=$STONES_HOME/test_git --remote=gs --flag $*
 # use --update, which will do a pull ... second time (branch already exists)
 cloneProjectsFromProjectSet.solo --registry=$registry --projectSet=$projectSet \
 	--projectDirectory=$STONES_HOME/test_git --remote=gs --update $*
