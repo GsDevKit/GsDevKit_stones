@@ -52,6 +52,7 @@ jobs:
             3.7.4.3)
               # use 3.7.4.3 for superDoit ...
               $GSDEVKIT_STONES_ROOT/bin/install.sh 3.7.4.3
+              ;;
             3.7.2)
               # use 3.7.1 for superDoit ...
               $GSDEVKIT_STONES_ROOT/bin/install.sh 3.7.1
