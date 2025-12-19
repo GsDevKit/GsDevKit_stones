@@ -2,7 +2,7 @@
 #
 # .../GsDevKit_stones/tests/testRowanV3.sh -D >> test_rowanV3.out 2>&1
 # test coverage for setting up a rowan v3 dev environment
-#		registryReport.sol
+#		registryReport.solo
 #		createRegistry.solo
 #		createProjectSet.solo
 #		updateProjectSet.solo
@@ -21,13 +21,13 @@ else
 fi
 
 if [ "$GS_VERS"x = "x" ] ; then
-	export GS_VERS=3.7.2
-elif	[ "$GS_VERS" != "3.7.2" ]; then
+	export GS_VERS=3.7.4.3
+elif	[ "$GS_VERS" != "3.7.4.3" ]; then
 	echo "skip test_rowanV3.sh for $GS_VERS ... only 3.7.2 or later should be supported"
 	exit 0
 fi
 
-export stoneName=test_rowanv3_372
+export stoneName=test_rowanv3_3743
 
 registry=test_rowanV3
 projectSet_common=rowan_V3_common
