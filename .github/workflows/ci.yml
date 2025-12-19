@@ -178,13 +178,14 @@ jobs:
       - name: run rowanV3 test
         run: |
           echo "CI=$CI"
-          if [ "$GS_VERS" = "" ]; then  #unconditional skip of RowanV3 tests for now
+          if [ "$GS_VERS" = "3.7.4.3" ]; then  #only run the test for 3.7.4.3
+            echo "launching test_rowanV3.sh"
             $GSDEVKIT_STONES_ROOT/tests/test_rowanV3.sh
             gslist.solo -lc
             deleteRegistry.solo test_rowanV3 -f
             gslist.solo -l
           else
-            echo "SKIP rowanV3 test for $GS_VERS";
+            echo "SKIP rowanV3 test for $GS_VERS"
           fi
         shell: bash
   slack-workflow-status:
