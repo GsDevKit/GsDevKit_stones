@@ -101,7 +101,7 @@ registerProductDirectory.solo --registry=$registry --productDirectory=$STONES_HO
 registerProduct.solo -r $registry --fromDirectory=$STONES_HOME/gemstone
 
 # download $GS_VERS
-downloadGemStone.solo --registry=$registry 3.7.2 $*
+downloadGemStone.solo --registry=$registry 3.7.4.3 $*
 #
 # populate the clientlibs directory with 64bit libraries for use by JfP
 #
