@@ -1,15 +1,14 @@
 {
-	"category" : "GsDevKit_stones-Core",
-	"classinstvars" : [
-		 ],
-	"classvars" : [
-		 ],
 	"commentStamp" : "",
+	"super" : "GDKAbstractRegistryStore",
+	"category" : "GsDevKit_stones-Core",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
 	"instvars" : [
 		"loadSpecs",
-		"projectDirectory" ],
+		"projectDirectory"
+	],
 	"name" : "GDKProjectSet",
-	"pools" : [
-		 ],
-	"super" : "GDKAbstractRegistryStore",
-	"type" : "normal" }
+	"type" : "normal"
+}

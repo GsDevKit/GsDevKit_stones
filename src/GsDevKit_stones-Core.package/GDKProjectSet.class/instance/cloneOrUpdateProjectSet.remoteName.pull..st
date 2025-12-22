@@ -1,4 +1,9 @@
 installation
 cloneOrUpdateProjectSet: gitRootPath remoteName: remoteName pull: pull
+	"For each of the loadSpecs in the reciever, clone the speced project into the gitRootPath directory using the information 
+	 	in the load spec for project. If the project has already been cloned, then checkout the revision specified in the 
+		load spec. f pull is false display a message about whether or not a pull request is needed. If pull is true, 
+		perform the pull request."
+
 	self loadSpecs
-		keysDo: [ :projectName | self cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath pull: pull ]
+		keysDo: [ :projectName | self cloneOrUpdateProject: projectName remoteName: remoteName in: gitRootPath preview: pull not pull: pull ]
