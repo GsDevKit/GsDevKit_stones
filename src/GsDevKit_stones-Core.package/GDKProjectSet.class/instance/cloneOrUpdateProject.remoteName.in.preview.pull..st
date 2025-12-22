@@ -39,11 +39,23 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 			(Rowan gitTools gitstatusIn: gitProjectRef fullName with: '--porcelain') isEmpty
 				not
 				ifTrue: [ 
-					"the git repository has unsaved modifications, so abort the operation"
-					self
-						error:
-							'There are unsaved changes in ' , gitProjectRef fullName printString
-								, '. We cannot clone or update a repository with unsaved changes' ] ]
+					| message |
+					message := 'There are unsaved changes in '
+						, gitProjectRef fullName printString
+						,
+							'. We WILL NOT switch, clone or update a repository with unsaved changes. Please CLEAN up your unsaved changes.'.
+					preview
+						ifTrue: [ 
+							stdout
+								cr;
+								nextPutAll: '***************************';
+								cr;
+								nextPutAll: message;
+								cr;
+								nextPutAll: '***************************' ]
+						ifFalse: [ 
+							"the git repository has unsaved modifications, so abort the operation"
+							self error: message ] ] ]
 		ifFalse: [ 
 			| originArg dirNameArg |
 			"GIT CLONE"
@@ -86,11 +98,26 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 										in: gitProjectRef fullName
 										with: ' ' , remoteName , '/' , revision , ' -t -C ' , revision) ]
 				ifFalse: [ 
+					| currentBranchName |
+					currentBranchName := Rowan gitTools gitBranchNameIn: gitProjectRef fullName.
 					pull
 						ifTrue: [ 
 							"GIT FETCH
 								GIT SWITCH
 								GIT PULL"
+							revision = currentBranchName
+								ifTrue: [ 
+									stdout
+										cr;
+										nextPutAll: '=======================';
+										cr;
+										nextPutAll: '=======================' ]
+								ifFalse: [ 
+									stdout
+										cr;
+										nextPutAll: '***************************';
+										cr;
+										nextPutAll: '***************************' ].
 							stdout
 								cr;
 								tab;
@@ -118,23 +145,40 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 							stdout
 								cr;
 								nextPutAll:
-										(gitTool gitpullIn: gitProjectRef fullName remote: remoteName branch: revision) ]
+										(gitTool gitpullIn: gitProjectRef fullName remote: remoteName branch: revision).
+							revision = currentBranchName
+								ifTrue: [ 
+									stdout
+										cr;
+										nextPutAll: '=======================';
+										cr;
+										nextPutAll: '=======================' ]
+								ifFalse: [ 
+									stdout
+										cr;
+										nextPutAll: '***************************';
+										cr;
+										nextPutAll: '***************************' ] ]
 						ifFalse: [ 
 							preview
 								ifTrue: [ 
-									| currentBranchName |
-									currentBranchName := Rowan gitTools
-										gitBranchNameIn: gitProjectRef fullName.
-									stdout
-										cr;
-										nextPutAll: 'Current BRANCHNAME: ' , currentBranchName.
 									revision = currentBranchName
 										ifTrue: [ 
 											stdout
 												cr;
-												nextPutAll: 'PREVIEW:: FETCH and PULL ' , currentBranchName ]
+												nextPutAll: '=======================';
+												cr;
+												nextPutAll: 'Current BRANCHNAME: ' , currentBranchName;
+												cr;
+												nextPutAll: 'PREVIEW:: FETCH and PULL ' , currentBranchName;
+												cr;
+												nextPutAll: '=======================' ]
 										ifFalse: [ 
 											stdout
+												cr;
+												nextPutAll: '***************************';
+												cr;
+												nextPutAll: 'Current BRANCHNAME: ' , currentBranchName;
 												cr;
 												nextPutAll: '------  Preview FETCH,';
 												cr;
@@ -144,7 +188,9 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 												cr;
 												tab;
 												nextPutAll: ' and PULL';
-												nextPutAll: '  ' , revision ] ] ] ] ].
+												nextPutAll: '  ' , revision;
+												cr;
+												nextPutAll: '***************************' ] ] ] ] ].
 	cloned
 		ifTrue: [ 
 			"GIT REMOTE ADD"
@@ -153,7 +199,8 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 					self
 						gitAddRemoteIn: gitProjectRef fullName
 						remote: theRemote
-						gitUrl: (gitUrls at: theRemote) ].	"GIT FETCH --all"
+						gitUrl: (gitUrls at: theRemote) ].	"
+			GIT FETCH --all"
 			stdout
 				cr;
 				tab;
@@ -168,6 +215,8 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 		nextPutAll: (Rowan gitTools gitbranchIn: gitProjectRef fullName with: '');
 		cr;
 		nextPutAll: '==========';
+		cr;
+		nextPutAll: 'End   ' , gitProjectRef basename printString;
 		cr;
 		nextPutAll: '==========';
 		cr.
