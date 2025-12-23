@@ -1,5 +1,5 @@
 installation
-cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath preview: preview pull: pull
+cloneOrUpdateProjectX: projectDirName remoteName: remoteName in: gitRootPath preview: preview pull: pull
 	"Clone the project into the gitRootPath directory using the information in the load spec for project. If the project 
 		has already been cloned, then checkout the revision specified in the load spec. The loadSpecs are indexed by
         projectDirName to allow for multiple copies of the project in the same directory. Normally, projectDirName
@@ -27,7 +27,13 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 		cr;
 		nextPutAll: 'Project   ' , projectName printString;
 		cr;
-		nextPutAll: '===================='.
+		nextPutAll: '====================';
+		cr;
+		tab;
+		nextPutAll: 'Remote ' , remoteName;
+		cr;
+		tab;
+		nextPutAll: 'In  directory ' , gitProjectRef fullName.
 	gitProjectRef exists
 		ifTrue: [ 
 			(Rowan gitTools gitstatusIn: gitProjectRef fullName with: '--porcelain') isEmpty
@@ -73,13 +79,14 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 			cloned := true ].
 	(specDict at: 'revision' ifAbsent: [  ])
 		ifNotNil: [ :revision | 
+			stdout
+				cr;
+				tab;
+				nextPutAll: 'Set ' , projectDirName , ' revision to ' , revision.
 			cloned
 				ifTrue: [ 
 					"GIT SWITCH"
 					stdout
-						cr;
-						tab;
-						nextPutAll: 'Set ' , projectDirName , ' revision to ' , revision;
 						cr;
 						tab;
 						nextPutAll:
@@ -99,6 +106,12 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 								GIT SWITCH
 								GIT PULL"
 							revision = currentBranchName
+								ifTrue: [ 
+									stdout
+										cr;
+										nextPutAll: '=======================';
+										cr;
+										nextPutAll: '=======================' ]
 								ifFalse: [ 
 									stdout
 										cr;
@@ -116,7 +129,7 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 								cr;
 								tab;
 								nextPutAll:
-										'Switch ' , remoteName , '/' , revision , ' -t -C ' , revision.
+										'Switch (after fetch) ' , remoteName , '/' , revision , ' -t -C ' , revision.
 							stdout
 								cr;
 								nextPutAll:
@@ -134,6 +147,12 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 								nextPutAll:
 										(gitTool gitpullIn: gitProjectRef fullName remote: remoteName branch: revision).
 							revision = currentBranchName
+								ifTrue: [ 
+									stdout
+										cr;
+										nextPutAll: '=======================';
+										cr;
+										nextPutAll: '=======================' ]
 								ifFalse: [ 
 									stdout
 										cr;
@@ -144,6 +163,16 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 							preview
 								ifTrue: [ 
 									revision = currentBranchName
+										ifTrue: [ 
+											stdout
+												cr;
+												nextPutAll: '=======================';
+												cr;
+												nextPutAll: 'Current BRANCHNAME: ' , currentBranchName;
+												cr;
+												nextPutAll: 'PREVIEW:: FETCH and PULL ' , currentBranchName;
+												cr;
+												nextPutAll: '=======================' ]
 										ifFalse: [ 
 											stdout
 												cr;
@@ -179,19 +208,17 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 			stdout
 				cr;
 				nextPutAll: (gitTool gitfetchIn: gitProjectRef with: ' --all') ].
-	(cloned or: [ pull ])
-		ifTrue: [ 
-			stdout
-				cr;
-				nextPutAll: '------ branches';
-				cr;
-				nextPutAll: (Rowan gitTools gitbranchIn: gitProjectRef fullName with: '');
-				cr;
-				nextPutAll: '==========';
-				cr;
-				nextPutAll: 'End   ' , gitProjectRef basename printString;
-				cr;
-				nextPutAll: '==========';
-				cr ].
+	stdout
+		cr;
+		nextPutAll: '------ branches';
+		cr;
+		nextPutAll: (Rowan gitTools gitbranchIn: gitProjectRef fullName with: '');
+		cr;
+		nextPutAll: '==========';
+		cr;
+		nextPutAll: 'End   ' , gitProjectRef basename printString;
+		cr;
+		nextPutAll: '==========';
+		cr.
 	wasTracing
 		ifTrue: [ Rowan projectTools trace startTracing ]
