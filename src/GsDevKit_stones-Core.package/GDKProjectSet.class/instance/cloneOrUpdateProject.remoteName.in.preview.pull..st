@@ -147,18 +147,19 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 										ifTrue: [ 
 											stdout
 												cr;
-												nextPutAll: '------  FETCH and PULL ' , currentBranchName";
+												nextPutAll: '------  FETCH and PULL ' , currentBranchName	";
 												cr;
-												nextPutAll: '***************************' "]
+												nextPutAll: '***************************' " ]
 										ifFalse: [ 
 											stdout
-												"cr;
-												nextPutAll: '***************************';"
 												cr;
-												nextPutAll: '------  FETCH, SWITCH  TO ' , revision , ' FROM ' , currentBranchName,' and PULL';
-												nextPutAll: '  ' , revision";
+												nextPutAll:
+														'------  FETCH, SWITCH  TO ' , revision , ' FROM ' , currentBranchName
+																, ' and PULL';
+												nextPutAll: '  ' , revision	"cr;
+												nextPutAll: '***************************';"	";
 												cr;
-												nextPutAll: '***************************' "] ] ] ] ].
+												nextPutAll: '***************************' " ] ] ] ] ].
 	cloned
 		ifTrue: [ 
 			"GIT REMOTE ADD"
@@ -189,6 +190,7 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 				nextPutAll: 'End   ' , gitProjectRef basename printString;
 				cr;
 				nextPutAll: '==========';
-				cr ].
+				cr ]
+		ifFalse: [ stdout cr ].
 	wasTracing
 		ifTrue: [ Rowan projectTools trace startTracing ]
