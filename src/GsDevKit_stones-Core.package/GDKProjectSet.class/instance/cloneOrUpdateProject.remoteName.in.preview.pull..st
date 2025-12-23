@@ -147,19 +147,17 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 										ifTrue: [ 
 											stdout
 												cr;
-												nextPutAll: '------  FETCH and PULL ' , currentBranchName	";
-												cr;
-												nextPutAll: '***************************' " ]
+												nextPutAll: '------  FETCH and PULL ' , currentBranchName ]
 										ifFalse: [ 
 											stdout
 												cr;
+												nextPutAll: '***************************';
+												cr;
 												nextPutAll:
 														'------  FETCH, SWITCH  TO ' , revision , ' FROM ' , currentBranchName
-																, ' and PULL';
-												nextPutAll: '  ' , revision	"cr;
-												nextPutAll: '***************************';"	";
+																, ' and PULL ' , revision;
 												cr;
-												nextPutAll: '***************************' " ] ] ] ] ].
+												nextPutAll: '***************************' ] ] ] ] ].
 	cloned
 		ifTrue: [ 
 			"GIT REMOTE ADD"
