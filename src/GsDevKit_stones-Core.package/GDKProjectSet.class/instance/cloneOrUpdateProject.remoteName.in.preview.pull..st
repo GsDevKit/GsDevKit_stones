@@ -27,7 +27,7 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 		cr;
 		nextPutAll: 'Project   ' , projectName printString;
 		cr;
-		nextPutAll: '===================='.
+		nextPutAll: '-------------------------------'.
 	gitProjectRef exists
 		ifTrue: [ 
 			(Rowan gitTools gitstatusIn: gitProjectRef fullName with: '--porcelain') isEmpty
@@ -144,24 +144,21 @@ cloneOrUpdateProject: projectDirName remoteName: remoteName in: gitRootPath prev
 							preview
 								ifTrue: [ 
 									revision = currentBranchName
-										ifFalse: [ 
+										ifTrue: [ 
 											stdout
 												cr;
-												nextPutAll: '***************************';
+												nextPutAll: '------  FETCH and PULL ' , currentBranchName";
 												cr;
-												nextPutAll: 'Current BRANCHNAME: ' , currentBranchName;
+												nextPutAll: '***************************' "]
+										ifFalse: [ 
+											stdout
+												"cr;
+												nextPutAll: '***************************';"
 												cr;
-												nextPutAll: '------  Preview FETCH,';
+												nextPutAll: '------  FETCH, SWITCH  TO ' , revision , ' FROM ' , currentBranchName,' and PULL';
+												nextPutAll: '  ' , revision";
 												cr;
-												nextPutAll: '***';
-												tab;
-												nextPutAll: 'SWITCH  TO ' , revision , ' FROM ' , currentBranchName;
-												cr;
-												tab;
-												nextPutAll: ' and PULL';
-												nextPutAll: '  ' , revision;
-												cr;
-												nextPutAll: '***************************' ] ] ] ] ].
+												nextPutAll: '***************************' "] ] ] ] ].
 	cloned
 		ifTrue: [ 
 			"GIT REMOTE ADD"
