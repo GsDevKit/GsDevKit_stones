@@ -63,8 +63,8 @@ EXAMPLES
   $basename 
   $basename --registry=bosch --projectSet=dev --remote=https Rowan \
             --projectDirectory=/home/dhenrich/bosch1/_exp_git
-  $basename -r=bosch --projectSet=_stones Rowan --preview
-  $basename -r=bosch --projectSet=_stones Rowan --update
+  $basename -r=bosch --projectSet=_stones Rowan --projectDirectory=/home/dhenrich/bosch1/_exp_git --preview
+  $basename -r=bosch --projectSet=_stones Rowan --projectDirectory=/home/dhenrich/bosch1/_exp_git --update
 -----
 %
 specs
